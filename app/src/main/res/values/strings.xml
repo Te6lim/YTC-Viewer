@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">YTC Viewer</string>
+    <string name="app_name_alt">YTC</string>
+    <string name="cards">Cards</string>
+    <string name="gallery">Gallery</string>
+    <string name="search">Search</string>
 </resources>
