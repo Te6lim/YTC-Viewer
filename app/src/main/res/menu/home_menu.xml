@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/ic_sort_by_alpha"
+        android:title="@string/group_by_alphabet"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:title="Filter by"
+        app:showAsAction="never" />
+</menu>
