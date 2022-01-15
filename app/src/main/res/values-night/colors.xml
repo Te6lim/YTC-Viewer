@@ -1,0 +1,13 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<resources>
+    <color name="primaryColor">#202052</color>
+    <color name="primaryLightColor">#4d477f</color>
+    <color name="primaryDarkColor">#00002a</color>
+    <color name="secondaryColor">#202051</color>
+    <color name="secondaryLightColor">#4c477e</color>
+    <color name="secondaryDarkColor">#000029</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#ffffff</color>
+
+    <color name="iconColor">#4d477f</color>
+</resources>
