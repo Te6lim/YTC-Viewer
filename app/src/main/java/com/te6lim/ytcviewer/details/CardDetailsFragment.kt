@@ -1,4 +1,4 @@
-package com.te6lim.ytcviewer.home.details
+package com.te6lim.ytcviewer.details
 
 import androidx.fragment.app.Fragment
 

@@ -9,5 +9,14 @@
         android:id="@+id/homeFragment"
         android:name="com.te6lim.ytcviewer.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_cardDetailsFragment"
+            app:destination="@id/cardDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cardDetailsFragment"
+        android:name="com.te6lim.ytcviewer.details.CardDetailsFragment"
+        android:label="fragment_details_card"
+        tools:layout="@layout/fragment_details_card" />
 </navigation>

@@ -3,4 +3,5 @@
     <dimen name="tiny_spacing" />
     <dimen name="small_spacing">4dp</dimen>
     <dimen name="medium_spacing">8dp</dimen>
+    <dimen name="standard_spacing">16dp</dimen>
 </resources>
