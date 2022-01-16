@@ -22,7 +22,7 @@
             android:text="Tornado Dragon"
             android:textAlignment="textStart"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            android:textColor="@color/primaryDarkColor"
+            android:textColor="@color/primaryColor"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/card_property_background"
             android:elevation="@dimen/small_spacing"
@@ -82,7 +82,7 @@
 
                     <TextView
                         android:id="@+id/textView7"
-                        style="@style/property_head_text"
+                        style="@style/card_property_title_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Type" />
@@ -102,12 +102,13 @@
                     android:layout_marginEnd="4dp"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+                    tools:layout_editor_absoluteY="38dp">
 
                     <TextView
                         android:id="@+id/textView9"
-                        style="@style/property_head_text"
+                        style="@style/card_property_title_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ATK" />
@@ -135,7 +136,7 @@
 
                     <TextView
                         android:id="@+id/textView11"
-                        style="@style/property_head_text"
+                        style="@style/card_property_title_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="DEF" />
@@ -150,11 +151,13 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/linearLayout5"
                     style="@style/card_property_container_style"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="1dp"
+                    android:layout_marginEnd="4dp"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -162,12 +165,51 @@
 
                     <TextView
                         android:id="@+id/textView13"
-                        style="@style/property_head_text"
+                        style="@style/card_property_title_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|start"
                         android:text="Level" />
 
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/card_property_container_style"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+                    <TextView
+                        android:id="@+id/textView15"
+                        style="@style/card_property_title_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Race" />
+
+                    <ImageView
+                        android:id="@+id/imageView12"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/dragon" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/medium_spacing"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/roboto"
+                        android:text="(Dragon)"
+                        android:textColor="@android:color/black"
+                        android:textStyle="italic" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -203,7 +245,7 @@
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/roboto"
             android:text="Description"
-            android:textColor="@color/primaryDarkColor"
+            android:textColor="@color/primaryColor"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

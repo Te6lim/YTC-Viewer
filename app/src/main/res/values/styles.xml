@@ -6,8 +6,9 @@
         <item name="android:padding">@dimen/small_spacing</item>
     </style>
 
-    <style name="property_head_text">
+    <style name="card_property_title_style">
         <item name="android:layout_marginEnd">@dimen/medium_spacing</item>
+        <item name="android:layout_gravity">center|start</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textStyle">bold</item>
