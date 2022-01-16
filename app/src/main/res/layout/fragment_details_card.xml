@@ -93,6 +93,13 @@
                         android:text="XYZ Monster" />
                 </LinearLayout>
 
+                <FrameLayout
+                    android:id="@+id/divider_1"
+                    style="@style/card_property_divider_style"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayout2"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
                 <LinearLayout
                     android:id="@+id/linearLayout3"
                     style="@style/card_property_container_style"
@@ -101,6 +108,7 @@
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
                     android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/divider_1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -122,6 +130,13 @@
                         android:text="2100" />
                 </LinearLayout>
 
+                <FrameLayout
+                    android:id="@+id/divider_2"
+                    style="@style/card_property_divider_style"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
                 <LinearLayout
                     android:id="@+id/linearLayout4"
                     style="@style/card_property_container_style"
@@ -132,7 +147,7 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+                    app:layout_constraintTop_toBottomOf="@+id/divider_2">
 
                     <TextView
                         android:id="@+id/textView11"
@@ -149,6 +164,13 @@
                         android:layout_weight="1"
                         android:text="2000" />
                 </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/divider_3"
+                    style="@style/card_property_divider_style"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayout4"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayout4"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout5"
@@ -173,7 +195,15 @@
 
                 </LinearLayout>
 
+                <FrameLayout
+                    android:id="@+id/divider_4"
+                    style="@style/card_property_divider_style"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayout5"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+
                 <LinearLayout
+                    android:id="@+id/linearLayout6"
                     style="@style/card_property_container_style"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -203,13 +233,89 @@
                         android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/medium_spacing"
                         android:layout_weight="1"
-                        android:fontFamily="@font/roboto"
                         android:text="(Dragon)"
-                        android:textColor="@android:color/black"
-                        android:textStyle="italic" />
+                        style="@style/card_meta_property_value_style" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/divider_5"
+                    style="@style/card_property_divider_style"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayout6"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayout6"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout7"
+                    style="@style/card_property_container_style"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider_5"
+                    tools:layout_editor_absoluteY="148dp">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        style="@style/card_property_title_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="Attribute" />
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/wind" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        style="@style/card_meta_property_value_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="(Wind)" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/divider_6"
+                    style="@style/card_property_divider_style"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayout7"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayout7"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout8"
+                    style="@style/card_property_container_style"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider_6"
+                    tools:layout_editor_absoluteY="175dp">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        style="@style/card_property_title_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rarity" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        style="@style/card_property_value_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Secret Rare" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -222,34 +328,45 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
             android:background="@drawable/card_description_background"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/playfair_display"
             android:lineSpacingExtra="8dp"
             android:minHeight="200dp"
             android:padding="@dimen/standard_spacing"
             android:text="2 Level 4 monsters\nOnce per turn (Quick Effect): You can detach 1 material from this card, then target 1 Spell/Trap on the field; destroy it."
             android:textColor="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description" />
 
         <TextView
             android:id="@+id/description"
-            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/playfair_display_bold"
             android:text="Description"
             android:textColor="@color/primaryColor"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description_text"
+            tools:itemCount="2"
+            tools:listitem="@layout/card_pack_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
