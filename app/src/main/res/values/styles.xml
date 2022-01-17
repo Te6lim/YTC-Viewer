@@ -7,9 +7,8 @@
     </style>
 
     <style name="card_property_title_style">
-        <item name="android:layout_marginEnd">@dimen/medium_spacing</item>
+        <item name="android:layout_marginEnd">@dimen/small_spacing</item>
         <item name="android:layout_gravity">center|start</item>
-        <item name="android:fontFamily">@font/playfair_display</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -19,7 +18,6 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:fontFamily">@font/playfair_display</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
@@ -36,9 +34,26 @@
 
     <style name="card_meta_property_value_style">
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_marginStart">@dimen/medium_spacing</item>
-        <item name="android:fontFamily">@font/playfair_display</item>
+        <item name="android:layout_marginStart">@dimen/small_spacing</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="small_image_style">
+        <item name="android:layout_width">14dp</item>
+        <item name="android:layout_height">14dp</item>
+        <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <style name="detailsTitleTextStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="fontFamily">@font/playfair_display_bold</item>
+    </style>
+
+    <style name="titleTextStyle">
+        <item name="fontFamily">@font/playfair_display</item>
+        <item name="android:fontFamily">@font/playfair_display</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>
