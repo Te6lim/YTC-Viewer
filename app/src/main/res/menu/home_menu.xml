@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:icon="@drawable/ic_sort_by_alpha"
+        android:icon="@drawable/baseline_dark_mode_24"
+        app:iconTint="@color/primaryColor"
         android:title="@string/group_by_alphabet"
         app:showAsAction="ifRoom" />
 

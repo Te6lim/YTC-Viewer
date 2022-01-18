@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/baseline_dark_mode_20.xml" value="0.18046875" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/baseline_light_mode_20.xml" value="0.18046875" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/bottom_navigation_background.xml" value="0.19537037037037036" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/card_description_background.xml" value="0.18046875" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/card_pack_background.xml" value="0.18046875" />
@@ -14,8 +16,9 @@
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/search_view_background.xml" value="0.25" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/activity_main.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/card_pack_item.xml" value="0.168359375" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_categories_card.xml" value="0.168359375" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_details_card.xml" value="0.2" />
-        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_home.xml" value="0.3652542372881356" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/item_card.xml" value="0.168359375" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/test.xml" value="0.168359375" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/menu/home_menu.xml" value="0.168359375" />
