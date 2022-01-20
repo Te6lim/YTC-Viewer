@@ -20,4 +20,5 @@
     <color name="cardPropertyBackground">@color/primaryLightColor</color>
     <color name="propertyDividerColor">@color/primaryColor</color>
     <color name="rarityAndPriceColor">@color/primaryDarkColor</color>
+    <color name="descriptionColor">@color/primaryLightColor</color>
 </resources>
