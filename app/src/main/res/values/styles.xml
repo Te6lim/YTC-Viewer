@@ -57,7 +57,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="overflowStyle" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="iconTint">@color/primaryColor</item>
+    <style name="overflowStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_overfow_icon</item>
     </style>
 </resources>

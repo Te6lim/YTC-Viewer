@@ -18,4 +18,5 @@
     <color name="searchIconColor">@color/primaryColor</color>
     <color name="searchBackgroundBand">@color/secondaryLightColor</color>
     <color name="menuItemColor">@color/primaryColor</color>
+    <color name="overflowIconColor">@color/primaryColor</color>
 </resources>

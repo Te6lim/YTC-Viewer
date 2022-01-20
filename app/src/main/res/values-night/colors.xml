@@ -16,4 +16,5 @@
     <color name="searchBackgroundBand">@color/primaryLightColor</color>
     <color name="menuItemColor">#C1C1FF</color>
     <color name="fade">#6363B1</color>
+    <color name="overflowIconColor">@color/primaryColor</color>
 </resources>
