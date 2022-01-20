@@ -13,8 +13,10 @@
     <color name="background">@color/primaryColor</color>
     <color name="toolbarColor">@color/primaryLightColor</color>
     <color name="searchIconColor">@color/primaryLightColor</color>
-    <color name="searchBackgroundBand">@color/primaryLightColor</color>
+    <color name="searchBackgroundBand">@color/fade</color>
     <color name="menuItemColor">#C1C1FF</color>
     <color name="fade">#6363B1</color>
     <color name="overflowIconColor">@color/primaryColor</color>
+    <color name="cardPropertyBackground">@color/primaryLightColor</color>
+    <color name="propertyDividerColor">@color/primaryColor</color>
 </resources>

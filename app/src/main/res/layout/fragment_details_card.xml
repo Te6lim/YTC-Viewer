@@ -11,14 +11,11 @@
         android:id="@+id/materialToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        android:elevation="@dimen/small_spacing"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="Tornado Dragon"
-        app:titleTextAppearance="@style/titleTextStyle"
-        app:titleTextColor="@color/primaryColor" />
+        app:titleTextAppearance="@style/titleTextStyle" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,6 +27,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container"
+            android:background="@color/background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

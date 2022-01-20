@@ -7,18 +7,15 @@
     android:background="@color/primaryTextColor"
     tools:context="com.te6lim.ytcviewer.home.HomeFragment">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/toolbarColor"
-        android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/home_menu"
-        app:title="@string/app_name_alt"
-        app:titleTextColor="@color/primaryColor">
+        app:title="@string/app_name_alt">
 
         <androidx.appcompat.widget.SearchView
             android:layout_width="240dp"
@@ -35,7 +32,7 @@
             app:queryHint="@string/search"
             app:searchIcon="@drawable/ic_search" />
 
-    </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/parent"
