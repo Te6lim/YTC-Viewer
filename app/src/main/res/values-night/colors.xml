@@ -19,4 +19,5 @@
     <color name="overflowIconColor">@color/primaryColor</color>
     <color name="cardPropertyBackground">@color/primaryLightColor</color>
     <color name="propertyDividerColor">@color/primaryColor</color>
+    <color name="rarityAndPriceColor">@color/primaryDarkColor</color>
 </resources>

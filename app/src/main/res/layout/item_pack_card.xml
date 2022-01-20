@@ -45,7 +45,7 @@
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/playfair_display_bold"
         android:text="Price: $12"
-        android:textColor="@color/primaryColor"
+        android:textColor="@color/rarityAndPriceColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Rarity"
-        android:textColor="@color/primaryColor"
+        android:textColor="@color/rarityAndPriceColor"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView16"
         app:layout_constraintStart_toEndOf="@+id/imageView3" />
