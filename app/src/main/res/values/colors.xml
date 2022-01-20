@@ -13,4 +13,9 @@
     <color name="white">#FFFFFF</color>
 
     <color name="iconColor">#5c6bc0</color>
+    <color name="background">#FFFFFF</color>
+    <color name="toolbarColor">#FFFFFF</color>
+    <color name="searchIconColor">@color/primaryColor</color>
+    <color name="searchBackgroundBand">@color/secondaryLightColor</color>
+    <color name="menuItemColor">@color/primaryColor</color>
 </resources>

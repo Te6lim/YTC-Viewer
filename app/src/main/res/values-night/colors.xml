@@ -10,4 +10,9 @@
     <color name="secondaryTextColor">#ffffff</color>
 
     <color name="iconColor">#4d477f</color>
+    <color name="background">@color/primaryColor</color>
+    <color name="toolbarColor">@color/primaryLightColor</color>
+    <color name="searchIconColor">@color/primaryLightColor</color>
+    <color name="searchBackgroundBand">@color/primaryLightColor</color>
+    <color name="menuItemColor">#C1C1FF</color>
 </resources>

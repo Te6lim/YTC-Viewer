@@ -5,4 +5,5 @@
     <string name="gallery">Gallery</string>
     <string name="search">Search</string>
     <string name="group_by_alphabet">group by alphabet</string>
+    <string name="filter">Filter</string>
 </resources>

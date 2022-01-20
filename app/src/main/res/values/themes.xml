@@ -15,5 +15,7 @@
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="fontFamily">@font/playfair_display</item>
         <item name="android:fontFamily">@font/playfair_display</item>
+        <item name="iconTint">@color/primaryColor</item>
+
     </style>
 </resources>

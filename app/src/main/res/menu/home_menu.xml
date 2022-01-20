@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:icon="@drawable/baseline_dark_mode_24"
-        app:iconTint="@color/primaryColor"
         android:title="@string/group_by_alphabet"
         app:showAsAction="ifRoom" />
 
     <item
-        android:title="Filter by"
+        android:title="@string/filter"
         app:showAsAction="never" />
 </menu>
