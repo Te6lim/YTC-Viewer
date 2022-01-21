@@ -2,9 +2,8 @@
     <string name="app_name">YTC Viewer</string>
     <string name="app_name_alt">YTC</string>
     <string name="cards">Cards</string>
-    <string name="gallery">Gallery</string>
     <string name="search">Search</string>
     <string name="group_by_alphabet">group by alphabet</string>
     <string name="filter">Filter</string>
-    <string name="decks">Decks</string>
+    <string name="collection">Collection</string>
 </resources>

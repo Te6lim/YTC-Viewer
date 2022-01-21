@@ -6,5 +6,5 @@
     <item
         android:enabled="true"
         android:icon="@drawable/baseline_inventory_24"
-        android:title="@string/decks" />
+        android:title="@string/collection" />
 </menu>
