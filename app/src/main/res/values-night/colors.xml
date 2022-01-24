@@ -14,6 +14,7 @@
     <color name="toolbarColor">@color/primaryLightColor</color>
     <color name="searchIconColor">@color/primaryLightColor</color>
     <color name="searchBackgroundBand">@color/fade</color>
+    <color name="cardBackgroundBand">@color/fade</color>
     <color name="menuItemColor">#C1C1FF</color>
     <color name="fade">#6363B1</color>
     <color name="overflowIconColor">@color/primaryColor</color>

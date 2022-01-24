@@ -18,6 +18,7 @@
     <color name="toolbarColor">#FFFFFF</color>
     <color name="searchIconColor">@color/primaryColor</color>
     <color name="searchBackgroundBand">@color/secondaryLightColor</color>
+    <color name="cardBackgroundBand">@color/secondaryColor</color>
     <color name="menuItemColor">@color/primaryColor</color>
     <color name="overflowIconColor">@color/primaryColor</color>
     <color name="cardPropertyBackground">@color/background</color>
