@@ -9,4 +9,5 @@
     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
     app:spanCount="3"
     tools:itemCount="20"
+    tools:context="com.te6lim.ytcviewer.home.cards.CardsFragment"
     tools:listitem="@layout/item_card" />

@@ -34,11 +34,13 @@
 
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <fragment
         android:id="@+id/parent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/background"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/home_navigation"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +52,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </fragment>
 
     <LinearLayout
         android:id="@+id/linearLayout"
