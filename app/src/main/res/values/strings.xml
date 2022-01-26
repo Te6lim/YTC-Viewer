@@ -6,4 +6,5 @@
     <string name="group_by_alphabet">group by alphabet</string>
     <string name="filter">Filter</string>
     <string name="collection">Collection</string>
+    <string name="dark_mode">Dark mode</string>
 </resources>

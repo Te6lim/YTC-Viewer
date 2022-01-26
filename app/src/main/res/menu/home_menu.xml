@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:icon="@drawable/baseline_dark_mode_24"
-        android:title="@string/group_by_alphabet"
+        android:title="@string/dark_mode"
         app:showAsAction="ifRoom" />
 
     <item

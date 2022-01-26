@@ -24,17 +24,20 @@
             app:title="@string/app_name_alt">
 
             <androidx.appcompat.widget.SearchView
-                android:layout_width="120dp"
+                android:id="@+id/searchBar"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
+                android:clickable="true"
                 android:background="@drawable/search_view_background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:queryHint="@string/search"
+                android:focusable="true"
                 app:searchIcon="@drawable/ic_search" />
 
         </com.google.android.material.appbar.MaterialToolbar>
