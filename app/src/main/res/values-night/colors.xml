@@ -1,27 +1,39 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-    <color name="primaryColor">#202052</color>
+    <!--<color name="primaryColor">#202052</color>
     <color name="primaryLightColor">#4d477f</color>
     <color name="primaryDarkColor">#00002a</color>
     <color name="secondaryColor">#202051</color>
     <color name="secondaryLightColor">#4c477e</color>
     <color name="secondaryDarkColor">#000029</color>
     <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#ffffff</color>-->
+
+    <color name="primaryColor">#070e3f</color>
+    <color name="primaryLightColor">#37336a</color>
+    <color name="primaryDarkColor">#00001b</color>
+    <color name="secondaryColor">#00003a</color>
+    <color name="secondaryLightColor">#2d2a65</color>
+    <color name="secondaryDarkColor">#000017</color>
+    <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
 
-    <color name="iconColor">#4d477f</color>
-    <color name="background">@color/primaryColor</color>
-    <color name="toolbarColor">@color/primaryLightColor</color>
+    <color name="iconColor">@color/primaryDarkColor</color>
+    <color name="background">@color/primaryDarkColor</color>
+    <color name="toolbarColor">@color/primaryColor</color>
     <color name="searchIconColor">@color/primaryLightColor</color>
-    <color name="searchBackgroundBand">@color/fade</color>
-    <color name="cardBackgroundBand">@color/fade</color>
-    <color name="menuItemColor">#C1C1FF</color>
-    <color name="fade">#6363B1</color>
-    <color name="overflowIconColor">@color/primaryColor</color>
-    <color name="cardPropertyBackground">@color/primaryLightColor</color>
-    <color name="propertyDividerColor">@color/primaryColor</color>
-    <color name="rarityAndPriceColor">@color/primaryDarkColor</color>
+    <color name="searchBackgroundBand">@color/primaryLightColor</color>
+    <color name="cardBackgroundBand">@color/primaryLightColor</color>
+    <color name="menuItemColor">@color/text</color>
+    <color name="fade">@color/primaryLightColor</color>
+    <color name="overflowIconColor">@color/text</color>
+    <color name="cardPropertyBackground">@color/primaryColor</color>
+    <color name="propertyDividerColor">@color/primaryDarkColor</color>
+    <color name="rarityAndPriceColor">@color/primaryLightColor</color>
     <color name="descriptionColor">@color/primaryLightColor</color>
     <color name="cardNameColor">@color/primaryDarkColor</color>
-    <color name="cardBackgroundColor">@color/secondaryLightColor</color>
+    <color name="cardBackgroundColor">@color/primaryColor</color>
+    <color name="text">#8B9AFF</color>
+    <color name="newPrimaryLight">#080F43</color>
+    <color name="toolBarTitleColor">@color/text</color>
 </resources>

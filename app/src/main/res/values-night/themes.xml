@@ -10,10 +10,11 @@
         <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryDark</item>
         <!-- Customize your theme here. -->
         <item name="toolbarStyle">@style/myToolbarStyle</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="android:textColor">@color/text</item>
         <item name="iconTint">@color/menuItemColor</item>
         <item name="android:actionOverflowButtonStyle">@style/overflowStyle</item>
     </style>
