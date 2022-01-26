@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="122dp"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:background="@drawable/card_background"
-    android:elevation="4dp">
+    android:layout_marginLeft="4dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/card_background">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -29,7 +31,7 @@
         android:layout_marginBottom="4dp"
         android:text="Tornado Dragon"
         android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="@color/cardNameColor"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

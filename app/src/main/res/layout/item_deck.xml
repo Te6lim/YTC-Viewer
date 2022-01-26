@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="65dp"
     android:layout_margin="@dimen/medium_spacing"
-    android:background="@drawable/deck_background_light"
     android:elevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
