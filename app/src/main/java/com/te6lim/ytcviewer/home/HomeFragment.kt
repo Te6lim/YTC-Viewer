@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.te6lim.ytcviewer.R
@@ -39,8 +40,17 @@ class HomeFragment : Fragment() {
         return when (item.itemId) {
             R.id.theme_selection -> {
                 //Test (Light and Dark mode activation)
-                if (isDarkMode) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                if (isDarkMode) {
+                    item.icon = ContextCompat.getDrawable(
+                        requireContext(), R.drawable.baseline_dark_mode_24
+                    )
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                } else {
+                    item.icon = ContextCompat.getDrawable(
+                        requireContext(), R.drawable.baseline_light_mode_24
+                    )
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
                 isDarkMode = !isDarkMode
                 true
             }

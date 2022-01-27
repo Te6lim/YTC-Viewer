@@ -12,16 +12,16 @@
     <color name="primaryColor">#070e3f</color>
     <color name="primaryLightColor">#37336a</color>
     <color name="primaryDarkColor">#00001b</color>
-    <color name="secondaryColor">#00003a</color>
-    <color name="secondaryLightColor">#2d2a65</color>
-    <color name="secondaryDarkColor">#000017</color>
+    <color name="secondaryColor">#070e3f</color>
+    <color name="secondaryLightColor">#37336a</color>
+    <color name="secondaryDarkColor">#00001b</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
 
     <color name="iconColor">@color/primaryDarkColor</color>
     <color name="background">@color/primaryDarkColor</color>
     <color name="toolbarColor">@color/primaryColor</color>
-    <color name="searchIconColor">@color/primaryLightColor</color>
+    <color name="searchIconColor">@color/text</color>
     <color name="searchBackgroundBand">@color/primaryLightColor</color>
     <color name="cardBackgroundBand">@color/primaryLightColor</color>
     <color name="menuItemColor">@color/text</color>
