@@ -11,13 +11,13 @@
 
     <color name="fade">@color/secondaryLightColor</color>
     <color name="white">#FFFFFF</color>
-    <color name="light_grey">#E4E4E4</color>
+    <color name="grey">#8B8B8B</color>
 
     <color name="iconColor">#5c6bc0</color>
     <color name="background">#FFFFFF</color>
     <color name="toolbarColor">#FFFFFF</color>
     <color name="searchIconColor">@color/primaryColor</color>
-    <color name="searchBackgroundBand">@color/primaryLightColor</color>
+    <color name="searchBackgroundBand">@color/secondaryLightColor</color>
     <color name="cardBackgroundBand">@color/secondaryColor</color>
     <color name="menuItemColor">@color/primaryColor</color>
     <color name="overflowIconColor">@color/primaryColor</color>
@@ -31,5 +31,5 @@
     <color name="toolBarTitleColor">@color/primaryColor</color>
     <color name="newPrimaryLight">@color/primaryLightColor</color>
     <color name="bottomNavItemSelected">@color/primaryColor</color>
-    <color name="bottomNavItemUnselected">@android:color/darker_gray</color>
+    <color name="bottomNavItemUnselected">@color/grey</color>
 </resources>

@@ -2,8 +2,8 @@ package com.te6lim.ytcviewer.home
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.te6lim.ytcviewer.R
@@ -19,16 +19,14 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        setHasOptionsMenu(true)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_home, container, false
         )
 
-        binding.searchBar.setOnClickListener {
-            (it as SearchView)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        setHasOptionsMenu(true)
 
-        }
         return binding.root
     }
 
