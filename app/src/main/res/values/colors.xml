@@ -30,4 +30,6 @@
     <color name="text">#CB000000</color>
     <color name="toolBarTitleColor">@color/primaryColor</color>
     <color name="newPrimaryLight">@color/primaryLightColor</color>
+    <color name="bottomNavItemSelected">@color/primaryColor</color>
+    <color name="bottomNavItemUnselected">@android:color/darker_gray</color>
 </resources>

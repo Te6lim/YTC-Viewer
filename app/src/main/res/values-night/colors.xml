@@ -36,4 +36,6 @@
     <color name="text">#8B9AFF</color>
     <color name="newPrimaryLight">#080F43</color>
     <color name="toolBarTitleColor">@color/text</color>
+    <color name="bottomNavItemSelected">@color/text</color>
+    <color name="bottomNavItemUnselected">@color/primaryDarkColor</color>
 </resources>
