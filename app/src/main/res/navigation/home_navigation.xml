@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/cardsFragment"
         android:name="com.te6lim.ytcviewer.home.cards.CardsFragment"
-        android:label="fragment_cards"
         tools:layout="@layout/fragment_cards" />
     <fragment
         android:id="@+id/galleryFragment"
