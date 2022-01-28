@@ -21,9 +21,9 @@ class CardDetailsFragment : Fragment() {
 
         val toolBar = rootView.findViewById<MaterialToolbar>(R.id.cardDetailsToolBar)
 
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolBar)
-
-        toolBar.setupWithNavController(findNavController())
+        (requireActivity() as AppCompatActivity).setSupportActionBar(
+            toolBar.apply { setupWithNavController(findNavController()) }
+        )
 
         return rootView
     }

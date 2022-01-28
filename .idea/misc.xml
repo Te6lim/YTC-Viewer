@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable-night/baseline_dark_mode_24.xml" value="0.20555555555555555" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable-night/c.xml" value="0.240625" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable-night/theme_mode.xml" value="0.20555555555555555" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/baseline_dark_mode_20.xml" value="0.18046875" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/baseline_inventory_24.xml" value="0.18046875" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/baseline_light_mode_20.xml" value="0.18046875" />
@@ -20,7 +22,9 @@
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_overfow_icon.xml" value="0.18046875" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_search.xml" value="0.14652777777777778" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_sort_by_alpha.xml" value="0.14652777777777778" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_up.xml" value="0.240625" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/search_view_background.xml" value="0.25" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/theme_mode.xml" value="0.20555555555555555" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-sw480dp/fragment_details_card.xml" value="0.36310025273799496" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-sw480dp/fragment_details_cards.xml" value="0.168359375" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-sw720dp/fragment_details_card.xml" value="0.5" />
