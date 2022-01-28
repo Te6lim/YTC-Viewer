@@ -28,9 +28,9 @@
     <color name="fade">@color/primaryLightColor</color>
     <color name="overflowIconColor">@color/text</color>
     <color name="cardPropertyBackground">@color/primaryColor</color>
-    <color name="propertyDividerColor">@color/primaryDarkColor</color>
-    <color name="rarityAndPriceColor">@color/primaryLightColor</color>
-    <color name="descriptionColor">@color/primaryLightColor</color>
+    <color name="propertyDividerColor">@color/primaryLightColor</color>
+    <color name="rarityAndPriceColor">#544EA0</color>
+    <color name="descriptionColor">@color/rarityAndPriceColor</color>
     <color name="cardNameColor">@color/primaryDarkColor</color>
     <color name="cardBackgroundColor">@color/primaryColor</color>
     <color name="text">#8B9AFF</color>

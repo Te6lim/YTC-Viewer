@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentHomeBinding
 
@@ -27,6 +29,15 @@ class HomeFragment : Fragment() {
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         setHasOptionsMenu(true)
+
+        val homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+
+        homeViewModel.navigateToDetailScreen.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(R.id.action_homeFragment_to_cardDetailsFragment)
+                homeViewModel.setNavigateToDetailScreen(false)
+            }
+        }
 
         return binding.root
     }
