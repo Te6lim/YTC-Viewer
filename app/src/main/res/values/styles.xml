@@ -65,7 +65,6 @@
 
     <style name="myToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
         <item name="android:background">@color/toolbarColor</item>
-        <item name="android:elevation">4dp</item>
         <item name="titleTextColor">@color/toolBarTitleColor</item>
     </style>
 
