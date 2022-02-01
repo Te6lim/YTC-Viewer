@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="toolbarStyle">@style/myToolbarStyle</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="android:textColor">@color/text</item>
+        <item name="android:textColor">@color/highlight</item>
         <item name="iconTint">@color/menuItemColor</item>
         <item name="android:actionOverflowButtonStyle">@style/overflowStyle</item>
         <item name="colorControlNormal">@color/menuItemColor</item>

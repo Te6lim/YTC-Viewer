@@ -21,21 +21,21 @@
     <color name="iconColor">@color/primaryDarkColor</color>
     <color name="background">@color/primaryDarkColor</color>
     <color name="toolbarColor">@color/primaryColor</color>
-    <color name="searchIconColor">@color/text</color>
+    <color name="searchIconColor">@color/highlight</color>
     <color name="searchBackgroundBand">@color/primaryLightColor</color>
     <color name="cardBackgroundBand">@color/primaryLightColor</color>
-    <color name="menuItemColor">@color/text</color>
+    <color name="menuItemColor">@color/highlight</color>
     <color name="fade">@color/primaryLightColor</color>
-    <color name="overflowIconColor">@color/text</color>
+    <color name="overflowIconColor">@color/highlight</color>
     <color name="cardPropertyBackground">@color/primaryColor</color>
     <color name="propertyDividerColor">@color/primaryLightColor</color>
     <color name="rarityAndPriceColor">#544EA0</color>
     <color name="descriptionColor">@color/rarityAndPriceColor</color>
     <color name="cardNameColor">@color/primaryDarkColor</color>
     <color name="cardBackgroundColor">@color/primaryColor</color>
-    <color name="text">#8B9AFF</color>
+    <color name="highlight">#8B9AFF</color>
     <color name="newPrimaryLight">#080F43</color>
-    <color name="toolBarTitleColor">@color/text</color>
-    <color name="bottomNavItemSelected">@color/text</color>
+    <color name="toolBarTitleColor">@color/highlight</color>
+    <color name="bottomNavItemSelected">@color/highlight</color>
     <color name="bottomNavItemUnselected">@color/primaryDarkColor</color>
 </resources>

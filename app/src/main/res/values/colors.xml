@@ -27,7 +27,7 @@
     <color name="descriptionColor">@color/primaryColor</color>
     <color name="cardNameColor">#000000</color>
     <color name="cardBackgroundColor">@color/secondaryLightColor</color>
-    <color name="text">#CB000000</color>
+    <color name="highlight">#CB000000</color>
     <color name="toolBarTitleColor">@color/primaryColor</color>
     <color name="newPrimaryLight">@color/primaryLightColor</color>
     <color name="bottomNavItemSelected">@color/primaryColor</color>
