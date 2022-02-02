@@ -4,27 +4,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatButton
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
+import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.home.HomeViewModel
 
 class CardsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, sacedInstanceState: Bundle?
-    ): View? {
+    ): View {
         setHasOptionsMenu(true)
 
-        val root = inflater.inflate(R.layout.fragment_cards, container, false)
+        val binding = DataBindingUtil
+            .inflate<FragmentCardsBinding>(
+                inflater, R.layout.fragment_cards, container, false
+            )
 
         val homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+        val cardsViewModel = ViewModelProvider(this)[CardsViewModel::class.java]
 
-        val testButton = root.findViewById<AppCompatButton>(R.id.test_button)
-        testButton.setOnClickListener {
-            homeViewModel.setNavigateToDetailScreen(true)
-        }
-        return root
+        binding.viewModel = cardsViewModel
+        binding.lifecycleOwner = this
+
+
+
+        return binding.root
     }
 }

@@ -1,5 +1,6 @@
 package com.te6lim.ytcviewer.network
 
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
@@ -13,7 +14,7 @@ private val retrofit = Retrofit.Builder()
 interface YtcApiService {
 
     @GET("cardinfo.php")
-    fun getCards(): String
+    fun getCardsAsync(): Call<String>
 }
 
 object YtcApi {
