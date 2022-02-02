@@ -11,7 +11,7 @@
 
     <color name="fade">@color/secondaryLightColor</color>
     <color name="white">#FFFFFF</color>
-    <color name="grey">#8B8B8B</color>
+    <color name="grey">#7A7A7A</color>
 
     <color name="iconColor">#5c6bc0</color>
     <color name="background">#FFFFFF</color>

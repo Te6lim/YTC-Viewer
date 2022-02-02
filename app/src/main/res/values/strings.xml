@@ -7,4 +7,5 @@
     <string name="filter">Filter</string>
     <string name="collection">Collection</string>
     <string name="theme_mode">Dark mode</string>
+    <string name="description">Description</string>
 </resources>
