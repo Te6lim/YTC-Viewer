@@ -29,8 +29,6 @@ class CardsFragment : Fragment() {
         binding.viewModel = cardsViewModel
         binding.lifecycleOwner = this
 
-
-
         return binding.root
     }
 }

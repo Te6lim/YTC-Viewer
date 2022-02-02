@@ -45,6 +45,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_spacing"
                 android:text="@{viewModel.propertiesString}" />
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
