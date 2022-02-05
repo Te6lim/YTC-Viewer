@@ -15,7 +15,7 @@ class CardsViewModel : ViewModel() {
         get() = _propertiesString
 
     init {
-        getProperties()
+        //getProperties()
     }
 
     private fun getProperties() {

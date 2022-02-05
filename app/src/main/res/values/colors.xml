@@ -32,4 +32,6 @@
     <color name="newPrimaryLight">@color/primaryLightColor</color>
     <color name="bottomNavItemSelected">@color/primaryColor</color>
     <color name="bottomNavItemUnselected">@color/grey</color>
+
+    <color name="searchDescriptorColor">@color/grey</color>
 </resources>
