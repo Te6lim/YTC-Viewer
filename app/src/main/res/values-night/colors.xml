@@ -21,11 +21,11 @@
     <color name="iconColor">@color/primaryDarkColor</color>
     <color name="background">@color/primaryDarkColor</color>
     <color name="toolbarColor">@color/primaryColor</color>
-    <color name="searchIconColor">@color/highlight</color>
+    <color name="searchIconColor">@color/fade</color>
     <color name="searchBackgroundBand">@color/fade</color>
     <color name="cardBackgroundBand">@color/primaryLightColor</color>
     <color name="menuItemColor">@color/highlight</color>
-    <color name="fade">#1F1F41</color>
+    <color name="fade">#434868</color>
     <color name="overflowIconColor">@color/highlight</color>
     <color name="cardPropertyBackground">@color/primaryColor</color>
     <color name="propertyDividerColor">@color/primaryLightColor</color>
@@ -37,5 +37,5 @@
     <color name="newPrimaryLight">#080F43</color>
     <color name="toolBarTitleColor">@color/highlight</color>
     <color name="bottomNavItemSelected">@color/highlight</color>
-    <color name="bottomNavItemUnselected">@color/primaryDarkColor</color>
+    <color name="bottomNavItemUnselected">@color/fade</color>
 </resources>

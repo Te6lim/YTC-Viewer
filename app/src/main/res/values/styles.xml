@@ -67,8 +67,4 @@
         <item name="android:background">@color/toolbarColor</item>
         <item name="titleTextColor">@color/toolBarTitleColor</item>
     </style>
-
-    <style name="myButtonStyle" parent="@style/Widget.AppCompat.Button.Colored">
-
-    </style>
 </resources>
