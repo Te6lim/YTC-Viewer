@@ -34,19 +34,16 @@
             tools:itemCount="20"
             tools:listitem="@layout/item_card" />-->
 
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/medium_spacing"
+            android:text="@{viewModel.propertiesString}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/medium_spacing"
-                android:text="@{viewModel.propertiesString}" />
-        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

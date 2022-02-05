@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:icon="@drawable/poker"
-        android:title="@string/cards" />
+        android:icon="@drawable/ic_search"
+        android:title="@string/search" />
     <item
-        android:icon="@drawable/baseline_inventory_24"
+        android:icon="@drawable/library"
         android:title="@string/collection" />
 </menu>
