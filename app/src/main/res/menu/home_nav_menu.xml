@@ -3,6 +3,10 @@
     <item
         android:icon="@drawable/ic_search"
         android:title="@string/search" />
+
+    <item
+        android:icon="@drawable/deck"
+        android:title="Card sets" />
     <item
         android:icon="@drawable/library"
         android:title="@string/collection" />
