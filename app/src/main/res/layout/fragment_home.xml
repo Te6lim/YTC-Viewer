@@ -7,10 +7,12 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/primaryTextColor"
+        app:layoutDescription="@xml/fragment_home_xml_constraintlayout2_scene"
         tools:context="com.te6lim.ytcviewer.home.HomeFragment">
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -78,5 +80,5 @@
                 app:menu="@menu/home_nav_menu" />
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

@@ -3,6 +3,7 @@ package com.te6lim.ytcviewer.home
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +38,10 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(R.id.action_homeFragment_to_cardDetailsFragment)
                 homeViewModel.setNavigateToDetailScreen(false)
             }
+        }
+
+        binding.searchBar.setOnClickListener {
+            (it as SearchView).isIconified = false
         }
 
         return binding.root
