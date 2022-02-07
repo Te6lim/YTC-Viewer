@@ -47,18 +47,26 @@ class HomeFragment : Fragment() {
                 with(searchBar) {
                     setOnClickListener {
                         (it as SearchView).isIconified = false
-                        if (searchBarClicked.value == null || !searchBarClicked.value!!)
+                        if (searchBarClicked.value == null || !searchBarClicked.value!!) {
                             setSearchBarClicked(true)
+                            toolbar.elevation = resources.getDimension(R.dimen.no_spacing)
+                            chipGroupDivider.visibility = View.VISIBLE
+                        }
                     }
 
                     setOnCloseListener {
                         setSearchBarClicked(false)
+                        toolbar.elevation = resources.getDimension(R.dimen.small_spacing)
+                        chipGroupDivider.visibility = View.GONE
                         false
                     }
 
                     setOnSearchClickListener {
-                        if (searchBarClicked.value == null || !searchBarClicked.value!!)
+                        if (searchBarClicked.value == null || !searchBarClicked.value!!) {
                             setSearchBarClicked(true)
+                            toolbar.elevation = resources.getDimension(R.dimen.no_spacing)
+                            chipGroupDivider.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
