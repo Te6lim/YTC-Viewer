@@ -11,7 +11,15 @@ class HomeViewModel : ViewModel() {
     val navigateToDetailScreen: LiveData<Boolean>
         get() = _navigateToDetailScreen
 
+    private val _searchBarClicked = MutableLiveData<Boolean>()
+    val searchBarClicked: LiveData<Boolean>
+        get() = _searchBarClicked
+
     fun setNavigateToDetailScreen(value: Boolean) {
         _navigateToDetailScreen.value = value
+    }
+
+    fun setSearchBarClicked(value: Boolean) {
+        _searchBarClicked.value = value
     }
 }

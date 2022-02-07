@@ -33,15 +33,35 @@ class HomeFragment : Fragment() {
             requireActivity()
         )[MainActivityViewModel::class.java]
 
-        homeViewModel.navigateToDetailScreen.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigate(R.id.action_homeFragment_to_cardDetailsFragment)
-                homeViewModel.setNavigateToDetailScreen(false)
-            }
-        }
+        with(binding) {
 
-        binding.searchBar.setOnClickListener {
-            (it as SearchView).isIconified = false
+            with(homeViewModel) {
+                navigateToDetailScreen.observe(viewLifecycleOwner) {
+                    if (it) {
+                        findNavController()
+                            .navigate(R.id.action_homeFragment_to_cardDetailsFragment)
+                        setNavigateToDetailScreen(false)
+                    }
+                }
+
+                with(searchBar) {
+                    setOnClickListener {
+                        (it as SearchView).isIconified = false
+                        if (searchBarClicked.value == null || !searchBarClicked.value!!)
+                            setSearchBarClicked(true)
+                    }
+
+                    setOnCloseListener {
+                        setSearchBarClicked(false)
+                        false
+                    }
+
+                    setOnSearchClickListener {
+                        if (searchBarClicked.value == null || !searchBarClicked.value!!)
+                            setSearchBarClicked(true)
+                    }
+                }
+            }
         }
 
         return binding.root

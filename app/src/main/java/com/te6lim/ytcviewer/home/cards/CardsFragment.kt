@@ -29,6 +29,13 @@ class CardsFragment : Fragment() {
         binding.viewModel = cardsViewModel
         binding.lifecycleOwner = this
 
+        homeViewModel.searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
+            with(binding.cardFilter) {
+                visibility = if (isClicked) View.VISIBLE
+                else View.GONE
+            }
+        }
+
         return binding.root
     }
 }
