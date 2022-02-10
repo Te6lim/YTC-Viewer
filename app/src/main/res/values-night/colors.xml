@@ -39,5 +39,5 @@
     <color name="bottomNavItemSelected">@color/highlight</color>
     <color name="bottomNavItemUnselected">@color/fade</color>
     <color name="searchDescriptorColor">@color/fade</color>
-    <color name="chipColor">@color/primaryColor</color>
+    <color name="chipColor">@color/primaryLightColor</color>
 </resources>

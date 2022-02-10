@@ -22,7 +22,7 @@
             style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/background"
+            android:background="@color/toolbarColor"
             android:elevation="@dimen/small_spacing"
             android:paddingStart="@dimen/small_spacing"
             android:paddingEnd="@dimen/small_spacing"
@@ -30,18 +30,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:singleSelection="true">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:checked="true"
-                android:text="name"
-                app:checkedIconVisible="true"
-                app:chipBackgroundColor="@color/chipColor"
-                tools:checked="true" />
+            tools:visibility="visible">
 
             <com.google.android.material.chip.Chip
                 android:layout_width="wrap_content"
@@ -128,20 +117,20 @@
                             android:id="@+id/textView20"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
                             android:fontFamily="sans-serif"
                             android:text="Search for cards"
                             android:textSize="24sp"
                             android:textStyle="bold"
-                            app:layout_constraintBottom_toTopOf="@+id/textView21"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/textView21"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginEnd="16dp"
                             android:text="@string/search_description"
                             android:textAlignment="center"
@@ -149,7 +138,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toBottomOf="@+id/textView20" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
