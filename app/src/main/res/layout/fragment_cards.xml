@@ -66,24 +66,25 @@
 
         </com.google.android.material.chip.ChipGroup>
 
-        <!--<androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cards"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
             android:background="@color/background"
+            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/test_button"
+            app:layout_constraintTop_toBottomOf="@+id/cardFilter"
             app:layout_constraintVertical_bias="1.0"
             app:spanCount="3"
             tools:itemCount="20"
-            tools:listitem="@layout/item_card" />-->
+            tools:listitem="@layout/item_card" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout5"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"

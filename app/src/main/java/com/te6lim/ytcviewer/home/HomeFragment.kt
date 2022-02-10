@@ -36,6 +36,14 @@ class HomeFragment : Fragment() {
         with(binding) {
 
             with(homeViewModel) {
+
+                searchBarClicked.value?.let { isClicked ->
+                    if (isClicked) {
+                        toolbar.elevation = resources.getDimension(R.dimen.no_spacing)
+                        chipGroupDivider.visibility = View.VISIBLE
+                    }
+                }
+
                 navigateToDetailScreen.observe(viewLifecycleOwner) {
                     if (it) {
                         findNavController()
