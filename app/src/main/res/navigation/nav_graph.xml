@@ -19,7 +19,11 @@
             app:popExitAnim="@anim/slide_center_to_right" />
         <action
             android:id="@+id/action_homeFragment_to_filterSelectionFragment"
-            app:destination="@id/filterSelectionFragment" />
+            app:destination="@id/filterSelectionFragment"
+            app:enterAnim="@anim/rise_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fall_down" />
     </fragment>
     <fragment
         android:id="@+id/cardDetailsFragment"
