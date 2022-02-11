@@ -1,10 +1,12 @@
 package com.te6lim.ytcviewer.home
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.te6lim.ytcviewer.R
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
 
     enum class CardFilter {
         Type, Race, Attribute;
@@ -88,6 +90,16 @@ class HomeViewModel : ViewModel() {
                 )
             }
         }
+
+
+        fun getFilterBackgrounds(filter: CardFilter): List<Int> {
+            return when (filter) {
+                CardFilter.Type -> listOf(
+                    R.color.normalMonster
+                )
+                else -> listOf()
+            }
+        }
     }
 
     private val _searchBarClicked = MutableLiveData<Boolean>()
@@ -96,5 +108,14 @@ class HomeViewModel : ViewModel() {
 
     fun setSearchBarClicked(value: Boolean) {
         _searchBarClicked.value = value
+    }
+
+    //Test
+    private val _chipChecked = MutableLiveData<Boolean>()
+    val chipChecked: LiveData<Boolean>
+        get() = _chipChecked
+
+    fun setChipChecked(value: Boolean) {
+        _chipChecked.value = value
     }
 }

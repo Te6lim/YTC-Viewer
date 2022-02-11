@@ -40,6 +40,10 @@ class CardsFragment : Fragment() {
                         this as Chip
                         tag = it.name
                         text = it.name
+
+                        setOnCheckedChangeListener { _, isChecked ->
+                            setChipChecked(isChecked)
+                        }
                     }
 
                 binding.monsterFilter.addView(chip)

@@ -34,4 +34,7 @@
     <color name="bottomNavItemUnselected">@color/grey</color>
     <color name="searchDescriptorColor">@color/grey</color>
     <color name="chipColor">@color/secondaryLightColor</color>
+
+
+    <color name="normalMonster">#F3E5AB</color>
 </resources>

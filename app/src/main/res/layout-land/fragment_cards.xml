@@ -27,10 +27,10 @@
             android:paddingStart="@dimen/small_spacing"
             android:paddingEnd="@dimen/small_spacing"
             android:visibility="gone"
-            app:singleSelection="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:singleSelection="true"
             tools:visibility="visible">
 
             <com.google.android.material.chip.ChipGroup
@@ -53,7 +53,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardFilter"
             app:layout_constraintVertical_bias="1.0"
-            app:spanCount="3"
+            app:spanCount="6"
             tools:itemCount="20"
             tools:listitem="@layout/item_card" />
 

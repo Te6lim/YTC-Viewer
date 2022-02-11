@@ -30,7 +30,9 @@
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-hdpi/fragment_cards.xml" value="0.19953703703703704" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-hdpi/fragment_details_card.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-hdpi/fragment_home.xml" value="0.19953703703703704" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-land/fragment_cards.xml" value="0.1912280701754386" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-land/fragment_details_card.xml" value="0.33958333333333335" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-land/fragment_filter_options.xml" value="0.25" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-sw320dp/fragment_details_card.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-sw480dp/fragment_details_card.xml" value="0.36310025273799496" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout-sw480dp/fragment_details_cards.xml" value="0.168359375" />
@@ -43,11 +45,11 @@
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_categories_card.xml" value="0.168359375" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_collection.xml" value="0.168359375" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_details_card.xml" value="0.9" />
-        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_filter_options.xml" value="0.25" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_filter_options.xml" value="0.2" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/item_card.xml" value="0.5" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/item_deck.xml" value="0.33" />
-        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/item_filter.xml" value="0.5" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/item_filter.xml" value="0.25" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/item_pack_card.xml" value="0.9" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/layout/test.xml" value="0.2" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/menu/home_menu.xml" value="0.168359375" />
