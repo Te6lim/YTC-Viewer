@@ -92,12 +92,28 @@ class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
         }
 
 
-        fun getFilterBackgrounds(filter: CardFilter): List<Int> {
+        fun getFilterBackgrounds(filter: CardFilter): HashMap<String, Int> {
             return when (filter) {
-                CardFilter.Type -> listOf(
-                    R.color.normalMonster
+                CardFilter.Type -> hashMapOf(
+                    Pair("Effect Monster", R.color.effectMonster),
+                    Pair("Flip Effect Monster", R.color.flipEffectMonster),
+                    Pair("Flip Tuner Effect Monster", R.color.flipEffectMonster),
+                    Pair("Gemini Monster", R.color.geminiMonster),
+                    Pair("Normal Monster", R.color.normalMonster),
+                    Pair("Normal Tuner Monster", R.color.normalMonster),
+                    Pair("Pendulum Effect Monster", R.color.effectMonster),
+                    Pair("Pendulum Flip Effect Monster", R.color.flipEffectMonster),
+                    Pair("Pendulum Normal Monster", R.color.normalMonster),
+                    Pair("Pendulum Tuner Effect Monster", R.color.effectMonster),
+                    Pair("Ritual Effect Monster", R.color.ritualMonster),
+                    Pair("Ritual Monster", R.color.ritualMonster),
+                    Pair("Skill Card", R.color.skillCard),
+                    Pair("Spirit Monster", R.color.effectMonster),
+                    Pair("Toon Monster", R.color.toon),
+                    Pair("Tuner Monster", R.color.effectMonster),
+                    Pair("Union Effect Monster", R.color.effectMonster)
                 )
-                else -> listOf()
+                else -> HashMap()
             }
         }
     }

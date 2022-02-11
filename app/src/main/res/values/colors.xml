@@ -35,6 +35,11 @@
     <color name="searchDescriptorColor">@color/grey</color>
     <color name="chipColor">@color/secondaryLightColor</color>
 
-
+    <color name="effectMonster">#be6400</color>
+    <color name="flipEffectMonster">#E69720</color>
     <color name="normalMonster">#F3E5AB</color>
+    <color name="ritualMonster">#0000FF</color>
+    <color name="geminiMonster">#EDD784</color>
+    <color name="skillCard">#00008b</color>
+    <color name="toon">#FFC0CB</color>
 </resources>
