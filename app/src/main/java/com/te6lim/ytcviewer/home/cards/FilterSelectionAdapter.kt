@@ -52,7 +52,7 @@ class CardFilterViewHolder(
 
     fun bind(filterName: String) {
 
-        itemViewBinding.filterNameContainer.setBackgroundColor(
+        itemViewBinding.filterNameContainer.background.setTint(
             cardFilterCallBack.getColor(filterName)
         )
 

@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="128dp"
         android:layout_margin="@dimen/standard_spacing"
-        android:background="@color/normalMonster"
-        android:elevation="@dimen/small_spacing">
+        android:background="@drawable/item_filter_background"
+        android:elevation="@dimen/medium_spacing">
 
         <TextView
             android:id="@+id/filterName"
