@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.home.HomeViewModel
@@ -29,10 +30,40 @@ class CardsFragment : Fragment() {
         binding.viewModel = cardsViewModel
         binding.lifecycleOwner = this
 
-        homeViewModel.searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
-            with(binding.cardFilter) {
-                visibility = if (isClicked) View.VISIBLE
-                else View.GONE
+        with(homeViewModel) {
+
+            val chipInflater = LayoutInflater.from(binding.cardFilter.context)
+            HomeViewModel.CardFilter.values().forEach {
+                val chip = chipInflater
+                    .inflate(R.layout.filter_selection, binding.monsterFilter, false)
+                    .apply {
+                        this as Chip
+                        tag = it.name
+                        text = it.name
+                    }
+
+                binding.monsterFilter.addView(chip)
+            }
+
+            HomeViewModel.NonMonsterCardFilter.values().forEach {
+                val chip = chipInflater
+                    .inflate(
+                        R.layout.filter_selection, binding.cardFilter, false
+                    )
+                    .apply {
+                        this as Chip
+                        tag = it.name
+                        text = it.name
+                    }
+
+                binding.cardFilter.addView(chip)
+            }
+
+            searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
+                with(binding.cardFilter) {
+                    visibility = if (isClicked) View.VISIBLE
+                    else View.GONE
+                }
             }
         }
 

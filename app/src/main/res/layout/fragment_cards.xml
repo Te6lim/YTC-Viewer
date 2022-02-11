@@ -27,64 +27,16 @@
             android:paddingStart="@dimen/small_spacing"
             android:paddingEnd="@dimen/small_spacing"
             android:visibility="gone"
+            app:singleSelection="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="type"
-                app:checkedIconVisible="true"
-                app:chipBackgroundColor="@color/chipColor" />
-
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="race"
-                app:checkedIconVisible="true"
-                app:chipBackgroundColor="@color/chipColor" />
-
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="archetype"
-                app:checkedIconVisible="true"
-                app:chipBackgroundColor="@color/chipColor" />
-
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="attirbute"
-                app:checkedIconVisible="true"
-                app:chipBackgroundColor="@color/chipColor" />
-
             <com.google.android.material.chip.ChipGroup
+                android:id="@+id/monsterFilter"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:singleSelection="true">
-
-                <com.google.android.material.chip.Chip
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="spell"
-                    app:checkedIconVisible="true"
-                    app:chipBackgroundColor="@color/chipColor" />
-
-                <com.google.android.material.chip.Chip
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="trap"
-                    app:checkedIconVisible="true"
-                    app:chipBackgroundColor="@color/chipColor" />
-            </com.google.android.material.chip.ChipGroup>
+                android:layout_height="wrap_content" />
 
         </com.google.android.material.chip.ChipGroup>
 
@@ -141,7 +93,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif"
-                            android:text="Search for cards"
+                            android:text="@string/search_for_cards"
                             android:textSize="24sp"
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -191,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
-                            android:text="Oops...could not find your card"
+                            android:text="@string/oops_could_not_find_your_card"
                             android:textAlignment="center"
                             android:textSize="24sp"
                             android:textStyle="bold"
@@ -208,7 +160,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginEnd="16dp"
-                            android:text="check to see if there were any errors in your search keyword"
+                            android:text="@string/check_to_see_if_there_were_any_errors_in_your_search_keyword"
                             android:textAlignment="center"
                             android:textColor="@color/searchDescriptorColor"
                             app:layout_constraintEnd_toEndOf="parent"

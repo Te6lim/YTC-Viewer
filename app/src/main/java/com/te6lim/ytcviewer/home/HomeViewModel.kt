@@ -7,7 +7,11 @@ import androidx.lifecycle.ViewModel
 class HomeViewModel : ViewModel() {
 
     enum class CardFilter {
-        Type, Race, Attribute, Spell, Trap;
+        Type, Race, Attribute;
+    }
+
+    enum class NonMonsterCardFilter {
+        Spell, Trap;
     }
 
     companion object {
@@ -62,8 +66,13 @@ class HomeViewModel : ViewModel() {
                 CardFilter.Attribute -> listOf(
                     "dark", "earth", "fire", "light", "water", "wind", "divine"
                 )
+            }
+        }
 
-                CardFilter.Spell -> listOf(
+        fun getNonMonsterFilter(filter: NonMonsterCardFilter): List<String> {
+            return when (filter) {
+
+                NonMonsterCardFilter.Spell -> listOf(
                     "Normal",
                     "Field",
                     "Equip",
@@ -72,7 +81,7 @@ class HomeViewModel : ViewModel() {
                     "Ritual"
                 )
 
-                CardFilter.Trap -> listOf(
+                NonMonsterCardFilter.Trap -> listOf(
                     "Normal",
                     "Continuous",
                     "Counter"
