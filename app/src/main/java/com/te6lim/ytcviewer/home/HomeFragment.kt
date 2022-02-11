@@ -7,7 +7,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.te6lim.ytcviewer.MainActivityViewModel
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentHomeBinding
@@ -41,14 +40,6 @@ class HomeFragment : Fragment() {
                     if (isClicked) {
                         toolbar.elevation = resources.getDimension(R.dimen.no_spacing)
                         chipGroupDivider.visibility = View.VISIBLE
-                    }
-                }
-
-                navigateToDetailScreen.observe(viewLifecycleOwner) {
-                    if (it) {
-                        findNavController()
-                            .navigate(R.id.action_homeFragment_to_cardDetailsFragment)
-                        setNavigateToDetailScreen(false)
                     }
                 }
 

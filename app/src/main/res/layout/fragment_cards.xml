@@ -64,21 +64,27 @@
                 app:checkedIconVisible="true"
                 app:chipBackgroundColor="@color/chipColor" />
 
-            <com.google.android.material.chip.Chip
+            <com.google.android.material.chip.ChipGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="spell"
-                app:checkedIconVisible="true"
-                app:chipBackgroundColor="@color/chipColor" />
+                app:singleSelection="true">
 
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="trap"
-                app:checkedIconVisible="true"
-                app:chipBackgroundColor="@color/chipColor" />
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="spell"
+                    app:checkedIconVisible="true"
+                    app:chipBackgroundColor="@color/chipColor" />
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="trap"
+                    app:checkedIconVisible="true"
+                    app:chipBackgroundColor="@color/chipColor" />
+            </com.google.android.material.chip.ChipGroup>
 
         </com.google.android.material.chip.ChipGroup>
 
