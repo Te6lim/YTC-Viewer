@@ -10,12 +10,9 @@
         android:id="@+id/filterNameContainer"
         android:layout_width="match_parent"
         android:layout_height="128dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="@dimen/standard_spacing"
         android:background="@color/normalMonster"
-        android:elevation="@dimen/medium_spacing">
+        android:elevation="@dimen/small_spacing">
 
         <TextView
             android:id="@+id/filterName"
@@ -25,8 +22,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:text="Normal Monster"
             android:textAlignment="center"
+            android:textColor="#CB000000"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

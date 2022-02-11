@@ -2,9 +2,11 @@ package com.te6lim.ytcviewer.home.cards
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ItemFilterBinding
 
 class FilterSelectionAdapter(private val callBack: CardFilterCallBack) :
@@ -37,11 +39,13 @@ class CardFilterViewHolder(
 
     companion object {
 
-        fun create(
-            parent: ViewGroup,
-            cardFilterCallBack: CardFilterCallBack
-        ): CardFilterViewHolder {
-            val binding = ItemFilterBinding.inflate(LayoutInflater.from(parent.context))
+        fun create(parent: ViewGroup, cardFilterCallBack: CardFilterCallBack)
+                : CardFilterViewHolder {
+
+            val binding = DataBindingUtil.inflate<ItemFilterBinding>(
+                LayoutInflater.from(parent.context), R.layout.item_filter,
+                parent, false
+            )
             return CardFilterViewHolder(binding, cardFilterCallBack)
         }
     }
