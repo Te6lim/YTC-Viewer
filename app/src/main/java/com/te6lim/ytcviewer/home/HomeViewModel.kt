@@ -127,11 +127,11 @@ class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
     }
 
     //Test
-    private val _chipChecked = MutableLiveData<Boolean>()
-    val chipChecked: LiveData<Boolean>
+    private val _chipChecked = MutableLiveData<String?>()
+    val chipChecked: LiveData<String?>
         get() = _chipChecked
 
-    fun setChipChecked(value: Boolean) {
+    fun setChipChecked(value: String?) {
         _chipChecked.value = value
     }
 }

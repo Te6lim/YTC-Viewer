@@ -45,10 +45,13 @@ class HomeFragment : Fragment() {
                 }
 
                 chipChecked.observe(viewLifecycleOwner) {
-                    if (it) {
+                    if (it != null) {
                         findNavController()
-                            .navigate(R.id.action_homeFragment_to_filterSelectionFragment)
-                        setChipChecked(false)
+                            .navigate(
+                                HomeFragmentDirections
+                                    .actionHomeFragmentToFilterSelectionFragment(it)
+                            )
+                        setChipChecked(null)
                     }
                 }
 

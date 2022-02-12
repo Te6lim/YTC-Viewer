@@ -27,6 +27,7 @@ class FilterSelectionFragment : Fragment() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(
             (binding.filterToolbar as Toolbar).apply {
                 setupWithNavController(findNavController())
+                title = FilterSelectionFragmentArgs.fromBundle(requireArguments()).filterName
             }
         )
 

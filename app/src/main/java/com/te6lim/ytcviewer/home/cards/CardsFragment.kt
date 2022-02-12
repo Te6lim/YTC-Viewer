@@ -42,7 +42,7 @@ class CardsFragment : Fragment() {
                         text = it.name
 
                         setOnCheckedChangeListener { _, isChecked ->
-                            setChipChecked(isChecked)
+                            if (isChecked) setChipChecked(it.name)
                         }
                     }
 
