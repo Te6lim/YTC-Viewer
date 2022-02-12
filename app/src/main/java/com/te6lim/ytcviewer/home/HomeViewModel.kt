@@ -140,7 +140,7 @@ class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
                     Pair("Winged Beast", R.color.beast)
                 )
 
-                else -> HashMap()
+                else -> hashMapOf()
             }
         }
     }

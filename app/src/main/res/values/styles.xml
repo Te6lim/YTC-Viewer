@@ -66,5 +66,12 @@
     <style name="myToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
         <item name="android:background">@color/toolbarColor</item>
         <item name="titleTextColor">@color/toolBarTitleColor</item>
+        <item name="elevation">@dimen/no_spacing</item>
+        <item name="android:elevation">@dimen/no_spacing</item>
+    </style>
+
+    <style name="appbarStyle" parent="Widget.Design.AppBarLayout">
+        <item name="elevation">@dimen/no_spacing</item>
+        <item name="android:elevation">@dimen/no_spacing</item>
     </style>
 </resources>
