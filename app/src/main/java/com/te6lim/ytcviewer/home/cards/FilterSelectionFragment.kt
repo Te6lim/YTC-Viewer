@@ -24,21 +24,23 @@ class FilterSelectionFragment : Fragment() {
             inflater, R.layout.fragment_filter_options, container, false
         )
 
+        val category = FilterSelectionFragmentArgs.fromBundle(requireArguments()).filterName
+
         (requireActivity() as AppCompatActivity).setSupportActionBar(
             (binding.filterToolbar as Toolbar).apply {
                 setupWithNavController(findNavController())
-                title = FilterSelectionFragmentArgs.fromBundle(requireArguments()).filterName
+                title = category
             }
         )
 
         val adapter = FilterSelectionAdapter(requireActivity().windowManager, CardFilterCallBack {
             ContextCompat.getColor(
                 requireContext(),
-                HomeViewModel.getFilterBackgrounds(HomeViewModel.CardFilter.Type)[it]!!
+                HomeViewModel.getFilterBackgrounds(HomeViewModel.CardFilter.valueOf(category))[it]!!
             )
         }).apply {
 
-            submitList(HomeViewModel.getFilerSelections(HomeViewModel.CardFilter.Type))
+            submitList(HomeViewModel.getFilerSelections(HomeViewModel.CardFilter.valueOf(category)))
 
         }
 
