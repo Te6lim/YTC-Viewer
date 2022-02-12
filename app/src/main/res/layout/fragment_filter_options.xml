@@ -13,10 +13,9 @@
         android:background="@color/background"
         tools:context="com.te6lim.ytcviewer.home.cards.FilterSelectionFragment">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/filterToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+        <include
+            android:id="@id/filterToolbar"
+            layout="@layout/plain_toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

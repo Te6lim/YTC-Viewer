@@ -9,10 +9,9 @@
     android:background="@color/background"
     tools:context="com.te6lim.ytcviewer.details.CardDetailsFragment">
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <include
         android:id="@+id/cardDetailsToolBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        layout="@layout/plain_toolbar"
         android:background="@color/toolbarColor"
         android:elevation="@dimen/small_spacing"
         app:layout_constraintEnd_toEndOf="parent"

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -24,7 +25,9 @@ class FilterSelectionFragment : Fragment() {
         )
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(
-            binding.filterToolbar.apply { setupWithNavController(findNavController()) }
+            (binding.filterToolbar as Toolbar).apply {
+                setupWithNavController(findNavController())
+            }
         )
 
         val adapter = FilterSelectionAdapter(CardFilterCallBack {
@@ -38,7 +41,7 @@ class FilterSelectionFragment : Fragment() {
 
         }
 
-        binding.filterList?.adapter = adapter
+        binding.filterList.adapter = adapter
 
         return binding.root
     }
