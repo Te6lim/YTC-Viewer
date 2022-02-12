@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                chipChecked.observe(viewLifecycleOwner) {
+                checkedChipName.observe(viewLifecycleOwner) {
                     if (it != null) {
                         findNavController()
                             .navigate(

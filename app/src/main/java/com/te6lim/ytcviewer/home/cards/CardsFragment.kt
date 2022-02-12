@@ -18,7 +18,6 @@ class CardsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, sacedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
-
         val binding = DataBindingUtil
             .inflate<FragmentCardsBinding>(
                 inflater, R.layout.fragment_cards, container, false
@@ -33,16 +32,21 @@ class CardsFragment : Fragment() {
         with(homeViewModel) {
 
             val chipInflater = LayoutInflater.from(binding.cardFilter.context)
-            HomeViewModel.CardFilter.values().forEach {
+            HomeViewModel.CardFilter.values().forEach { filter ->
                 val chip = chipInflater
                     .inflate(R.layout.filter_selection, binding.monsterFilter, false)
                     .apply {
                         this as Chip
-                        tag = it.name
-                        text = it.name
+                        tag = filter.name
+                        text = filter.name
 
-                        setOnCheckedChangeListener { _, isChecked ->
-                            if (isChecked) setChipChecked(it.name)
+                        setOnCheckedChangeListener { chip, isChecked ->
+                            if (isChecked) {
+                                setChipChecked(filter.name)
+                                storeCheckedChipId(chip.id)
+                            } else {
+                                storeCheckedChipId(null)
+                            }
                         }
                     }
 

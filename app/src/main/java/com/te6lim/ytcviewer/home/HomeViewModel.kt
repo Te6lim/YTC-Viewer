@@ -113,6 +113,33 @@ class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
                     Pair("Tuner Monster", R.color.effectMonster),
                     Pair("Union Effect Monster", R.color.effectMonster)
                 )
+
+                CardFilter.Race -> hashMapOf(
+                    Pair("Aqua", R.color.aqua),
+                    Pair("Beast", R.color.beast),
+                    Pair("Beast-Warrior", R.color.warrior),
+                    Pair("Creator-God", R.color.creatorGod),
+                    Pair("Cyberse", R.color.cyberse),
+                    Pair("Dinosaur", R.color.dinosaur),
+                    Pair("Divine-Beast", R.color.divineBeast),
+                    Pair("Dragon", R.color.dragon),
+                    Pair("Fairy", R.color.fairy),
+                    Pair("Fiend", R.color.fiend),
+                    Pair("Fish", R.color.fish),
+                    Pair("Insect", R.color.insect),
+                    Pair("Machine", R.color.machine),
+                    Pair("Plant", R.color.plant),
+                    Pair("Psychic", R.color.psychic),
+                    Pair("Pyro", R.color.pyro),
+                    Pair("Reptile", R.color.reptile),
+                    Pair("Rock", R.color.rock),
+                    Pair("Sea Serpent", R.color.fish),
+                    Pair("Spellcaster", R.color.spellCaster),
+                    Pair("Thunder", R.color.lightning),
+                    Pair("Warrior", R.color.warrior),
+                    Pair("Winged Beast", R.color.beast)
+                )
+
                 else -> HashMap()
             }
         }
@@ -126,12 +153,19 @@ class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
         _searchBarClicked.value = value
     }
 
-    //Test
-    private val _chipChecked = MutableLiveData<String?>()
-    val chipChecked: LiveData<String?>
-        get() = _chipChecked
+    private val _checkedChipName = MutableLiveData<String?>()
+    val checkedChipName: LiveData<String?>
+        get() = _checkedChipName
 
     fun setChipChecked(value: String?) {
-        _chipChecked.value = value
+        _checkedChipName.value = value
+    }
+
+    private val _checkedChipId = MutableLiveData<Int?>()
+    val checkedChipId: LiveData<Int?>
+        get() = _checkedChipId
+
+    fun storeCheckedChipId(value: Int?) {
+        _checkedChipId.value = value
     }
 }

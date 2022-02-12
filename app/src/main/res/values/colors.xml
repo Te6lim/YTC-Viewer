@@ -42,4 +42,25 @@
     <color name="geminiMonster">#EDD784</color>
     <color name="skillCard">#00008b</color>
     <color name="toon">#FFC0CB</color>
+
+    <color name="aqua">#079BF5</color>
+    <color name="beast">#be6400</color>
+    <color name="warrior">#E69720</color>
+    <color name="creatorGod">#F4E99B</color>
+    <color name="cyberse">#aaa9ad</color>
+    <color name="dinosaur">#722F37</color>
+    <color name="divineBeast">#F4E99B</color>
+    <color name="dragon">#FF0000</color>
+    <color name="fairy">#a2d870</color>
+    <color name="fiend">#542368</color>
+    <color name="fish">#00FFFF</color>
+    <color name="insect">#2d4436</color>
+    <color name="machine">#aaa9ad</color>
+    <color name="plant">#2db83d</color>
+    <color name="psychic">#FFFF00</color>
+    <color name="pyro">#d01c1f</color>
+    <color name="reptile">#69804d</color>
+    <color name="rock">#808487</color>
+    <color name="spellCaster">#985fba</color>
+    <color name="lightning">#FDD023</color>
 </resources>

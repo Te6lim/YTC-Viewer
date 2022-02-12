@@ -31,7 +31,7 @@ class FilterSelectionFragment : Fragment() {
             }
         )
 
-        val adapter = FilterSelectionAdapter(CardFilterCallBack {
+        val adapter = FilterSelectionAdapter(requireActivity().windowManager, CardFilterCallBack {
             ContextCompat.getColor(
                 requireContext(),
                 HomeViewModel.getFilterBackgrounds(HomeViewModel.CardFilter.Type)[it]!!
