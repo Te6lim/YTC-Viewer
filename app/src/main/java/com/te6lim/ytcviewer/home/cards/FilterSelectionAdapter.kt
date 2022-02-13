@@ -1,6 +1,9 @@
 package com.te6lim.ytcviewer.home.cards
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
@@ -40,6 +43,8 @@ class CardFilterViewHolder(
     private val callback: CardFilterCallback
 ) : RecyclerView.ViewHolder(itemViewBinding.root) {
 
+    private lateinit var animator: ObjectAnimator
+
     companion object {
 
         fun create(parent: ViewGroup, callback: CardFilterCallback): CardFilterViewHolder {
@@ -49,17 +54,32 @@ class CardFilterViewHolder(
                 parent, false
             )
 
-            return CardFilterViewHolder(binding, callback)
+            val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.03f)
+            val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.03f)
+
+            return CardFilterViewHolder(binding, callback).apply {
+                animator = ObjectAnimator.ofPropertyValuesHolder(
+                    itemViewBinding.filterNameContainer, scaleX, scaleY
+                ).apply {
+                    repeatCount = 1
+                    this.repeatMode = ObjectAnimator.REVERSE
+                    duration = 80
+                }
+            }
         }
     }
 
     fun bind(filter: CardFilter) {
+        with(itemViewBinding) {
+            filterNameContainer.background.setTint(callback.getColor(filter))
+            filterName.text = filter.name
+            filterNameContainer.setOnClickListener { animate() }
+        }
+    }
 
-        itemViewBinding.filterNameContainer.background.setTint(
-            callback.getColor(filter)
-        )
-
-        itemViewBinding.filterName.text = filter.name
+    private fun animate() {
+        animator.end()
+        animator.start()
     }
 
 }

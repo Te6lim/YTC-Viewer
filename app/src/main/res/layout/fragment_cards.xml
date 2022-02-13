@@ -28,6 +28,7 @@
             android:paddingEnd="@dimen/small_spacing"
             android:visibility="gone"
             app:singleSelection="true"
+            app:selectionRequired="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
