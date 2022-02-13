@@ -8,12 +8,14 @@
 
     <style name="card_property_title_style">
         <item name="android:layout_marginEnd">@dimen/small_spacing</item>
+        <item name="fontFamily">@font/playfair_display</item>
         <item name="android:fontFamily">@font/playfair_display</item>
         <item name="android:layout_gravity">center|start</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="card_property_value_style">
+        <item name="fontFamily">@font/playfair_display</item>
         <item name="android:fontFamily">@font/playfair_display</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_width">wrap_content</item>
@@ -35,6 +37,7 @@
     </style>
 
     <style name="card_meta_property_value_style">
+        <item name="fontFamily">@font/playfair_display</item>
         <item name="android:fontFamily">@font/playfair_display</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginStart">@dimen/small_spacing</item>
@@ -50,6 +53,7 @@
     <style name="detailsTitleTextStyle">
         <item name="android:textSize">18sp</item>
         <item name="fontFamily">@font/playfair_display_bold</item>
+        <item name="android:fontFamily">@font/playfair_display</item>
     </style>
 
     <style name="titleTextStyle">
@@ -57,6 +61,11 @@
         <item name="android:fontFamily">@font/playfair_display</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="descriptionTextStyle">
+        <item name="fontFamily">@font/playfair_display</item>
+        <item name="android:fontFamily">@font/playfair_display</item>
     </style>
 
     <style name="overflowStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
