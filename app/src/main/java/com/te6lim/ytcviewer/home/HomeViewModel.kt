@@ -167,6 +167,12 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private val _checkedCategories = MutableLiveData<Map<String, CardFilterCategory>>(
+        mutableMapOf()
+    )
+    val checkedCategories: LiveData<Map<String, CardFilterCategory>>
+        get() = _checkedCategories
+
     private val _searchBarClicked = MutableLiveData<Boolean>()
     val searchBarClicked: LiveData<Boolean>
         get() = _searchBarClicked
@@ -181,6 +187,18 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setChipChecked(value: Pair<String, String>?) {
         _checkedChipName.value = value
+    }
+
+    fun addCategoryToChecked(category: String) {
+        val map = _checkedCategories.value!!.toMutableMap()
+        map[category] = CardFilterCategory.valueOf(category)
+        _checkedCategories.value = map
+    }
+
+    fun removeCategoryFromChecked(category: String) {
+        val map = _checkedCategories.value!!.toMutableMap()
+        map.remove(category)
+        _checkedCategories.value = map
     }
 }
 

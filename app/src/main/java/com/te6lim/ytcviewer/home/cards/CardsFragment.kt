@@ -40,10 +40,15 @@ class CardsFragment : Fragment() {
                         tag = filter.name
                         text = filter.name
 
-                        setOnCheckedChangeListener { _, isChecked ->
-                            if (isChecked) setChipChecked(
-                                Pair(HomeViewModel.CardFilterType.Monster.name, filter.name)
-                            )
+                        setOnClickListener {
+                            (it as Chip)
+                            if (isChecked) {
+                                setChipChecked(
+                                    Pair(HomeViewModel.CardFilterType.Monster.name, filter.name)
+                                )
+
+                                addCategoryToChecked(filter.name)
+                            } else removeCategoryFromChecked(filter.name)
                         }
                     }
 
@@ -68,6 +73,12 @@ class CardsFragment : Fragment() {
                 with(binding.cardFilter) {
                     visibility = if (isClicked) View.VISIBLE
                     else View.GONE
+                }
+            }
+
+            checkedCategories.observe(viewLifecycleOwner) {
+                it.forEach { item ->
+                    binding.monsterFilter.findViewWithTag<Chip>(item.key).isChecked = true
                 }
             }
         }
