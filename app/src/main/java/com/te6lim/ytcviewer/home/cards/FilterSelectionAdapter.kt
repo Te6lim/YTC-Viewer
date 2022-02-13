@@ -2,34 +2,33 @@ package com.te6lim.ytcviewer.home.cards
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ItemFilterBinding
+import com.te6lim.ytcviewer.home.CardFilter
 
 class FilterSelectionAdapter(
-    private val windowManager: WindowManager,
-    private val callBack: CardFilterCallBack
+    private val callBack: CardFilterCallback
 ) :
-    ListAdapter<String, CardFilterViewHolder>(DiffClass) {
+    ListAdapter<CardFilter, CardFilterViewHolder>(DiffClass) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardFilterViewHolder {
-        return CardFilterViewHolder.create(parent, callBack, windowManager)
+        return CardFilterViewHolder.create(parent, callBack)
     }
 
     override fun onBindViewHolder(holder: CardFilterViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    object DiffClass : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+    object DiffClass : DiffUtil.ItemCallback<CardFilter>() {
+        override fun areItemsTheSame(oldItem: CardFilter, newItem: CardFilter): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+        override fun areContentsTheSame(oldItem: CardFilter, newItem: CardFilter): Boolean {
             return oldItem == newItem
         }
 
@@ -38,40 +37,37 @@ class FilterSelectionAdapter(
 
 class CardFilterViewHolder(
     private val itemViewBinding: ItemFilterBinding,
-    private val cardFilterCallBack: CardFilterCallBack
+    private val callback: CardFilterCallback
 ) : RecyclerView.ViewHolder(itemViewBinding.root) {
 
     companion object {
 
         fun create(
-            parent: ViewGroup,
-            cardFilterCallBack: CardFilterCallBack,
-            windowManager: WindowManager
-        )
-                : CardFilterViewHolder {
+            parent: ViewGroup, callback: CardFilterCallback
+        ): CardFilterViewHolder {
 
             val binding = DataBindingUtil.inflate<ItemFilterBinding>(
                 LayoutInflater.from(parent.context), R.layout.item_filter,
                 parent, false
             )
 
-            return CardFilterViewHolder(binding, cardFilterCallBack)
+            return CardFilterViewHolder(binding, callback)
         }
     }
 
-    fun bind(filterName: String) {
+    fun bind(filter: CardFilter) {
 
         itemViewBinding.filterNameContainer.background.setTint(
-            cardFilterCallBack.getColor(filterName)
+            callback.getColor(filter)
         )
 
-        itemViewBinding.filterName.text = filterName
+        itemViewBinding.filterName.text = filter.name
     }
 
 }
 
-class CardFilterCallBack(val cb: (String) -> Int) {
-    fun getColor(filterName: String): Int {
-        return cb(filterName)
+class CardFilterCallback(val cb: (CardFilter) -> Int) {
+    fun getColor(filter: CardFilter): Int {
+        return cb(filter)
     }
 }

@@ -32,7 +32,7 @@ class CardsFragment : Fragment() {
         with(homeViewModel) {
 
             val chipInflater = LayoutInflater.from(binding.cardFilter.context)
-            HomeViewModel.CardFilter.values().forEach { filter ->
+            HomeViewModel.CardFilterCategory.values().forEach { filter ->
                 val chip = chipInflater
                     .inflate(R.layout.filter_selection, binding.monsterFilter, false)
                     .apply {
@@ -40,20 +40,17 @@ class CardsFragment : Fragment() {
                         tag = filter.name
                         text = filter.name
 
-                        setOnCheckedChangeListener { chip, isChecked ->
-                            if (isChecked) {
-                                setChipChecked(filter.name)
-                                storeCheckedChipId(chip.id)
-                            } else {
-                                storeCheckedChipId(null)
-                            }
+                        setOnCheckedChangeListener { _, isChecked ->
+                            if (isChecked) setChipChecked(
+                                Pair(HomeViewModel.CardFilterType.Monster.name, filter.name)
+                            )
                         }
                     }
 
                 binding.monsterFilter.addView(chip)
             }
 
-            HomeViewModel.NonMonsterCardFilter.values().forEach {
+            HomeViewModel.NonMonsterCardFilterCategory.values().forEach {
                 val chip = chipInflater
                     .inflate(
                         R.layout.filter_selection, binding.cardFilter, false

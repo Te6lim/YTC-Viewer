@@ -49,7 +49,9 @@ class HomeFragment : Fragment() {
                         findNavController()
                             .navigate(
                                 HomeFragmentDirections
-                                    .actionHomeFragmentToFilterSelectionFragment(it)
+                                    .actionHomeFragmentToFilterSelectionFragment(
+                                        it.first, it.second
+                                    )
                             )
                         setChipChecked(null)
                     }

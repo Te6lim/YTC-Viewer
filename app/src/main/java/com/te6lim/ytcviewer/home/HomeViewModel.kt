@@ -8,73 +8,83 @@ import com.te6lim.ytcviewer.R
 
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
 
-    enum class CardFilter {
+    enum class CardFilterCategory {
         Type, Race, Attribute;
     }
 
-    enum class NonMonsterCardFilter {
+    enum class NonMonsterCardFilterCategory {
         Spell, Trap;
     }
 
+    enum class CardFilterType {
+        Monster, NonMonster
+    }
+
     companion object {
-        fun getFilerSelections(filter: CardFilter): List<String> {
-            return when (filter) {
-                CardFilter.Type -> listOf(
-                    "Effect Monster",
-                    "Flip Effect Monster",
-                    "Flip Tuner Effect Monster",
-                    "Gemini Monster",
-                    "Normal Monster",
-                    "Normal Tuner Monster",
-                    "Pendulum Effect Monster",
-                    "Pendulum Flip Effect Monster",
-                    "Pendulum Normal Monster",
-                    "Pendulum Tuner Effect Monster",
-                    "Ritual Effect Monster",
-                    "Ritual Monster",
-                    "Skill Card",
-                    "Spirit Monster",
-                    "Toon Monster",
-                    "Tuner Monster",
-                    "Union Effect Monster"
+        fun getMonsterFilter(category: CardFilterCategory): List<CardFilter> {
+            return when (category) {
+                CardFilterCategory.Type -> listOf(
+                    CardFilter("Effect Monster"),
+                    CardFilter("Flip Effect Monster"),
+                    CardFilter("Flip Tuner Effect Monster"),
+                    CardFilter("Gemini Monster"),
+                    CardFilter("Normal Monster"),
+                    CardFilter("Normal Tuner Monster"),
+                    CardFilter("Pendulum Effect Monster"),
+                    CardFilter("Pendulum Flip Effect Monster"),
+                    CardFilter("Pendulum Normal Monster"),
+                    CardFilter("Pendulum Tuner Effect Monster"),
+                    CardFilter("Ritual Effect Monster"),
+                    CardFilter("Ritual Monster"),
+                    CardFilter("Skill Card"),
+                    CardFilter("Spirit Monster"),
+                    CardFilter("Toon Monster"),
+                    CardFilter("Tuner Monster"),
+                    CardFilter("Union Effect Monster")
                 )
 
-                CardFilter.Race -> listOf(
-                    "Aqua",
-                    "Beast",
-                    "Beast-Warrior",
-                    "Creator-God",
-                    "Cyberse",
-                    "Dinosaur",
-                    "Divine-Beast",
-                    "Dragon",
-                    "Fairy",
-                    "Fiend",
-                    "Fish",
-                    "Insect",
-                    "Machine",
-                    "Plant",
-                    "Psychic",
-                    "Pyro",
-                    "Reptile",
-                    "Rock",
-                    "Sea Serpent",
-                    "Spellcaster",
-                    "Thunder",
-                    "Warrior",
-                    "Winged Beast"
+                CardFilterCategory.Race -> listOf(
+                    CardFilter("Aqua"),
+                    CardFilter("Beast"),
+                    CardFilter("Beast-Warrior"),
+                    CardFilter("Creator-God"),
+                    CardFilter("Cyberse"),
+                    CardFilter("Dinosaur"),
+                    CardFilter("Divine-Beast"),
+                    CardFilter("Dragon"),
+                    CardFilter("Fairy"),
+                    CardFilter("Fiend"),
+                    CardFilter("Fish"),
+                    CardFilter("Insect"),
+                    CardFilter("Machine"),
+                    CardFilter("Plant"),
+                    CardFilter("Psychic"),
+                    CardFilter("Pyro"),
+                    CardFilter("Reptile"),
+                    CardFilter("Rock"),
+                    CardFilter("Sea Serpent"),
+                    CardFilter("Spellcaster"),
+                    CardFilter("Thunder"),
+                    CardFilter("Warrior"),
+                    CardFilter("Winged Beast")
                 )
 
-                CardFilter.Attribute -> listOf(
-                    "dark", "earth", "fire", "light", "water", "wind", "divine"
+                CardFilterCategory.Attribute -> listOf(
+                    CardFilter("dark"),
+                    CardFilter("earth"),
+                    CardFilter("fire"),
+                    CardFilter("light"),
+                    CardFilter("water"),
+                    CardFilter("wind"),
+                    CardFilter("divine")
                 )
             }
         }
 
-        fun getNonMonsterFilter(filter: NonMonsterCardFilter): List<String> {
-            return when (filter) {
+        fun getNonMonsterFilter(filterCategory: NonMonsterCardFilterCategory): List<String> {
+            return when (filterCategory) {
 
-                NonMonsterCardFilter.Spell -> listOf(
+                NonMonsterCardFilterCategory.Spell -> listOf(
                     "Normal",
                     "Field",
                     "Equip",
@@ -83,7 +93,7 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                     "Ritual"
                 )
 
-                NonMonsterCardFilter.Trap -> listOf(
+                NonMonsterCardFilterCategory.Trap -> listOf(
                     "Normal",
                     "Continuous",
                     "Counter"
@@ -92,9 +102,9 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         }
 
 
-        fun getFilterBackgrounds(filter: CardFilter): HashMap<String, Int> {
-            return when (filter) {
-                CardFilter.Type -> hashMapOf(
+        fun getMonsterFilterBackgrounds(category: CardFilterCategory): HashMap<String, Int> {
+            return when (category) {
+                CardFilterCategory.Type -> hashMapOf(
                     Pair("Effect Monster", R.color.effectMonster),
                     Pair("Flip Effect Monster", R.color.flipEffectMonster),
                     Pair("Flip Tuner Effect Monster", R.color.flipEffectMonster),
@@ -114,7 +124,7 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                     Pair("Union Effect Monster", R.color.effectMonster)
                 )
 
-                CardFilter.Race -> hashMapOf(
+                CardFilterCategory.Race -> hashMapOf(
                     Pair("Aqua", R.color.aqua),
                     Pair("Beast", R.color.beast),
                     Pair("Beast-Warrior", R.color.warrior),
@@ -140,7 +150,7 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                     Pair("Winged Beast", R.color.beast)
                 )
 
-                CardFilter.Attribute -> hashMapOf(
+                CardFilterCategory.Attribute -> hashMapOf(
                     Pair("dark", R.color.dark),
                     Pair("earth", R.color.earth),
                     Pair("fire", R.color.fire),
@@ -150,6 +160,10 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
                     Pair("divine", R.color.divine)
                 )
             }
+        }
+
+        fun getNonMonsterFilterBackgrounds(category: NonMonsterCardFilterCategory): HashMap<String, Int> {
+            return hashMapOf()
         }
     }
 
@@ -161,11 +175,13 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         _searchBarClicked.value = value
     }
 
-    private val _checkedChipName = MutableLiveData<String?>()
-    val checkedChipName: LiveData<String?>
+    private val _checkedChipName = MutableLiveData<Pair<String, String>?>()
+    val checkedChipName: LiveData<Pair<String, String>?>
         get() = _checkedChipName
 
-    fun setChipChecked(value: String?) {
+    fun setChipChecked(value: Pair<String, String>?) {
         _checkedChipName.value = value
     }
 }
+
+data class CardFilter(val name: String, val isSelected: Boolean = false)

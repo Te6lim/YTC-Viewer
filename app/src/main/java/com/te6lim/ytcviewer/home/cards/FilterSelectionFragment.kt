@@ -24,7 +24,10 @@ class FilterSelectionFragment : Fragment() {
             inflater, R.layout.fragment_filter_options, container, false
         )
 
-        val category = FilterSelectionFragmentArgs.fromBundle(requireArguments()).filterName
+        val category = FilterSelectionFragmentArgs.fromBundle(requireArguments()).categoryName
+        val type = HomeViewModel.CardFilterType.valueOf(
+            FilterSelectionFragmentArgs.fromBundle(requireArguments()).typeName
+        )
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(
             (binding.filterToolbar as Toolbar).apply {
@@ -33,14 +36,29 @@ class FilterSelectionFragment : Fragment() {
             }
         )
 
-        val adapter = FilterSelectionAdapter(requireActivity().windowManager, CardFilterCallBack {
-            ContextCompat.getColor(
+        val adapter = FilterSelectionAdapter(CardFilterCallback {
+            if (type == HomeViewModel.CardFilterType.Monster)
+                ContextCompat.getColor(
+                    requireContext(),
+                    HomeViewModel.getMonsterFilterBackgrounds(
+                        HomeViewModel.CardFilterCategory.valueOf(category)
+                    )[it.name]!!
+                )
+            else ContextCompat.getColor(
                 requireContext(),
-                HomeViewModel.getFilterBackgrounds(HomeViewModel.CardFilter.valueOf(category))[it]!!
+                HomeViewModel.getNonMonsterFilterBackgrounds(
+                    HomeViewModel.NonMonsterCardFilterCategory.valueOf(category)
+                )[it.name]!!
             )
         }).apply {
 
-            submitList(HomeViewModel.getFilerSelections(HomeViewModel.CardFilter.valueOf(category)))
+            submitList(
+                HomeViewModel.getMonsterFilter(
+                    HomeViewModel.CardFilterCategory.valueOf(
+                        category
+                    )
+                )
+            )
 
         }
 

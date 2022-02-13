@@ -35,7 +35,10 @@
         android:name="com.te6lim.ytcviewer.home.cards.FilterSelectionFragment"
         tools:layout="@layout/fragment_filter_options">
         <argument
-            android:name="filterName"
+            android:name="typeName"
+            app:argType="string" />
+        <argument
+            android:name="categoryName"
             app:argType="string" />
     </fragment>
 </navigation>
