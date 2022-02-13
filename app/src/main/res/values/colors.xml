@@ -49,7 +49,7 @@
     <color name="creatorGod">#F4E99B</color>
     <color name="cyberse">#aaa9ad</color>
     <color name="dinosaur">#722F37</color>
-    <color name="divineBeast">#F4E99B</color>
+    <color name="divineBeast">#FFD700</color>
     <color name="dragon">#FF0000</color>
     <color name="fairy">#a2d870</color>
     <color name="fiend">#542368</color>
@@ -63,4 +63,12 @@
     <color name="rock">#808487</color>
     <color name="spellCaster">#985fba</color>
     <color name="lightning">#FDD023</color>
+
+    <color name="dark">#542368</color>
+    <color name="earth">#806043</color>
+    <color name="fire">#d01c1f</color>
+    <color name="light">#FDD023</color>
+    <color name="water">#079BF5</color>
+    <color name="wind">#a2d870</color>
+    <color name="divine">#FFD700</color>
 </resources>

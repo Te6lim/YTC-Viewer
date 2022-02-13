@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.te6lim.ytcviewer.R
 
-class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
+class HomeViewModel(app: Application) : AndroidViewModel(app) {
 
     enum class CardFilter {
         Type, Race, Attribute;
@@ -140,7 +140,15 @@ class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
                     Pair("Winged Beast", R.color.beast)
                 )
 
-                else -> hashMapOf()
+                CardFilter.Attribute -> hashMapOf(
+                    Pair("dark", R.color.dark),
+                    Pair("earth", R.color.earth),
+                    Pair("fire", R.color.fire),
+                    Pair("light", R.color.light),
+                    Pair("water", R.color.water),
+                    Pair("wind", R.color.wind),
+                    Pair("divine", R.color.divine)
+                )
             }
         }
     }
@@ -159,13 +167,5 @@ class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
 
     fun setChipChecked(value: String?) {
         _checkedChipName.value = value
-    }
-
-    private val _checkedChipId = MutableLiveData<Int?>()
-    val checkedChipId: LiveData<Int?>
-        get() = _checkedChipId
-
-    fun storeCheckedChipId(value: Int?) {
-        _checkedChipId.value = value
     }
 }
