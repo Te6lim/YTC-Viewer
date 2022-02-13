@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="128dp"
         android:layout_margin="@dimen/standard_spacing"
-        android:background="@drawable/item_filter_background"
-        android:elevation="@dimen/medium_spacing">
+        android:background="@drawable/item_filter_background">
 
         <TextView
             android:id="@+id/filterName"
@@ -29,5 +28,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

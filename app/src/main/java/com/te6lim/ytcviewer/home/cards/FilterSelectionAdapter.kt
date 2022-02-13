@@ -42,9 +42,7 @@ class CardFilterViewHolder(
 
     companion object {
 
-        fun create(
-            parent: ViewGroup, callback: CardFilterCallback
-        ): CardFilterViewHolder {
+        fun create(parent: ViewGroup, callback: CardFilterCallback): CardFilterViewHolder {
 
             val binding = DataBindingUtil.inflate<ItemFilterBinding>(
                 LayoutInflater.from(parent.context), R.layout.item_filter,

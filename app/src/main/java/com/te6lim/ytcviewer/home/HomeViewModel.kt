@@ -81,22 +81,22 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
 
-        fun getNonMonsterFilter(filterCategory: NonMonsterCardFilterCategory): List<String> {
+        fun getNonMonsterFilter(filterCategory: NonMonsterCardFilterCategory): List<CardFilter> {
             return when (filterCategory) {
 
                 NonMonsterCardFilterCategory.Spell -> listOf(
-                    "Normal",
-                    "Field",
-                    "Equip",
-                    "Continuous",
-                    "Quick-Play",
-                    "Ritual"
+                    CardFilter("Normal"),
+                    CardFilter("Field"),
+                    CardFilter("Equip"),
+                    CardFilter("Continuous"),
+                    CardFilter("Quick-Play"),
+                    CardFilter("Ritual")
                 )
 
                 NonMonsterCardFilterCategory.Trap -> listOf(
-                    "Normal",
-                    "Continuous",
-                    "Counter"
+                    CardFilter("Normal"),
+                    CardFilter("Continuous"),
+                    CardFilter("Counter")
                 )
             }
         }
@@ -163,15 +163,37 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         fun getNonMonsterFilterBackgrounds(category: NonMonsterCardFilterCategory): HashMap<String, Int> {
-            return hashMapOf()
+            return when (category) {
+                NonMonsterCardFilterCategory.Spell -> hashMapOf(
+                    Pair("Normal", R.color.normalSpell),
+                    Pair("Field", R.color.field),
+                    Pair("Equip", R.color.equip),
+                    Pair("Continuous", R.color.continuousSpell),
+                    Pair("Quick-Play", R.color.quickPlay),
+                    Pair("Ritual", R.color.ritual)
+                )
+                NonMonsterCardFilterCategory.Trap -> hashMapOf(
+                    Pair("Normal", R.color.normalTrap),
+                    Pair("Continuous", R.color.continuous),
+                    Pair("Counter", R.color.counter)
+                )
+            }
         }
     }
 
-    private val _checkedCategories = MutableLiveData<Map<String, CardFilterCategory>>(
+    private val _checkedMonsterCategories = MutableLiveData<Map<String, CardFilterCategory>>(
         mutableMapOf()
     )
-    val checkedCategories: LiveData<Map<String, CardFilterCategory>>
-        get() = _checkedCategories
+    val checkedMonsterCategories: LiveData<Map<String, CardFilterCategory>>
+        get() = _checkedMonsterCategories
+
+    private val _checkedNonMonsterCategories =
+        MutableLiveData<Map<String, NonMonsterCardFilterCategory>>(
+            mutableMapOf()
+        )
+
+    val checkedNonMonsterCategories: LiveData<Map<String, NonMonsterCardFilterCategory>>
+        get() = _checkedNonMonsterCategories
 
     private val _searchBarClicked = MutableLiveData<Boolean>()
     val searchBarClicked: LiveData<Boolean>
@@ -189,16 +211,36 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         _checkedChipName.value = value
     }
 
-    fun addCategoryToChecked(category: String) {
-        val map = _checkedCategories.value!!.toMutableMap()
+    fun addMonsterCategoryToChecked(category: String) {
+        val map = _checkedMonsterCategories.value!!.toMutableMap()
         map[category] = CardFilterCategory.valueOf(category)
-        _checkedCategories.value = map
+        _checkedMonsterCategories.value = map
     }
 
-    fun removeCategoryFromChecked(category: String) {
-        val map = _checkedCategories.value!!.toMutableMap()
+    fun removeMonsterCategoryFromChecked(category: String) {
+        val map = _checkedMonsterCategories.value!!.toMutableMap()
         map.remove(category)
-        _checkedCategories.value = map
+        _checkedMonsterCategories.value = map
+    }
+
+    fun addNonMonsterCategoryToChecked(category: String) {
+        val map = _checkedNonMonsterCategories.value!!.toMutableMap()
+        map[category] = NonMonsterCardFilterCategory.valueOf(category)
+        _checkedNonMonsterCategories.value = map
+    }
+
+    fun removeNonMonsterCategoryFromChecked(category: String) {
+        val map = _checkedNonMonsterCategories.value!!.toMutableMap()
+        map.remove(category)
+        _checkedNonMonsterCategories.value = map
+    }
+
+    fun removeAllCheckedMonsterCategory() {
+        _checkedMonsterCategories.value = mutableMapOf()
+    }
+
+    fun removeAllCheckedNonMonsterCategory() {
+        _checkedNonMonsterCategories.value = mutableMapOf()
     }
 }
 

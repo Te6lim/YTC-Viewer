@@ -71,4 +71,15 @@
     <color name="water">#079BF5</color>
     <color name="wind">#a2d870</color>
     <color name="divine">#FFD700</color>
+
+    <color name="normalSpell">#097969</color>
+    <color name="field">#228B22</color>
+    <color name="equip">#2AAA8A</color>
+    <color name="continuousSpell">#90EE90</color>
+    <color name="quickPlay">#097969</color>
+    <color name="ritual">#8A9A5B</color>
+
+    <color name="normalTrap">#FF69B4</color>
+    <color name="continuous">#FFC0CB</color>
+    <color name="counter">#AA336A</color>
 </resources>

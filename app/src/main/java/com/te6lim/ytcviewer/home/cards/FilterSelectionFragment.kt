@@ -52,9 +52,16 @@ class FilterSelectionFragment : Fragment() {
             )
         }).apply {
 
-            submitList(
+            if (type == HomeViewModel.CardFilterType.Monster) submitList(
                 HomeViewModel.getMonsterFilter(
                     HomeViewModel.CardFilterCategory.valueOf(
+                        category
+                    )
+                )
+            )
+            else submitList(
+                HomeViewModel.getNonMonsterFilter(
+                    HomeViewModel.NonMonsterCardFilterCategory.valueOf(
                         category
                     )
                 )
