@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="128dp"
         android:layout_margin="@dimen/standard_spacing"
+        android:longClickable="true"
         android:background="@drawable/item_filter_background">
 
         <TextView

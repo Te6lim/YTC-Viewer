@@ -34,6 +34,7 @@
     <color name="bottomNavItemUnselected">@color/grey</color>
     <color name="searchDescriptorColor">@color/grey</color>
     <color name="chipColor">@color/secondaryLightColor</color>
+    <color name="filterFrame">#80FFFFFF</color>
 
     <color name="effectMonster">#be6400</color>
     <color name="flipEffectMonster">#E69720</color>

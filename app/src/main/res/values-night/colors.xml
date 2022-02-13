@@ -40,4 +40,5 @@
     <color name="bottomNavItemUnselected">@color/fade</color>
     <color name="searchDescriptorColor">@color/fade</color>
     <color name="chipColor">@color/primaryLightColor</color>
+    <color name="filterFrame">#8000001B</color>
 </resources>

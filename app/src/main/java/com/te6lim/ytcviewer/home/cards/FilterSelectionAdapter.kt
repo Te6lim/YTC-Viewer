@@ -1,5 +1,6 @@
 package com.te6lim.ytcviewer.home.cards
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.view.LayoutInflater
@@ -43,7 +44,7 @@ class CardFilterViewHolder(
     private val callback: CardFilterCallback
 ) : RecyclerView.ViewHolder(itemViewBinding.root) {
 
-    private lateinit var animator: ObjectAnimator
+    private lateinit var animatorSet: AnimatorSet
 
     companion object {
 
@@ -58,12 +59,23 @@ class CardFilterViewHolder(
             val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.03f)
 
             return CardFilterViewHolder(binding, callback).apply {
-                animator = ObjectAnimator.ofPropertyValuesHolder(
+                val scaleAnimator = ObjectAnimator.ofPropertyValuesHolder(
                     itemViewBinding.filterNameContainer, scaleX, scaleY
                 ).apply {
                     repeatCount = 1
                     this.repeatMode = ObjectAnimator.REVERSE
+                }
+
+                val alphaAnimator = ObjectAnimator.ofFloat(
+                    itemViewBinding.filterNameContainer, View.ALPHA, 0.7f
+                ).apply {
+                    repeatCount = 1
+                    this.repeatMode = ObjectAnimator.REVERSE
+                }
+
+                animatorSet = AnimatorSet().apply {
                     duration = 80
+                    playTogether(scaleAnimator, alphaAnimator)
                 }
             }
         }
@@ -74,12 +86,16 @@ class CardFilterViewHolder(
             filterNameContainer.background.setTint(callback.getColor(filter))
             filterName.text = filter.name
             filterNameContainer.setOnClickListener { animate() }
+            filterNameContainer.setOnLongClickListener {
+                animate()
+                true
+            }
         }
     }
 
     private fun animate() {
-        animator.end()
-        animator.start()
+        animatorSet.end()
+        animatorSet.start()
     }
 
 }
