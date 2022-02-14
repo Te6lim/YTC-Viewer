@@ -85,7 +85,11 @@ class CardFilterViewHolder(
 
         itemViewBinding.filterName.text = filter.name
 
+        if (filter.isSelected) itemViewBinding.selectFilter.visibility = View.VISIBLE
+        else itemViewBinding.selectFilter.visibility = View.GONE
+
         with(itemViewBinding.filterNameContainer) {
+
             setOnClickListener {
                 this@CardFilterViewHolder.animate()
                 if (filter.isSelected) {
@@ -116,3 +120,5 @@ class CardFilterCallback(val cb: (CardFilter) -> Int) {
         return cb(filter)
     }
 }
+
+class selectedItemViewHolder

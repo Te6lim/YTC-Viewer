@@ -21,83 +21,94 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+
+        private val types = listOf(
+            CardFilter("Effect Monster"),
+            CardFilter("Flip Effect Monster"),
+            CardFilter("Flip Tuner Effect Monster"),
+            CardFilter("Gemini Monster"),
+            CardFilter("Normal Monster"),
+            CardFilter("Normal Tuner Monster"),
+            CardFilter("Pendulum Effect Monster"),
+            CardFilter("Pendulum Flip Effect Monster"),
+            CardFilter("Pendulum Normal Monster"),
+            CardFilter("Pendulum Tuner Effect Monster"),
+            CardFilter("Ritual Effect Monster"),
+            CardFilter("Ritual Monster"),
+            CardFilter("Skill Card"),
+            CardFilter("Spirit Monster"),
+            CardFilter("Toon Monster"),
+            CardFilter("Tuner Monster"),
+            CardFilter("Union Effect Monster")
+        )
+
+        private val races = listOf(
+            CardFilter("Aqua"),
+            CardFilter("Beast"),
+            CardFilter("Beast-Warrior"),
+            CardFilter("Creator-God"),
+            CardFilter("Cyberse"),
+            CardFilter("Dinosaur"),
+            CardFilter("Divine-Beast"),
+            CardFilter("Dragon"),
+            CardFilter("Fairy"),
+            CardFilter("Fiend"),
+            CardFilter("Fish"),
+            CardFilter("Insect"),
+            CardFilter("Machine"),
+            CardFilter("Plant"),
+            CardFilter("Psychic"),
+            CardFilter("Pyro"),
+            CardFilter("Reptile"),
+            CardFilter("Rock"),
+            CardFilter("Sea Serpent"),
+            CardFilter("Spellcaster"),
+            CardFilter("Thunder"),
+            CardFilter("Warrior"),
+            CardFilter("Winged Beast")
+        )
+
+        private val attributes = listOf(
+            CardFilter("dark"),
+            CardFilter("earth"),
+            CardFilter("fire"),
+            CardFilter("light"),
+            CardFilter("water"),
+            CardFilter("wind"),
+            CardFilter("divine")
+        )
+
+        private val spells = listOf(
+            CardFilter("Normal"),
+            CardFilter("Field"),
+            CardFilter("Equip"),
+            CardFilter("Continuous"),
+            CardFilter("Quick-Play"),
+            CardFilter("Ritual")
+        )
+
+        private val traps = listOf(
+            CardFilter("Normal"),
+            CardFilter("Continuous"),
+            CardFilter("Counter")
+        )
+
         fun getMonsterFilter(category: CardFilterCategory): List<CardFilter> {
             return when (category) {
-                CardFilterCategory.Type -> listOf(
-                    CardFilter("Effect Monster"),
-                    CardFilter("Flip Effect Monster"),
-                    CardFilter("Flip Tuner Effect Monster"),
-                    CardFilter("Gemini Monster"),
-                    CardFilter("Normal Monster"),
-                    CardFilter("Normal Tuner Monster"),
-                    CardFilter("Pendulum Effect Monster"),
-                    CardFilter("Pendulum Flip Effect Monster"),
-                    CardFilter("Pendulum Normal Monster"),
-                    CardFilter("Pendulum Tuner Effect Monster"),
-                    CardFilter("Ritual Effect Monster"),
-                    CardFilter("Ritual Monster"),
-                    CardFilter("Skill Card"),
-                    CardFilter("Spirit Monster"),
-                    CardFilter("Toon Monster"),
-                    CardFilter("Tuner Monster"),
-                    CardFilter("Union Effect Monster")
-                )
+                CardFilterCategory.Type -> types
 
-                CardFilterCategory.Race -> listOf(
-                    CardFilter("Aqua"),
-                    CardFilter("Beast"),
-                    CardFilter("Beast-Warrior"),
-                    CardFilter("Creator-God"),
-                    CardFilter("Cyberse"),
-                    CardFilter("Dinosaur"),
-                    CardFilter("Divine-Beast"),
-                    CardFilter("Dragon"),
-                    CardFilter("Fairy"),
-                    CardFilter("Fiend"),
-                    CardFilter("Fish"),
-                    CardFilter("Insect"),
-                    CardFilter("Machine"),
-                    CardFilter("Plant"),
-                    CardFilter("Psychic"),
-                    CardFilter("Pyro"),
-                    CardFilter("Reptile"),
-                    CardFilter("Rock"),
-                    CardFilter("Sea Serpent"),
-                    CardFilter("Spellcaster"),
-                    CardFilter("Thunder"),
-                    CardFilter("Warrior"),
-                    CardFilter("Winged Beast")
-                )
+                CardFilterCategory.Race -> races
 
-                CardFilterCategory.Attribute -> listOf(
-                    CardFilter("dark"),
-                    CardFilter("earth"),
-                    CardFilter("fire"),
-                    CardFilter("light"),
-                    CardFilter("water"),
-                    CardFilter("wind"),
-                    CardFilter("divine")
-                )
+                CardFilterCategory.Attribute -> attributes
             }
         }
 
         fun getNonMonsterFilter(filterCategory: NonMonsterCardFilterCategory): List<CardFilter> {
             return when (filterCategory) {
 
-                NonMonsterCardFilterCategory.Spell -> listOf(
-                    CardFilter("Normal"),
-                    CardFilter("Field"),
-                    CardFilter("Equip"),
-                    CardFilter("Continuous"),
-                    CardFilter("Quick-Play"),
-                    CardFilter("Ritual")
-                )
+                NonMonsterCardFilterCategory.Spell -> spells
 
-                NonMonsterCardFilterCategory.Trap -> listOf(
-                    CardFilter("Normal"),
-                    CardFilter("Continuous"),
-                    CardFilter("Counter")
-                )
+                NonMonsterCardFilterCategory.Trap -> traps
             }
         }
 
