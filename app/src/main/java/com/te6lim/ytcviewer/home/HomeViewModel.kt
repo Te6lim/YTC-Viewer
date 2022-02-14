@@ -244,4 +244,4 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     }
 }
 
-data class CardFilter(val name: String, val isSelected: Boolean = false)
+data class CardFilter(val name: String, var isSelected: Boolean = false)

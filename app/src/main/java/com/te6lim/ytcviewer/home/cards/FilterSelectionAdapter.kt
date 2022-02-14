@@ -82,14 +82,25 @@ class CardFilterViewHolder(
     }
 
     fun bind(filter: CardFilter) {
-        with(itemViewBinding) {
-            filterNameContainer.background.setTint(callback.getColor(filter))
-            filterName.text = filter.name
-            filterNameContainer.setOnClickListener { animate() }
-            filterNameContainer.setOnLongClickListener {
-                animate()
+
+        itemViewBinding.filterName.text = filter.name
+
+        with(itemViewBinding.filterNameContainer) {
+            setOnClickListener {
+                this@CardFilterViewHolder.animate()
+                if (filter.isSelected) {
+                    filter.isSelected = false
+                    itemViewBinding.selectFilter.visibility = View.GONE
+                } else {
+                    filter.isSelected = true
+                    itemViewBinding.selectFilter.visibility = View.VISIBLE
+                }
+            }
+            setOnLongClickListener {
+                this@CardFilterViewHolder.animate()
                 true
             }
+            background.setTint(callback.getColor(filter))
         }
     }
 
