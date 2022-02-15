@@ -25,7 +25,7 @@ class FilterSelectionAdapter(
     }
 
     override fun onBindViewHolder(holder: CardFilterViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position), position, this)
     }
 
     object DiffClass : DiffUtil.ItemCallback<CardFilter>() {
@@ -60,6 +60,7 @@ class CardFilterViewHolder(
             val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.03f)
 
             return CardFilterViewHolder(binding, callback).apply {
+
                 val scaleAnimator = ObjectAnimator.ofPropertyValuesHolder(
                     itemViewBinding.filterNameContainer, scaleX, scaleY
                 ).apply {
@@ -82,7 +83,7 @@ class CardFilterViewHolder(
         }
     }
 
-    fun bind(filter: CardFilter, position: Int) {
+    fun bind(filter: CardFilter, position: Int, adapter: FilterSelectionAdapter) {
 
         itemViewBinding.filterName.text = filter.name
 
@@ -90,7 +91,7 @@ class CardFilterViewHolder(
 
         CardFilter.previousSelectedFilter?.let { f ->
             if (position == f.position) {
-                (bindingAdapter as FilterSelectionAdapter).prevSelectedViewHolder = this
+                adapter.prevSelectedViewHolder = this
             }
         }
 
@@ -106,20 +107,18 @@ class CardFilterViewHolder(
                     itemViewBinding.selectFilter.visibility = View.GONE
 
                     CardFilter.previousSelectedFilter = null
-                    (bindingAdapter as FilterSelectionAdapter).prevSelectedViewHolder = null
+                    adapter.prevSelectedViewHolder = null
                 } else {
                     filter.isSelected = true
                     itemViewBinding.selectFilter.visibility = View.VISIBLE
                     CardFilter.previousSelectedFilter?.isSelected = false
 
-                    (bindingAdapter as FilterSelectionAdapter).prevSelectedViewHolder?.let {
-                        (bindingAdapter as FilterSelectionAdapter).onBindViewHolder(
-                            it, CardFilter.previousSelectedFilter!!.position
-                        )
+                    adapter.prevSelectedViewHolder?.let {
+                        adapter.onBindViewHolder(it, CardFilter.previousSelectedFilter!!.position)
                     }
 
                     CardFilter.previousSelectedFilter = filter
-                    (bindingAdapter as FilterSelectionAdapter).prevSelectedViewHolder =
+                    adapter.prevSelectedViewHolder =
                         this@CardFilterViewHolder
                 }
 
