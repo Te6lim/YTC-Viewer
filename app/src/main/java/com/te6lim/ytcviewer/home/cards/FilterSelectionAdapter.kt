@@ -88,6 +88,12 @@ class CardFilterViewHolder(
 
         filter.position = position
 
+        CardFilter.previousSelectedFilter?.let { f ->
+            if (position == f.position) {
+                (bindingAdapter as FilterSelectionAdapter).prevSelectedViewHolder = this
+            }
+        }
+
         if (filter.isSelected) itemViewBinding.selectFilter.visibility = View.VISIBLE
         else itemViewBinding.selectFilter.visibility = View.GONE
 
