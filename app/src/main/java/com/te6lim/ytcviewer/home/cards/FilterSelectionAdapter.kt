@@ -18,12 +18,14 @@ class FilterSelectionAdapter(
 ) :
     ListAdapter<CardFilter, CardFilterViewHolder>(DiffClass) {
 
+    var prevSelectedViewHolder: CardFilterViewHolder? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardFilterViewHolder {
         return CardFilterViewHolder.create(parent, callBack)
     }
 
     override fun onBindViewHolder(holder: CardFilterViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), position)
     }
 
     object DiffClass : DiffUtil.ItemCallback<CardFilter>() {
@@ -80,9 +82,11 @@ class CardFilterViewHolder(
         }
     }
 
-    fun bind(filter: CardFilter) {
+    fun bind(filter: CardFilter, position: Int) {
 
         itemViewBinding.filterName.text = filter.name
+
+        filter.position = position
 
         if (filter.isSelected) itemViewBinding.selectFilter.visibility = View.VISIBLE
         else itemViewBinding.selectFilter.visibility = View.GONE
@@ -94,13 +98,25 @@ class CardFilterViewHolder(
                 if (filter.isSelected) {
                     filter.isSelected = false
                     itemViewBinding.selectFilter.visibility = View.GONE
+
                     CardFilter.previousSelectedFilter = null
+                    (bindingAdapter as FilterSelectionAdapter).prevSelectedViewHolder = null
                 } else {
                     filter.isSelected = true
                     itemViewBinding.selectFilter.visibility = View.VISIBLE
                     CardFilter.previousSelectedFilter?.isSelected = false
+
+                    (bindingAdapter as FilterSelectionAdapter).prevSelectedViewHolder?.let {
+                        (bindingAdapter as FilterSelectionAdapter).onBindViewHolder(
+                            it, CardFilter.previousSelectedFilter!!.position
+                        )
+                    }
+
                     CardFilter.previousSelectedFilter = filter
+                    (bindingAdapter as FilterSelectionAdapter).prevSelectedViewHolder =
+                        this@CardFilterViewHolder
                 }
+
             }
             setOnLongClickListener {
                 this@CardFilterViewHolder.animate()
@@ -108,6 +124,8 @@ class CardFilterViewHolder(
             }
             background.setTint(callback.getColor(filter))
         }
+
+        itemViewBinding.executePendingBindings()
     }
 
     private fun animate() {

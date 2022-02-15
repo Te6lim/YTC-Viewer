@@ -213,7 +213,7 @@ class FilterSelectionViewModel(private val category: String, private val type: S
 
 }
 
-data class CardFilter(val name: String, var isSelected: Boolean = false) {
+data class CardFilter(val name: String, var position: Int = -1, var isSelected: Boolean = false) {
     companion object {
         var previousSelectedFilter: CardFilter? = null
     }
