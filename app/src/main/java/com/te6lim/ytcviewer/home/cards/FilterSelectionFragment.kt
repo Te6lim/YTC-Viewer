@@ -9,11 +9,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentFilterOptionsBinding
-import com.te6lim.ytcviewer.home.HomeViewModel
 
 class FilterSelectionFragment : Fragment() {
 
@@ -25,9 +25,11 @@ class FilterSelectionFragment : Fragment() {
         )
 
         val category = FilterSelectionFragmentArgs.fromBundle(requireArguments()).categoryName
-        val type = HomeViewModel.CardFilterType.valueOf(
-            FilterSelectionFragmentArgs.fromBundle(requireArguments()).typeName
-        )
+        val type = FilterSelectionFragmentArgs.fromBundle(requireArguments()).typeName
+
+        val viewModel = ViewModelProvider(
+            this, FilterSelectionViewModelFactory(category, type)
+        )[FilterSelectionViewModel::class.java]
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(
             (binding.filterToolbar as Toolbar).apply {
@@ -37,39 +39,17 @@ class FilterSelectionFragment : Fragment() {
         )
 
         val adapter = FilterSelectionAdapter(CardFilterCallback {
-            if (type == HomeViewModel.CardFilterType.Monster)
-                ContextCompat.getColor(
-                    requireContext(),
-                    HomeViewModel.getMonsterFilterBackgrounds(
-                        HomeViewModel.CardFilterCategory.valueOf(category)
-                    )[it.name]!!
-                )
-            else ContextCompat.getColor(
+            ContextCompat.getColor(
                 requireContext(),
-                HomeViewModel.getNonMonsterFilterBackgrounds(
-                    HomeViewModel.NonMonsterCardFilterCategory.valueOf(category)
-                )[it.name]!!
+                viewModel.getBackgroundsForFilters()[it.name]!!
             )
-        }).apply {
-
-            if (type == HomeViewModel.CardFilterType.Monster) submitList(
-                HomeViewModel.getMonsterFilter(
-                    HomeViewModel.CardFilterCategory.valueOf(
-                        category
-                    )
-                )
-            )
-            else submitList(
-                HomeViewModel.getNonMonsterFilter(
-                    HomeViewModel.NonMonsterCardFilterCategory.valueOf(
-                        category
-                    )
-                )
-            )
-
-        }
+        })
 
         binding.filterList.adapter = adapter
+
+        viewModel.filterList.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
 
         return binding.root
     }

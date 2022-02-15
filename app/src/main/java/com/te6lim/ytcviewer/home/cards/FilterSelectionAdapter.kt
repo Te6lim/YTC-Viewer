@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ItemFilterBinding
-import com.te6lim.ytcviewer.home.CardFilter
 
 class FilterSelectionAdapter(
     private val callBack: CardFilterCallback
@@ -33,7 +32,7 @@ class FilterSelectionAdapter(
         }
 
         override fun areContentsTheSame(oldItem: CardFilter, newItem: CardFilter): Boolean {
-            return oldItem == newItem
+            return oldItem.isSelected == newItem.isSelected
         }
 
     }
@@ -95,9 +94,12 @@ class CardFilterViewHolder(
                 if (filter.isSelected) {
                     filter.isSelected = false
                     itemViewBinding.selectFilter.visibility = View.GONE
+                    CardFilter.previousSelectedFilter = null
                 } else {
                     filter.isSelected = true
                     itemViewBinding.selectFilter.visibility = View.VISIBLE
+                    CardFilter.previousSelectedFilter?.isSelected = false
+                    CardFilter.previousSelectedFilter = filter
                 }
             }
             setOnLongClickListener {
@@ -120,5 +122,3 @@ class CardFilterCallback(val cb: (CardFilter) -> Int) {
         return cb(filter)
     }
 }
-
-class selectedItemViewHolder

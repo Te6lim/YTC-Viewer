@@ -32,7 +32,7 @@ class CardsFragment : Fragment() {
         with(homeViewModel) {
 
             val chipInflater = LayoutInflater.from(binding.cardFilter.context)
-            HomeViewModel.CardFilterCategory.values().forEach { category ->
+            FilterSelectionViewModel.CardFilterCategory.values().forEach { category ->
                 val chip = chipInflater
                     .inflate(R.layout.filter_selection, binding.monsterFilter, false)
                     .apply {
@@ -44,7 +44,10 @@ class CardsFragment : Fragment() {
                             (it as Chip)
                             if (isChecked) {
                                 setChipChecked(
-                                    Pair(HomeViewModel.CardFilterType.Monster.name, category.name)
+                                    Pair(
+                                        FilterSelectionViewModel.CardFilterType.Monster.name,
+                                        category.name
+                                    )
                                 )
 
                                 binding.cardFilter.clearCheck()
@@ -59,7 +62,7 @@ class CardsFragment : Fragment() {
                 binding.monsterFilter.addView(chip)
             }
 
-            HomeViewModel.NonMonsterCardFilterCategory.values().forEach { category ->
+            FilterSelectionViewModel.NonMonsterCardFilterCategory.values().forEach { category ->
                 val chip = chipInflater
                     .inflate(
                         R.layout.filter_selection, binding.cardFilter, false
@@ -73,7 +76,8 @@ class CardsFragment : Fragment() {
                             if (isChecked) {
                                 setChipChecked(
                                     Pair(
-                                        HomeViewModel.CardFilterType.NonMonster.name, category.name
+                                        FilterSelectionViewModel.CardFilterType.NonMonster.name,
+                                        category.name
                                     )
                                 )
 
