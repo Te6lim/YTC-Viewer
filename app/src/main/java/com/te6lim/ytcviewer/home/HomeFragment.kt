@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.te6lim.ytcviewer.MainActivityViewModel
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentHomeBinding
+import com.te6lim.ytcviewer.home.cards.CardsViewModel
 
 class HomeFragment : Fragment() {
 
@@ -32,6 +33,10 @@ class HomeFragment : Fragment() {
         mainActivityViewModel = ViewModelProvider(
             requireActivity()
         )[MainActivityViewModel::class.java]
+
+        val cardViewModel = ViewModelProvider(requireActivity())[
+                CardsViewModel::class.java
+        ]
 
         with(binding) {
 
@@ -82,6 +87,20 @@ class HomeFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+
+        val savedStateHandle = findNavController().currentBackStackEntry
+            ?.savedStateHandle
+        val position = savedStateHandle?.getLiveData<String>("K")
+        position?.observe(viewLifecycleOwner) {
+            it?.let { filterName ->
+
+                val c = filterName
+                savedStateHandle.remove<String>("K")
+
+            } ?: run {
+
             }
         }
 

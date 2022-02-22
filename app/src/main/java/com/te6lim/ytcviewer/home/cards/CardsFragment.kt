@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
@@ -25,7 +24,7 @@ class CardsFragment : Fragment() {
             )
 
         val homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
-        val cardsViewModel = ViewModelProvider(this)[CardsViewModel::class.java]
+        val cardsViewModel = ViewModelProvider(requireActivity())[CardsViewModel::class.java]
 
         binding.viewModel = cardsViewModel
         binding.lifecycleOwner = this
@@ -113,18 +112,6 @@ class CardsFragment : Fragment() {
                     }
 
                 binding.cardFilter.addView(chip)
-            }
-        }
-
-        val savedStateHandle = findNavController().currentBackStackEntry
-            ?.savedStateHandle
-        val position = savedStateHandle?.getLiveData<String>("K")
-        position?.observe(viewLifecycleOwner) {
-            it?.let { filterName ->
-
-            } ?: run {
-                binding.monsterFilter.clearCheck()
-                binding.cardFilter.clearCheck()
             }
         }
 

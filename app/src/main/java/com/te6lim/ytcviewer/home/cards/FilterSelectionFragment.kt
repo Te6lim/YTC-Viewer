@@ -49,7 +49,7 @@ class FilterSelectionFragment : Fragment() {
 
                 with(findNavController()) {
                     previousBackStackEntry?.savedStateHandle?.set("K", filter?.name)
-                    requireActivity().onBackPressed()
+                    popBackStack()
                 }
             }
 
