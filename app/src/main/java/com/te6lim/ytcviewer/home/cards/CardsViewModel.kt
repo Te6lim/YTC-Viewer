@@ -14,20 +14,12 @@ class CardsViewModel : ViewModel() {
     val propertiesString: LiveData<String>
         get() = _propertiesString
 
-    private val _checkedMonsterCategories =
+    private val _checkedCategories =
         MutableLiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>(
             mutableMapOf()
         )
-    val checkedMonsterCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
-        get() = _checkedMonsterCategories
-
-    private val _checkedNonMonsterCategories =
-        MutableLiveData<Map<String, FilterSelectionViewModel.NonMonsterCardFilterCategory>>(
-            mutableMapOf()
-        )
-
-    val checkedNonMonsterCategories: LiveData<Map<String, FilterSelectionViewModel.NonMonsterCardFilterCategory>>
-        get() = _checkedNonMonsterCategories
+    val checkedCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
+        get() = _checkedCategories
 
     init {
         //getProperties()
@@ -52,35 +44,19 @@ class CardsViewModel : ViewModel() {
         }*/
     }
 
-    fun addMonsterCategoryToChecked(category: String) {
-        val map = _checkedMonsterCategories.value!!.toMutableMap()
+    fun addCategoryToChecked(category: String) {
+        val map = _checkedCategories.value!!.toMutableMap()
         map[category] = FilterSelectionViewModel.CardFilterCategory.valueOf(category)
-        _checkedMonsterCategories.value = map
+        _checkedCategories.value = map
     }
 
-    fun removeMonsterCategoryFromChecked(category: String) {
-        val map = _checkedMonsterCategories.value!!.toMutableMap()
+    fun removeCategoryFromChecked(category: String) {
+        val map = _checkedCategories.value!!.toMutableMap()
         map.remove(category)
-        _checkedMonsterCategories.value = map
+        _checkedCategories.value = map
     }
 
-    fun addNonMonsterCategoryToChecked(category: String) {
-        val map = _checkedNonMonsterCategories.value!!.toMutableMap()
-        map[category] = FilterSelectionViewModel.NonMonsterCardFilterCategory.valueOf(category)
-        _checkedNonMonsterCategories.value = map
-    }
-
-    fun removeNonMonsterCategoryFromChecked(category: String) {
-        val map = _checkedNonMonsterCategories.value!!.toMutableMap()
-        map.remove(category)
-        _checkedNonMonsterCategories.value = map
-    }
-
-    fun removeAllCheckedMonsterCategory() {
-        _checkedMonsterCategories.value = mutableMapOf()
-    }
-
-    fun removeAllCheckedNonMonsterCategory() {
-        _checkedNonMonsterCategories.value = mutableMapOf()
+    fun removeAllCheckedCategory() {
+        _checkedCategories.value = mutableMapOf()
     }
 }

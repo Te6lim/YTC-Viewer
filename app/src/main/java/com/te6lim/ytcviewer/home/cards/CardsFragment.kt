@@ -40,13 +40,7 @@ class CardsFragment : Fragment() {
 
         with(cardsViewModel) {
 
-            checkedMonsterCategories.observe(viewLifecycleOwner) {
-                it.forEach { item ->
-                    binding.monsterFilter.findViewWithTag<Chip>(item.key).isChecked = true
-                }
-            }
-
-            checkedNonMonsterCategories.observe(viewLifecycleOwner) {
+            checkedCategories.observe(viewLifecycleOwner) {
                 it.forEach { item ->
                     binding.cardFilter.findViewWithTag<Chip>(item.key).isChecked = true
                 }
@@ -55,59 +49,42 @@ class CardsFragment : Fragment() {
             val chipInflater = LayoutInflater.from(binding.cardFilter.context)
             FilterSelectionViewModel.CardFilterCategory.values().forEach { category ->
                 val chip = chipInflater
-                    .inflate(R.layout.filter_selection, binding.monsterFilter, false)
+                    .inflate(R.layout.filter_selection, binding.cardFilter, false)
                     .apply {
                         this as Chip
                         tag = category.name
                         text = category.name
 
-                        setOnClickListener {
-                            it as Chip
+                        setOnClickListener { _ ->
+
                             if (isChecked) {
-                                homeViewModel.setChipChecked(
-                                    Pair(
-                                        FilterSelectionViewModel.CardFilterType.Monster.name,
-                                        category.name
-                                    )
-                                )
 
-                                binding.cardFilter.clearCheck()
+                                if (
+                                    tag == FilterSelectionViewModel.CardFilterCategory.Spell.name ||
+                                    tag == FilterSelectionViewModel.CardFilterCategory.Trap.name
+                                ) {
+                                    removeAllCheckedCategory()
+                                    binding.cardFilter.clearCheck()
+                                } else {
+                                    checkedCategories.value?.let {
+                                        if (it.containsKey(
+                                                FilterSelectionViewModel
+                                                    .CardFilterCategory.Spell.name
+                                            )
+                                            || it.containsKey(
+                                                FilterSelectionViewModel
+                                                    .CardFilterCategory.Trap.name
+                                            )
+                                        ) {
+                                            removeAllCheckedCategory()
+                                            binding.cardFilter.clearCheck()
+                                        }
+                                    }
+                                }
+                                addCategoryToChecked(category.name)
 
-                                removeAllCheckedNonMonsterCategory()
-
-                                addMonsterCategoryToChecked(category.name)
-                            } else removeMonsterCategoryFromChecked(category.name)
-                        }
-                    }
-
-                binding.monsterFilter.addView(chip)
-            }
-
-            FilterSelectionViewModel.NonMonsterCardFilterCategory.values().forEach { category ->
-                val chip = chipInflater
-                    .inflate(
-                        R.layout.filter_selection, binding.cardFilter, false
-                    ).apply {
-                        this as Chip
-                        tag = category.name
-                        text = category.name
-
-                        setOnClickListener {
-                            (it as Chip)
-                            if (isChecked) {
-                                homeViewModel.setChipChecked(
-                                    Pair(
-                                        FilterSelectionViewModel.CardFilterType.NonMonster.name,
-                                        category.name
-                                    )
-                                )
-
-                                binding.monsterFilter.clearCheck()
-
-                                removeAllCheckedMonsterCategory()
-
-                                addNonMonsterCategoryToChecked(category.name)
-                            } else removeNonMonsterCategoryFromChecked(category.name)
+                                homeViewModel.setChipChecked(category.name)
+                            } else removeCategoryFromChecked(category.name)
                         }
                     }
 

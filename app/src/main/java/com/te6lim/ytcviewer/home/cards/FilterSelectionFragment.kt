@@ -25,10 +25,9 @@ class FilterSelectionFragment : Fragment() {
         )
 
         val category = FilterSelectionFragmentArgs.fromBundle(requireArguments()).categoryName
-        val type = FilterSelectionFragmentArgs.fromBundle(requireArguments()).typeName
 
         val viewModel = ViewModelProvider(
-            this, FilterSelectionViewModelFactory(category, type)
+            this, FilterSelectionViewModelFactory(category)
         )[FilterSelectionViewModel::class.java]
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(

@@ -27,19 +27,11 @@
             android:paddingStart="@dimen/small_spacing"
             android:paddingEnd="@dimen/small_spacing"
             android:visibility="gone"
-            app:singleSelection="true"
-            app:selectionRequired="false"
+            app:singleSelection="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/monsterFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.chip.ChipGroup>
+            tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cards"

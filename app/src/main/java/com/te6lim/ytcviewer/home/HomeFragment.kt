@@ -54,9 +54,7 @@ class HomeFragment : Fragment() {
                         findNavController()
                             .navigate(
                                 HomeFragmentDirections
-                                    .actionHomeFragmentToFilterSelectionFragment(
-                                        it.first, it.second
-                                    )
+                                    .actionHomeFragmentToFilterSelectionFragment(it)
                             )
                         setChipChecked(null)
                     }
@@ -92,17 +90,6 @@ class HomeFragment : Fragment() {
 
         val savedStateHandle = findNavController().currentBackStackEntry
             ?.savedStateHandle
-        val position = savedStateHandle?.getLiveData<String>("K")
-        position?.observe(viewLifecycleOwner) {
-            it?.let { filterName ->
-
-                val c = filterName
-                savedStateHandle.remove<String>("K")
-
-            } ?: run {
-
-            }
-        }
 
         return binding.root
     }

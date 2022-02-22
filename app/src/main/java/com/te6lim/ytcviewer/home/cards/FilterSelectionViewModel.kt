@@ -6,24 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
 
-class FilterSelectionViewModel(private val category: String, private val type: String) :
+class FilterSelectionViewModel(private val category: String) :
     ViewModel() {
 
-    enum class CardFilterType {
-        Monster, NonMonster;
-    }
-
     enum class CardFilterCategory {
-        Type, Race, Attribute;
-    }
-
-    enum class NonMonsterCardFilterCategory {
-        Spell, Trap;
+        Type, Race, Attribute, Spell, Trap;
     }
 
     companion object {
 
-        fun getMonsterFilterBackgrounds(category: CardFilterCategory): HashMap<String, Int> {
+        fun getFilterBackgrounds(category: CardFilterCategory): HashMap<String, Int> {
             return when (category) {
                 CardFilterCategory.Type -> hashMapOf(
                     Pair("Effect Monster", R.color.effectMonster),
@@ -80,13 +72,8 @@ class FilterSelectionViewModel(private val category: String, private val type: S
                     Pair("wind", R.color.wind),
                     Pair("divine", R.color.divine)
                 )
-            }
-        }
 
-        fun getNonMonsterFilterBackgrounds(category: NonMonsterCardFilterCategory)
-                : HashMap<String, Int> {
-            return when (category) {
-                NonMonsterCardFilterCategory.Spell -> hashMapOf(
+                CardFilterCategory.Spell -> hashMapOf(
                     Pair("Normal", R.color.normalSpell),
                     Pair("Field", R.color.field),
                     Pair("Equip", R.color.equip),
@@ -94,7 +81,8 @@ class FilterSelectionViewModel(private val category: String, private val type: S
                     Pair("Quick-Play", R.color.quickPlay),
                     Pair("Ritual", R.color.ritual)
                 )
-                NonMonsterCardFilterCategory.Trap -> hashMapOf(
+
+                CardFilterCategory.Trap -> hashMapOf(
                     Pair("Normal", R.color.normalTrap),
                     Pair("Continuous", R.color.continuous),
                     Pair("Counter", R.color.counter)
@@ -179,37 +167,26 @@ class FilterSelectionViewModel(private val category: String, private val type: S
     )
 
     init {
-        if (CardFilterType.valueOf(type) == CardFilterType.Monster)
-            _filterList.value = getMonsterFilter(CardFilterCategory.valueOf(category))
-        else _filterList.value = getNonMonsterFilter(
-            NonMonsterCardFilterCategory.valueOf(category)
-        )
+        _filterList.value = getFilters(CardFilterCategory.valueOf(category))
     }
 
     var selectedFilter: CardFilter? = null
 
     fun getBackgroundsForFilters(): HashMap<String, Int> {
-        return if (CardFilterType.valueOf(type) == CardFilterType.Monster)
-            getMonsterFilterBackgrounds(CardFilterCategory.valueOf(category))
-        else getNonMonsterFilterBackgrounds(NonMonsterCardFilterCategory.valueOf(category))
+        return getFilterBackgrounds(CardFilterCategory.valueOf(category))
     }
 
-    private fun getMonsterFilter(category: CardFilterCategory): List<CardFilter> {
+    private fun getFilters(category: CardFilterCategory): List<CardFilter> {
         return when (category) {
             CardFilterCategory.Type -> types
 
             CardFilterCategory.Race -> races
 
             CardFilterCategory.Attribute -> attributes
-        }
-    }
 
-    private fun getNonMonsterFilter(filterCategory: NonMonsterCardFilterCategory): List<CardFilter> {
-        return when (filterCategory) {
+            CardFilterCategory.Spell -> spells
 
-            NonMonsterCardFilterCategory.Spell -> spells
-
-            NonMonsterCardFilterCategory.Trap -> traps
+            CardFilterCategory.Trap -> traps
         }
     }
 
@@ -222,12 +199,10 @@ data class CardFilter(val name: String, var position: Int = -1, var isSelected: 
 }
 
 @Suppress("UNCHECKED_CAST")
-class FilterSelectionViewModelFactory(
-    private val category: String, private val type: String
-) : ViewModelProvider.Factory {
+class FilterSelectionViewModelFactory(private val category: String) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FilterSelectionViewModel::class.java))
-            return FilterSelectionViewModel(category, type) as T
+            return FilterSelectionViewModel(category) as T
         else throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
