@@ -38,11 +38,21 @@ class FilterSelectionFragment : Fragment() {
             }
         )
 
-        val adapter = FilterSelectionAdapter(CardFilterCallback {
-            ContextCompat.getColor(
+        val adapter = FilterSelectionAdapter(object : CardFilterCallback() {
+            override fun getColor(filter: CardFilter): Int = ContextCompat.getColor(
                 requireContext(),
-                viewModel.getBackgroundsForFilters()[it.name]!!
+                viewModel.getBackgroundsForFilters()[filter.name]!!
             )
+
+            override fun setSelectedCardFilter(filter: CardFilter?) {
+                viewModel.selectedFilter = filter
+
+                with(findNavController()) {
+                    previousBackStackEntry?.savedStateHandle?.set("K", filter?.name)
+                    requireActivity().onBackPressed()
+                }
+            }
+
         })
 
         binding.filterList.adapter = adapter

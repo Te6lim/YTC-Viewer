@@ -105,7 +105,7 @@ class CardFilterViewHolder(
                 if (filter.isSelected) {
                     filter.isSelected = false
                     itemViewBinding.selectFilter.visibility = View.GONE
-
+                    callback.setSelectedCardFilter(null)
                     CardFilter.previousSelectedFilter = null
                     adapter.prevSelectedViewHolder = null
                 } else {
@@ -120,6 +120,8 @@ class CardFilterViewHolder(
                     CardFilter.previousSelectedFilter = filter
                     adapter.prevSelectedViewHolder =
                         this@CardFilterViewHolder
+
+                    callback.setSelectedCardFilter(filter)
                 }
 
             }
@@ -140,8 +142,14 @@ class CardFilterViewHolder(
 
 }
 
+/*
 class CardFilterCallback(val cb: (CardFilter) -> Int) {
     fun getColor(filter: CardFilter): Int {
         return cb(filter)
     }
+}*/
+
+abstract class CardFilterCallback {
+    abstract fun getColor(filter: CardFilter): Int
+    abstract fun setSelectedCardFilter(filter: CardFilter?)
 }

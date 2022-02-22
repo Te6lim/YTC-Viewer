@@ -14,6 +14,21 @@ class CardsViewModel : ViewModel() {
     val propertiesString: LiveData<String>
         get() = _propertiesString
 
+    private val _checkedMonsterCategories =
+        MutableLiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>(
+            mutableMapOf()
+        )
+    val checkedMonsterCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
+        get() = _checkedMonsterCategories
+
+    private val _checkedNonMonsterCategories =
+        MutableLiveData<Map<String, FilterSelectionViewModel.NonMonsterCardFilterCategory>>(
+            mutableMapOf()
+        )
+
+    val checkedNonMonsterCategories: LiveData<Map<String, FilterSelectionViewModel.NonMonsterCardFilterCategory>>
+        get() = _checkedNonMonsterCategories
+
     init {
         //getProperties()
     }
@@ -35,5 +50,37 @@ class CardsViewModel : ViewModel() {
         } catch (t: Throwable) {
             _propertiesString.value = t.message
         }*/
+    }
+
+    fun addMonsterCategoryToChecked(category: String) {
+        val map = _checkedMonsterCategories.value!!.toMutableMap()
+        map[category] = FilterSelectionViewModel.CardFilterCategory.valueOf(category)
+        _checkedMonsterCategories.value = map
+    }
+
+    fun removeMonsterCategoryFromChecked(category: String) {
+        val map = _checkedMonsterCategories.value!!.toMutableMap()
+        map.remove(category)
+        _checkedMonsterCategories.value = map
+    }
+
+    fun addNonMonsterCategoryToChecked(category: String) {
+        val map = _checkedNonMonsterCategories.value!!.toMutableMap()
+        map[category] = FilterSelectionViewModel.NonMonsterCardFilterCategory.valueOf(category)
+        _checkedNonMonsterCategories.value = map
+    }
+
+    fun removeNonMonsterCategoryFromChecked(category: String) {
+        val map = _checkedNonMonsterCategories.value!!.toMutableMap()
+        map.remove(category)
+        _checkedNonMonsterCategories.value = map
+    }
+
+    fun removeAllCheckedMonsterCategory() {
+        _checkedMonsterCategories.value = mutableMapOf()
+    }
+
+    fun removeAllCheckedNonMonsterCategory() {
+        _checkedNonMonsterCategories.value = mutableMapOf()
     }
 }

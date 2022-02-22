@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
@@ -30,6 +31,27 @@ class CardsFragment : Fragment() {
         binding.lifecycleOwner = this
 
         with(homeViewModel) {
+            searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
+                with(binding.cardFilter) {
+                    visibility = if (isClicked) View.VISIBLE
+                    else View.GONE
+                }
+            }
+        }
+
+        with(cardsViewModel) {
+
+            checkedMonsterCategories.observe(viewLifecycleOwner) {
+                it.forEach { item ->
+                    binding.monsterFilter.findViewWithTag<Chip>(item.key).isChecked = true
+                }
+            }
+
+            checkedNonMonsterCategories.observe(viewLifecycleOwner) {
+                it.forEach { item ->
+                    binding.cardFilter.findViewWithTag<Chip>(item.key).isChecked = true
+                }
+            }
 
             val chipInflater = LayoutInflater.from(binding.cardFilter.context)
             FilterSelectionViewModel.CardFilterCategory.values().forEach { category ->
@@ -41,9 +63,9 @@ class CardsFragment : Fragment() {
                         text = category.name
 
                         setOnClickListener {
-                            (it as Chip)
+                            it as Chip
                             if (isChecked) {
-                                setChipChecked(
+                                homeViewModel.setChipChecked(
                                     Pair(
                                         FilterSelectionViewModel.CardFilterType.Monster.name,
                                         category.name
@@ -74,7 +96,7 @@ class CardsFragment : Fragment() {
                         setOnClickListener {
                             (it as Chip)
                             if (isChecked) {
-                                setChipChecked(
+                                homeViewModel.setChipChecked(
                                     Pair(
                                         FilterSelectionViewModel.CardFilterType.NonMonster.name,
                                         category.name
@@ -92,24 +114,17 @@ class CardsFragment : Fragment() {
 
                 binding.cardFilter.addView(chip)
             }
+        }
 
-            searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
-                with(binding.cardFilter) {
-                    visibility = if (isClicked) View.VISIBLE
-                    else View.GONE
-                }
-            }
+        val savedStateHandle = findNavController().currentBackStackEntry
+            ?.savedStateHandle
+        val position = savedStateHandle?.getLiveData<String>("K")
+        position?.observe(viewLifecycleOwner) {
+            it?.let { filterName ->
 
-            checkedMonsterCategories.observe(viewLifecycleOwner) {
-                it.forEach { item ->
-                    binding.monsterFilter.findViewWithTag<Chip>(item.key).isChecked = true
-                }
-            }
-
-            checkedNonMonsterCategories.observe(viewLifecycleOwner) {
-                it.forEach { item ->
-                    binding.cardFilter.findViewWithTag<Chip>(item.key).isChecked = true
-                }
+            } ?: run {
+                binding.monsterFilter.clearCheck()
+                binding.cardFilter.clearCheck()
             }
         }
 

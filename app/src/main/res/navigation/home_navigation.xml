@@ -11,6 +11,6 @@
         tools:layout="@layout/fragment_cards" />
     <fragment
         android:id="@+id/galleryFragment"
-        android:name="com.te6lim.ytcviewer.home.gallery.GalleryFragment"
+        android:name="com.te6lim.ytcviewer.home.cardSet.CardSetFragment"
         android:label="GalleryFragment" />
 </navigation>

@@ -186,6 +186,8 @@ class FilterSelectionViewModel(private val category: String, private val type: S
         )
     }
 
+    var selectedFilter: CardFilter? = null
+
     fun getBackgroundsForFilters(): HashMap<String, Int> {
         return if (CardFilterType.valueOf(type) == CardFilterType.Monster)
             getMonsterFilterBackgrounds(CardFilterCategory.valueOf(category))
