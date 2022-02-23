@@ -1,9 +1,7 @@
 package com.te6lim.ytcviewer.home.cards
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -24,6 +22,8 @@ class FilterSelectionFragment : Fragment() {
             inflater, R.layout.fragment_filter_options, container, false
         )
 
+        setHasOptionsMenu(true)
+
         val category = FilterSelectionFragmentArgs.fromBundle(requireArguments()).categoryName
 
         val viewModel = ViewModelProvider(
@@ -34,6 +34,8 @@ class FilterSelectionFragment : Fragment() {
             (binding.filterToolbar as Toolbar).apply {
                 setupWithNavController(findNavController())
                 title = category
+                navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close)
+                navigationContentDescription = context.getString(R.string.close)
             }
         )
 
@@ -48,7 +50,6 @@ class FilterSelectionFragment : Fragment() {
 
                 with(findNavController()) {
                     previousBackStackEntry?.savedStateHandle?.set("K", filter?.name)
-                    requireActivity().onBackPressed()
                 }
             }
 
@@ -61,5 +62,18 @@ class FilterSelectionFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.filter_selection_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.done -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

@@ -166,11 +166,11 @@ class FilterSelectionViewModel(private val category: String) :
         CardFilter("Counter")
     )
 
+    val selectedFilters = mutableListOf<String>()
+
     init {
         _filterList.value = getFilters(CardFilterCategory.valueOf(category))
     }
-
-    var selectedFilter: CardFilter? = null
 
     fun getBackgroundsForFilters(): HashMap<String, Int> {
         return getFilterBackgrounds(CardFilterCategory.valueOf(category))
@@ -192,11 +192,7 @@ class FilterSelectionViewModel(private val category: String) :
 
 }
 
-data class CardFilter(val name: String, var position: Int = -1, var isSelected: Boolean = false) {
-    companion object {
-        var previousSelectedFilter: CardFilter? = null
-    }
-}
+data class CardFilter(val name: String, var isSelected: Boolean = false)
 
 @Suppress("UNCHECKED_CAST")
 class FilterSelectionViewModelFactory(private val category: String) : ViewModelProvider.Factory {

@@ -25,11 +25,7 @@ class CardsViewModel : ViewModel() {
     val selectedFilter: LiveData<String?>
         get() = _selectedFilter
 
-    init {
-        //getProperties()
-    }
-
-    private fun getProperties() {
+    private fun getProperties(vararg filter: String) {
         YtcApi.retrofitService.getCardsAsync().enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 _propertiesString.value = "success"
@@ -39,13 +35,6 @@ class CardsViewModel : ViewModel() {
                 _propertiesString.value = t.message
             }
         })
-
-        /*try {
-            _propertiesString.value = string.await()
-
-        } catch (t: Throwable) {
-            _propertiesString.value = t.message
-        }*/
     }
 
     fun addCategoryToChecked(category: String) {

@@ -18,14 +18,12 @@ class FilterSelectionAdapter(
 ) :
     ListAdapter<CardFilter, CardFilterViewHolder>(DiffClass) {
 
-    var prevSelectedViewHolder: CardFilterViewHolder? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardFilterViewHolder {
         return CardFilterViewHolder.create(parent, callBack)
     }
 
     override fun onBindViewHolder(holder: CardFilterViewHolder, position: Int) {
-        holder.bind(getItem(position), position, this)
+        holder.bind(getItem(position))
     }
 
     object DiffClass : DiffUtil.ItemCallback<CardFilter>() {
@@ -83,17 +81,9 @@ class CardFilterViewHolder(
         }
     }
 
-    fun bind(filter: CardFilter, position: Int, adapter: FilterSelectionAdapter) {
+    fun bind(filter: CardFilter) {
 
         itemViewBinding.filterName.text = filter.name
-
-        filter.position = position
-
-        CardFilter.previousSelectedFilter?.let { f ->
-            if (position == f.position) {
-                adapter.prevSelectedViewHolder = this
-            }
-        }
 
         if (filter.isSelected) itemViewBinding.selectFilter.visibility = View.VISIBLE
         else itemViewBinding.selectFilter.visibility = View.GONE
@@ -105,21 +95,11 @@ class CardFilterViewHolder(
                 if (filter.isSelected) {
                     filter.isSelected = false
                     itemViewBinding.selectFilter.visibility = View.GONE
-                    callback.setSelectedCardFilter(null)
-                    CardFilter.previousSelectedFilter = null
-                    adapter.prevSelectedViewHolder = null
+
+                    callback.unSelectCardFilter(filter)
                 } else {
                     filter.isSelected = true
                     itemViewBinding.selectFilter.visibility = View.VISIBLE
-                    CardFilter.previousSelectedFilter?.isSelected = false
-
-                    adapter.prevSelectedViewHolder?.let {
-                        adapter.onBindViewHolder(it, CardFilter.previousSelectedFilter!!.position)
-                    }
-
-                    CardFilter.previousSelectedFilter = filter
-                    adapter.prevSelectedViewHolder =
-                        this@CardFilterViewHolder
 
                     callback.setSelectedCardFilter(filter)
                 }
@@ -142,14 +122,8 @@ class CardFilterViewHolder(
 
 }
 
-/*
-class CardFilterCallback(val cb: (CardFilter) -> Int) {
-    fun getColor(filter: CardFilter): Int {
-        return cb(filter)
-    }
-}*/
-
 abstract class CardFilterCallback {
     abstract fun getColor(filter: CardFilter): Int
-    abstract fun setSelectedCardFilter(filter: CardFilter?)
+    abstract fun setSelectedCardFilter(filter: CardFilter)
+    abstract fun unSelectCardFilter(filter: CardFilter)
 }

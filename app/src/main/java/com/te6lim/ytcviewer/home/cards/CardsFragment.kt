@@ -71,8 +71,7 @@ class CardsFragment : Fragment() {
                                         if (it.containsKey(
                                                 FilterSelectionViewModel
                                                     .CardFilterCategory.Spell.name
-                                            )
-                                            || it.containsKey(
+                                            ) || it.containsKey(
                                                 FilterSelectionViewModel
                                                     .CardFilterCategory.Trap.name
                                             )
@@ -90,8 +89,9 @@ class CardsFragment : Fragment() {
                 binding.cardFilter.addView(chip)
             }
 
-            selectedFilter.observe(viewLifecycleOwner) {
-                it?.let {
+            selectedFilter.observe(viewLifecycleOwner) { filter ->
+
+                filter?.let {
                     homeViewModel.lastChecked = null
                     setSelectedFilter(null)
                 } ?: run {

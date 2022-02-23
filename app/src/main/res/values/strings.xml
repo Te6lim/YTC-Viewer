@@ -8,8 +8,10 @@
     <string name="collection">Collection</string>
     <string name="theme_mode">Dark mode</string>
     <string name="description">Description</string>
-    <string name="search_description">Search for cards by name, type, race, archetype and attribute</string>
+    <string name="search_description">Search by name, and filter by type, race and attribute</string>
     <string name="search_for_cards">Search for cards</string>
-    <string name="oops_could_not_find_your_card">Oops...could not find your card</string>
+    <string name="oops_could_not_find_your_card">Oops…could not find your card</string>
     <string name="check_to_see_if_there_were_any_errors_in_your_search_keyword">check to see if there were any errors in your search keyword</string>
+    <string name="done">Done</string>
+    <string name="close">Close</string>
 </resources>

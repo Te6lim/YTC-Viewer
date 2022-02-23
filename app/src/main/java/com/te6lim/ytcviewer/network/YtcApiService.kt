@@ -16,7 +16,9 @@ interface YtcApiService {
 
     @GET("cardinfo.php")
     fun getCardsAsync(
-        @Query("type") type: String = "normal monster"
+        @Query("type") type: List<String> = listOf(),
+        @Query("race") race: List<String> = listOf(),
+        @Query("attribute") attr: List<String> = listOf()
     ): Call<String>
 }
 
