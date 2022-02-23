@@ -51,11 +51,11 @@ class HomeFragment : Fragment() {
 
                 checkedChipName.observe(viewLifecycleOwner) {
                     if (it != null) {
-                        findNavController()
-                            .navigate(
-                                HomeFragmentDirections
-                                    .actionHomeFragmentToFilterSelectionFragment(it)
-                            )
+
+                        findNavController().navigate(
+                            HomeFragmentDirections
+                                .actionHomeFragmentToFilterSelectionFragment(it)
+                        )
                         setChipChecked(null)
                     }
                 }
@@ -88,8 +88,13 @@ class HomeFragment : Fragment() {
             }
         }
 
-        val savedStateHandle = findNavController().currentBackStackEntry
-            ?.savedStateHandle
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle
+
+        savedStateHandle?.getLiveData<String>("K")?.observe(viewLifecycleOwner) {
+            cardViewModel.setSelectedFilter(it)
+            savedStateHandle.remove<String>("K")
+        }
+
 
         return binding.root
     }

@@ -21,6 +21,10 @@ class CardsViewModel : ViewModel() {
     val checkedCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
         get() = _checkedCategories
 
+    private val _selectedFilter = MutableLiveData<String?>(null)
+    val selectedFilter: LiveData<String?>
+        get() = _selectedFilter
+
     init {
         //getProperties()
     }
@@ -53,10 +57,15 @@ class CardsViewModel : ViewModel() {
     fun removeCategoryFromChecked(category: String) {
         val map = _checkedCategories.value!!.toMutableMap()
         map.remove(category)
+
         _checkedCategories.value = map
     }
 
     fun removeAllCheckedCategory() {
         _checkedCategories.value = mutableMapOf()
+    }
+
+    fun setSelectedFilter(value: String?) {
+        _selectedFilter.value = value
     }
 }

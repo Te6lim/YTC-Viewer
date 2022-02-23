@@ -14,11 +14,16 @@ class HomeViewModel : ViewModel() {
     val checkedChipName: LiveData<String?>
         get() = _checkedChipName
 
+    var lastChecked: String? = null
+
     fun setSearchBarClicked(value: Boolean) {
         _searchBarClicked.value = value
     }
 
     fun setChipChecked(value: String?) {
+        value?.let {
+            lastChecked = it
+        }
         _checkedChipName.value = value
     }
 }

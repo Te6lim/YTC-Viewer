@@ -14,17 +14,19 @@ import com.te6lim.ytcviewer.home.HomeViewModel
 
 class CardsFragment : Fragment() {
 
+    private lateinit var cardsViewModel: CardsViewModel
+    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var binding: FragmentCardsBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, sacedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
-        val binding = DataBindingUtil
-            .inflate<FragmentCardsBinding>(
-                inflater, R.layout.fragment_cards, container, false
-            )
+        binding = DataBindingUtil
+            .inflate(inflater, R.layout.fragment_cards, container, false)
 
-        val homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
-        val cardsViewModel = ViewModelProvider(requireActivity())[CardsViewModel::class.java]
+        homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+        cardsViewModel = ViewModelProvider(requireActivity())[CardsViewModel::class.java]
 
         binding.viewModel = cardsViewModel
         binding.lifecycleOwner = this
@@ -63,8 +65,7 @@ class CardsFragment : Fragment() {
                                     tag == FilterSelectionViewModel.CardFilterCategory.Spell.name ||
                                     tag == FilterSelectionViewModel.CardFilterCategory.Trap.name
                                 ) {
-                                    removeAllCheckedCategory()
-                                    binding.cardFilter.clearCheck()
+                                    unMarkAllChips()
                                 } else {
                                     checkedCategories.value?.let {
                                         if (it.containsKey(
@@ -76,22 +77,44 @@ class CardsFragment : Fragment() {
                                                     .CardFilterCategory.Trap.name
                                             )
                                         ) {
-                                            removeAllCheckedCategory()
-                                            binding.cardFilter.clearCheck()
+                                            unMarkAllChips()
                                         }
                                     }
                                 }
                                 addCategoryToChecked(category.name)
-
                                 homeViewModel.setChipChecked(category.name)
-                            } else removeCategoryFromChecked(category.name)
+                            } else unMarkChip(category.name)
                         }
                     }
 
                 binding.cardFilter.addView(chip)
             }
+
+            selectedFilter.observe(viewLifecycleOwner) {
+                it?.let {
+                    homeViewModel.lastChecked = null
+                    setSelectedFilter(null)
+                } ?: run {
+                    homeViewModel.lastChecked?.let { category ->
+                        unMarkChip(category)
+                        homeViewModel.lastChecked = null
+                        setSelectedFilter(null)
+                    }
+                }
+            }
         }
 
         return binding.root
+    }
+
+    private fun unMarkChip(category: String) {
+        cardsViewModel.removeCategoryFromChecked(category)
+        binding.cardFilter.findViewWithTag<Chip>(category).isChecked = false
+    }
+
+    private fun unMarkAllChips() {
+        cardsViewModel.removeAllCheckedCategory()
+        binding.cardFilter.clearCheck()
+
     }
 }
