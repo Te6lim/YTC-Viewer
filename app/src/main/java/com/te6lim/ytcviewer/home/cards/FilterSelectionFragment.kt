@@ -15,6 +15,13 @@ import com.te6lim.ytcviewer.databinding.FragmentFilterOptionsBinding
 
 class FilterSelectionFragment : Fragment() {
 
+    companion object {
+        const val FILTER_LIST_KEY = "F"
+    }
+
+    private lateinit var viewModel: FilterSelectionViewModel
+    private var menuItem: MenuItem? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -26,7 +33,7 @@ class FilterSelectionFragment : Fragment() {
 
         val category = FilterSelectionFragmentArgs.fromBundle(requireArguments()).categoryName
 
-        val viewModel = ViewModelProvider(
+        viewModel = ViewModelProvider(
             this, FilterSelectionViewModelFactory(category)
         )[FilterSelectionViewModel::class.java]
 
@@ -45,11 +52,19 @@ class FilterSelectionFragment : Fragment() {
                 viewModel.getBackgroundsForFilters()[filter.name]!!
             )
 
-            override fun setSelectedCardFilter(filter: CardFilter?) {
-                viewModel.selectedFilter = filter
+            override fun setSelectedCardFilter(filter: CardFilter) {
+                viewModel.selectedFilters.add(filter.name)
+                menuItem?.let {
+                    if (!it.isVisible) it.isVisible = true
+                }
+            }
 
-                with(findNavController()) {
-                    previousBackStackEntry?.savedStateHandle?.set("K", filter?.name)
+            override fun unSelectCardFilter(filter: CardFilter) {
+                viewModel.selectedFilters.remove(filter.name)
+                if (viewModel.selectedFilters.isEmpty()) {
+                    menuItem?.let {
+                        if (it.isVisible) it.isVisible = false
+                    }
                 }
             }
 
@@ -66,11 +81,18 @@ class FilterSelectionFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.filter_selection_menu, menu)
+        menuItem = menu.findItem(R.id.done)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.done -> {
+                with(findNavController()) {
+                    previousBackStackEntry?.savedStateHandle?.set(
+                        FILTER_LIST_KEY, viewModel.selectedFilters
+                    )
+                    requireActivity().onBackPressed()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
