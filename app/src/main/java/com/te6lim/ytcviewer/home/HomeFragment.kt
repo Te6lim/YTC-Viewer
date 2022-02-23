@@ -12,6 +12,8 @@ import com.te6lim.ytcviewer.MainActivityViewModel
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentHomeBinding
 import com.te6lim.ytcviewer.home.cards.CardsViewModel
+import com.te6lim.ytcviewer.home.cards.FilterSelectionFragment.Companion.FILTER_LIST_KEY
+import com.te6lim.ytcviewer.home.cards.FilterSelectionViewModel
 
 class HomeFragment : Fragment() {
 
@@ -90,9 +92,13 @@ class HomeFragment : Fragment() {
 
         val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle
 
-        savedStateHandle?.getLiveData<String>("K")?.observe(viewLifecycleOwner) {
-            cardViewModel.setSelectedFilter(it)
-            savedStateHandle.remove<String>("K")
+        savedStateHandle?.getLiveData<List<String>>(FILTER_LIST_KEY)?.observe(viewLifecycleOwner) {
+            cardViewModel.setSelectedFilter(
+                FilterSelectionViewModel.CardFilterCategory.valueOf(
+                    homeViewModel.lastChecked!!
+                ), it
+            )
+            savedStateHandle.remove<List<String>>(FILTER_LIST_KEY)
         }
 
 
