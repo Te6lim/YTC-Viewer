@@ -21,9 +21,11 @@ class CardsViewModel : ViewModel() {
     val checkedCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
         get() = _checkedCategories
 
-    private val _currentHasSelectedFilters = MutableLiveData(false)
-    val currentHasSelectedFilters: LiveData<Boolean>
-        get() = _currentHasSelectedFilters
+    private val _hasSelectedFilters = MutableLiveData(false)
+    val hasSelectedFilters: LiveData<Boolean>
+        get() = _hasSelectedFilters
+
+    private var selectedFilters = mapOf<String, List<String>>()
 
     private var selectedTypeFilters = listOf<String>()
 
@@ -32,18 +34,55 @@ class CardsViewModel : ViewModel() {
     private var selectedAttributeFilters = listOf<String>()
 
 
-    private fun getProperties() {
-        YtcApi.retrofitService.getCardsAsync(
-            selectedTypeFilters, selectedRaceFilters, selectedAttributeFilters
-        ).enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                _propertiesString.value = "success"
+    fun getProperties() {
+        when (selectedFilters.size) {
+            1 -> {
+                val key = selectedFilters.keys.toList()[0]
+                YtcApi.retrofitService.getCardsAsync(mapOf(Pair(key, selectedFilters[key]!!)))
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(call: Call<String>, response: Response<String>) {
+                            _propertiesString.value = "success"
+                        }
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            _propertiesString.value = t.message
+                        }
+                    })
             }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                _propertiesString.value = t.message
+            2 -> {
+                val keys = selectedFilters.keys.toList()
+                YtcApi.retrofitService.getCardsAsync(
+                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!!)),
+                    mapOf(Pair(keys[1], selectedFilters[keys[1]]!!))
+                ).enqueue(object : Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        _propertiesString.value = "success"
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        _propertiesString.value = t.message
+                    }
+                })
             }
-        })
+
+            3 -> {
+                val keys = selectedFilters.keys.toList()
+                YtcApi.retrofitService.getCardsAsync(
+                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!!)),
+                    mapOf(Pair(keys[1], selectedFilters[keys[1]]!!)),
+                    mapOf(Pair(keys[2], selectedFilters[keys[2]]!!))
+                ).enqueue(object : Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        _propertiesString.value = "success"
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        _propertiesString.value = t.message
+                    }
+                })
+            }
+        }
     }
 
     fun addCategoryToChecked(category: String) {
@@ -85,32 +124,45 @@ class CardsViewModel : ViewModel() {
         when (category) {
             FilterSelectionViewModel.CardFilterCategory.Type -> {
                 selectedTypeFilters = filters
-                _currentHasSelectedFilters.value = true
+                _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Race -> {
                 selectedRaceFilters = filters
-                _currentHasSelectedFilters.value = true
+                _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Attribute -> {
                 selectedAttributeFilters = filters
-                _currentHasSelectedFilters.value = true
+                _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Spell -> {
                 selectedRaceFilters = filters
-                _currentHasSelectedFilters.value = true
+                _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Trap -> {
                 selectedRaceFilters = filters
-                _currentHasSelectedFilters.value = true
+                _hasSelectedFilters.value = true
             }
         }
+
+        val map = mutableMapOf<String, List<String>>()
+        if (selectedTypeFilters.isNotEmpty())
+            map[FilterSelectionViewModel.CardFilterCategory.Type.name] = selectedTypeFilters
+
+        if (selectedRaceFilters.isNotEmpty())
+            map[FilterSelectionViewModel.CardFilterCategory.Race.name] = selectedRaceFilters
+
+        if (selectedAttributeFilters.isNotEmpty())
+            map[FilterSelectionViewModel.CardFilterCategory.Attribute.name] =
+                selectedAttributeFilters
+
+        selectedFilters = map
     }
 
-    fun setCurrentHasSelectedFilters(value: Boolean) {
-        _currentHasSelectedFilters.value = value
+    fun setHasSelectedFilters(value: Boolean) {
+        _hasSelectedFilters.value = value
     }
 }

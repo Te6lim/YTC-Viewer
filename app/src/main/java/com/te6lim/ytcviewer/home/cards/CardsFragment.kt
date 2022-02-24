@@ -89,17 +89,19 @@ class CardsFragment : Fragment() {
                 binding.cardFilter.addView(chip)
             }
 
-            currentHasSelectedFilters.observe(viewLifecycleOwner) { hasFilters ->
+            hasSelectedFilters.observe(viewLifecycleOwner) { hasFilters ->
 
                 if (hasFilters) {
                     homeViewModel.lastChecked = null
-                    setCurrentHasSelectedFilters(false)
+                    setHasSelectedFilters(false)
                 } else {
                     homeViewModel.lastChecked?.let { category ->
                         unMarkChip(category)
                         homeViewModel.lastChecked = null
                     }
                 }
+
+                getProperties()
             }
         }
 

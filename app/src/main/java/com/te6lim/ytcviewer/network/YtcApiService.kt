@@ -4,7 +4,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 private const val BASE_URL = "https://db.ygoprodeck.com/api/v7/"
 private val retrofit = Retrofit.Builder()
@@ -16,9 +16,20 @@ interface YtcApiService {
 
     @GET("cardinfo.php")
     fun getCardsAsync(
-        @Query("type") type: List<String> = listOf(),
-        @Query("race") race: List<String> = listOf(),
-        @Query("attribute") attr: List<String> = listOf()
+        @QueryMap query: Map<String, List<String>>
+    ): Call<String>
+
+    @GET("cardinfo.php")
+    fun getCardsAsync(
+        @QueryMap query1: Map<String, List<String>>,
+        @QueryMap query2: Map<String, List<String>>
+    ): Call<String>
+
+    @GET("cardinfo.php")
+    fun getCardsAsync(
+        @QueryMap query1: Map<String, List<String>>,
+        @QueryMap query2: Map<String, List<String>>,
+        @QueryMap query3: Map<String, List<String>>
     ): Call<String>
 }
 
