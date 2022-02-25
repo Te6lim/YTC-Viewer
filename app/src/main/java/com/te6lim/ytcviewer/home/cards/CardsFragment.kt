@@ -102,7 +102,7 @@ class CardsFragment : Fragment() {
                     }
                 }
 
-                getProperties()
+                //getProperties()
             }
         }
 

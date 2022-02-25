@@ -11,6 +11,8 @@ class FilterSelectionViewModel(private val category: String) :
 
     enum class CardFilterCategory {
         Type, Race, Attribute, Spell, Trap;
+
+        val n = name
     }
 
     companion object {
