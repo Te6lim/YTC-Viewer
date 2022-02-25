@@ -16,20 +16,20 @@ interface YtcApiService {
 
     @GET("cardinfo.php")
     fun getCardsAsync(
-        @QueryMap query: Map<String, List<String>>
+        @QueryMap query: Map<String, Array<String>>
     ): Call<String>
 
     @GET("cardinfo.php")
     fun getCardsAsync(
-        @QueryMap query1: Map<String, List<String>>,
-        @QueryMap query2: Map<String, List<String>>
+        @QueryMap query1: Map<String, Array<String>>,
+        @QueryMap query2: Map<String, Array<String>>
     ): Call<String>
 
     @GET("cardinfo.php")
     fun getCardsAsync(
-        @QueryMap query1: Map<String, List<String>>,
-        @QueryMap query2: Map<String, List<String>>,
-        @QueryMap query3: Map<String, List<String>>
+        @QueryMap query1: Map<String, Array<String>>,
+        @QueryMap query2: Map<String, Array<String>>,
+        @QueryMap query3: Map<String, Array<String>>
     ): Call<String>
 }
 

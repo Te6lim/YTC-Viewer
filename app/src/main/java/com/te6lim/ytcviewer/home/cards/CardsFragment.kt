@@ -71,7 +71,8 @@ class CardsFragment : Fragment() {
                                         if (it.containsKey(
                                                 FilterSelectionViewModel
                                                     .CardFilterCategory.Spell.name
-                                            ) || it.containsKey(
+                                            ) ||
+                                            it.containsKey(
                                                 FilterSelectionViewModel
                                                     .CardFilterCategory.Trap.name
                                             )

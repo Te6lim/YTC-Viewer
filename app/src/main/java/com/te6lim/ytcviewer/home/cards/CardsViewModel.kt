@@ -25,13 +25,13 @@ class CardsViewModel : ViewModel() {
     val hasSelectedFilters: LiveData<Boolean>
         get() = _hasSelectedFilters
 
-    private var selectedFilters = mapOf<String, List<String>>()
+    private var selectedFilters = mapOf<String, Array<String>>()
 
-    private var selectedTypeFilters = listOf<String>()
+    private var selectedTypeFilters = arrayOf<String>()
 
-    private var selectedRaceFilters = listOf<String>()
+    private var selectedRaceFilters = arrayOf<String>()
 
-    private var selectedAttributeFilters = listOf<String>()
+    private var selectedAttributeFilters = arrayOf<String>()
 
 
     fun getProperties() {
@@ -97,13 +97,13 @@ class CardsViewModel : ViewModel() {
 
         when (FilterSelectionViewModel.CardFilterCategory.valueOf(category)) {
             FilterSelectionViewModel.CardFilterCategory.Type ->
-                selectedTypeFilters = mutableListOf()
+                selectedTypeFilters = arrayOf()
 
             FilterSelectionViewModel.CardFilterCategory.Race ->
-                selectedRaceFilters = mutableListOf()
+                selectedRaceFilters = arrayOf()
 
             FilterSelectionViewModel.CardFilterCategory.Attribute ->
-                selectedAttributeFilters = mutableListOf()
+                selectedAttributeFilters = arrayOf()
 
             else -> throw IllegalArgumentException()
         }
@@ -112,9 +112,9 @@ class CardsViewModel : ViewModel() {
     }
 
     fun removeAllCheckedCategory() {
-        selectedTypeFilters = mutableListOf()
-        selectedRaceFilters = mutableListOf()
-        selectedAttributeFilters = mutableListOf()
+        selectedTypeFilters = arrayOf()
+        selectedRaceFilters = arrayOf()
+        selectedAttributeFilters = arrayOf()
         _checkedCategories.value = mutableMapOf()
     }
 
@@ -123,32 +123,32 @@ class CardsViewModel : ViewModel() {
     ) {
         when (category) {
             FilterSelectionViewModel.CardFilterCategory.Type -> {
-                selectedTypeFilters = filters
+                selectedTypeFilters = filters.toTypedArray()
                 _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Race -> {
-                selectedRaceFilters = filters
+                selectedRaceFilters = filters.toTypedArray()
                 _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Attribute -> {
-                selectedAttributeFilters = filters
+                selectedAttributeFilters = filters.toTypedArray()
                 _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Spell -> {
-                selectedRaceFilters = filters
+                selectedRaceFilters = filters.toTypedArray()
                 _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Trap -> {
-                selectedRaceFilters = filters
+                selectedRaceFilters = filters.toTypedArray()
                 _hasSelectedFilters.value = true
             }
         }
 
-        val map = mutableMapOf<String, List<String>>()
+        val map = mutableMapOf<String, Array<String>>()
         if (selectedTypeFilters.isNotEmpty())
             map[FilterSelectionViewModel.CardFilterCategory.Type.name] = selectedTypeFilters
 
