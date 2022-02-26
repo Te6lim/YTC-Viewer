@@ -1,13 +1,15 @@
 package com.te6lim.ytcviewer.models
 
+import com.squareup.moshi.Json
+
 sealed class Card(
     open val name: String,
     open val type: String,
     open val desc: String,
     open val race: String,
-    open val cardSets: List<CardSet>,
-    open val cardImages: CardImages,
-    open val cardPrices: CardPrice,
+    @Json(name = "card_sets") open val cardSets: List<CardSet>,
+    @Json(name = "card_images") open val cardImages: CardImages,
+    @Json(name = "card_prices") open val cardPrices: CardPrice
 ) {
 
     data class MonsterCard(
@@ -19,9 +21,9 @@ sealed class Card(
         val def: Int,
         val level: Int,
         val attribute: String,
-        override val cardSets: List<CardSet>,
-        override val cardImages: CardImages,
-        override val cardPrices: CardPrice
+        @Json(name = "card_sets") override val cardSets: List<CardSet>,
+        @Json(name = "card_images") override val cardImages: CardImages,
+        @Json(name = "card_prices") override val cardPrices: CardPrice
 
     ) : Card(name, type, desc, race, cardSets, cardImages, cardPrices)
 
@@ -31,9 +33,9 @@ sealed class Card(
         override val desc: String,
         override val race: String,
         val archetype: String,
-        override val cardSets: List<CardSet>,
-        override val cardImages: CardImages,
-        override val cardPrices: CardPrice
+        @Json(name = "card_sets") override val cardSets: List<CardSet>,
+        @Json(name = "card_images") override val cardImages: CardImages,
+        @Json(name = "card_prices") override val cardPrices: CardPrice
     ) : Card(name, type, desc, race, cardSets, cardImages, cardPrices)
 }
 

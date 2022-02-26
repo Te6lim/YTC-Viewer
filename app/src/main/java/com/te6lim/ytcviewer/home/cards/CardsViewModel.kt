@@ -47,18 +47,19 @@ class CardsViewModel : ViewModel() {
                         )
                     } else {
 
-                        if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
-                            cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                                mapOf(Pair("type", arrayOf("trap card"))),
-                                mapOf(Pair(key, selectedFilters[key]!!))
-                            )
-                        } else {
+                        cardsDeferred =
+                            if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
+                                YtcApi.retrofitService.getCardsAsync(
+                                    mapOf(Pair("type", arrayOf("trap card"))),
+                                    mapOf(Pair(key, selectedFilters[key]!!))
+                                )
+                            } else {
 
-                            cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                                mapOf(Pair(key, selectedFilters[key]!!))
-                            )
+                                YtcApi.retrofitService.getCardsAsync(
+                                    mapOf(Pair(key, selectedFilters[key]!!))
+                                )
 
-                        }
+                            }
                     }
                 }
 
