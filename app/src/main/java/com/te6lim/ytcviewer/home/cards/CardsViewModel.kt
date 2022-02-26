@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CardsViewModel : ViewModel() {
+class CardsViewModel() : ViewModel() {
 
     private val _propertiesString = MutableLiveData<String>()
     val propertiesString: LiveData<String>
@@ -20,10 +20,6 @@ class CardsViewModel : ViewModel() {
         )
     val checkedCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
         get() = _checkedCategories
-
-    private val _hasSelectedFilters = MutableLiveData(false)
-    val hasSelectedFilters: LiveData<Boolean>
-        get() = _hasSelectedFilters
 
     private var selectedFilters = mapOf<String, Array<String>>()
 
@@ -124,27 +120,22 @@ class CardsViewModel : ViewModel() {
         when (category) {
             FilterSelectionViewModel.CardFilterCategory.Type -> {
                 selectedTypeFilters = filters.toTypedArray()
-                _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Race -> {
                 selectedRaceFilters = filters.toTypedArray()
-                _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Attribute -> {
                 selectedAttributeFilters = filters.toTypedArray()
-                _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Spell -> {
                 selectedRaceFilters = filters.toTypedArray()
-                _hasSelectedFilters.value = true
             }
 
             FilterSelectionViewModel.CardFilterCategory.Trap -> {
                 selectedRaceFilters = filters.toTypedArray()
-                _hasSelectedFilters.value = true
             }
         }
 
@@ -160,9 +151,5 @@ class CardsViewModel : ViewModel() {
                 selectedAttributeFilters
 
         selectedFilters = map
-    }
-
-    fun setHasSelectedFilters(value: Boolean) {
-        _hasSelectedFilters.value = value
     }
 }

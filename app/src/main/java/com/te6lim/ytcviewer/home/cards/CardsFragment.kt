@@ -26,6 +26,7 @@ class CardsFragment : Fragment() {
             .inflate(inflater, R.layout.fragment_cards, container, false)
 
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+
         cardsViewModel = ViewModelProvider(requireActivity())[CardsViewModel::class.java]
 
         binding.viewModel = cardsViewModel
@@ -90,19 +91,32 @@ class CardsFragment : Fragment() {
                 binding.cardFilter.addView(chip)
             }
 
-            hasSelectedFilters.observe(viewLifecycleOwner) { hasFilters ->
+            with(homeViewModel) {
 
-                if (hasFilters) {
-                    homeViewModel.lastChecked = null
-                    setHasSelectedFilters(false)
-                } else {
-                    homeViewModel.lastChecked?.let { category ->
-                        unMarkChip(category)
-                        homeViewModel.lastChecked = null
+                filterList.observe(viewLifecycleOwner) {
+                    it?.let {
+                        setSelectedFilter(
+                            FilterSelectionViewModel.CardFilterCategory.valueOf(
+                                lastChecked!!
+                            ), it
+                        )
+                        setHasSelectedFilters(true)
+                        setFilterList(null)
                     }
                 }
 
-                //getProperties()
+                hasSelectedFilters.observe(viewLifecycleOwner) { hasFilters ->
+
+                    if (hasFilters) {
+                        setHasSelectedFilters(false)
+                    } else {
+                        lastChecked?.let { category ->
+                            unMarkChip(category)
+                        }
+                    }
+
+                    //getProperties()
+                }
             }
         }
 

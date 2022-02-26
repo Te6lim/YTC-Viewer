@@ -14,7 +14,16 @@ class HomeViewModel : ViewModel() {
     val checkedChipName: LiveData<String?>
         get() = _checkedChipName
 
+    private val _hasSelectedFilters = MutableLiveData(false)
+    val hasSelectedFilters: LiveData<Boolean>
+        get() = _hasSelectedFilters
+
+    private val _filterList = MutableLiveData<List<String>?>()
+    val filterList: LiveData<List<String>?>
+        get() = _filterList
+
     var lastChecked: String? = null
+        private set
 
     fun setSearchBarClicked(value: Boolean) {
         _searchBarClicked.value = value
@@ -25,5 +34,14 @@ class HomeViewModel : ViewModel() {
             lastChecked = it
         }
         _checkedChipName.value = value
+    }
+
+    fun setHasSelectedFilters(value: Boolean) {
+        if (!value) lastChecked = null
+        _hasSelectedFilters.value = value
+    }
+
+    fun setFilterList(value: List<String>?) {
+        _filterList.value = value
     }
 }
