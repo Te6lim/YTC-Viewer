@@ -1,4 +1,4 @@
-package com.te6lim.ytcviewer.home.cards
+package com.te6lim.ytcviewer.filters
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

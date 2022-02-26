@@ -32,7 +32,7 @@
         tools:layout="@layout/fragment_details_card" />
     <fragment
         android:id="@+id/filterSelectionFragment"
-        android:name="com.te6lim.ytcviewer.home.cards.FilterSelectionFragment"
+        android:name="com.te6lim.ytcviewer.filters.FilterSelectionFragment"
         tools:layout="@layout/fragment_filter_options">
         <argument
             android:name="categoryName"

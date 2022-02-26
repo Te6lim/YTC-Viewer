@@ -128,6 +128,7 @@
                             app:layout_constraintBottom_toTopOf="@+id/textView22"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
+                            android:contentDescription="@string/dissatisfied"
                             app:srcCompat="@drawable/ic_dissatisfied" />
 
                         <TextView
@@ -161,14 +162,6 @@
                             app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_margin="@dimen/medium_spacing"
-                        android:text="@{viewModel.propertiesString}"
-                        android:visibility="gone" />
 
                 </FrameLayout>
 

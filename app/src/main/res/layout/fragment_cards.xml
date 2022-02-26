@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-        <!--<androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cards"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
@@ -48,17 +48,7 @@
             app:layout_constraintVertical_bias="1.0"
             app:spanCount="3"
             tools:itemCount="20"
-            tools:listitem="@layout/item_card" />-->
-
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.propertiesString}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardFilter" />
+            tools:listitem="@layout/item_card" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout5"
@@ -85,7 +75,7 @@
                         android:id="@+id/searchDescription"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -171,14 +161,6 @@
                             app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_margin="@dimen/medium_spacing"
-                        android:text="@{viewModel.propertiesString}"
-                        android:visibility="gone" />
 
                 </FrameLayout>
 

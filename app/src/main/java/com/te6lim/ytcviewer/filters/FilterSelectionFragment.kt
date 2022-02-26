@@ -1,4 +1,4 @@
-package com.te6lim.ytcviewer.home.cards
+package com.te6lim.ytcviewer.filters
 
 import android.os.Bundle
 import android.view.*
@@ -31,7 +31,9 @@ class FilterSelectionFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        val category = FilterSelectionFragmentArgs.fromBundle(requireArguments()).categoryName
+        val category = FilterSelectionFragmentArgs.fromBundle(
+            requireArguments()
+        ).categoryName
 
         viewModel = ViewModelProvider(
             this, FilterSelectionViewModelFactory(category)

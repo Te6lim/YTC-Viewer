@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.te6lim.ytcviewer.MainActivityViewModel
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentHomeBinding
-import com.te6lim.ytcviewer.home.cards.FilterSelectionFragment.Companion.FILTER_LIST_KEY
+import com.te6lim.ytcviewer.filters.FilterSelectionFragment.Companion.FILTER_LIST_KEY
 
 class HomeFragment : Fragment() {
 

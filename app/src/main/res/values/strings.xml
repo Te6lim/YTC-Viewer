@@ -14,4 +14,6 @@
     <string name="check_to_see_if_there_were_any_errors_in_your_search_keyword">check to see if there were any errors in your search keyword</string>
     <string name="done">Done</string>
     <string name="close">Close</string>
+    <string name="dissatisfied">dissatisfied</string>
+    <string name="card_image">Card image</string>
 </resources>
