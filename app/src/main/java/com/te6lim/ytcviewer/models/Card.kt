@@ -25,11 +25,12 @@ sealed class Card(
 
     ) : Card(name, type, desc, race, cardSets, cardImages, cardPrices)
 
-    data class SpellCard(
+    data class NonMonsterCard(
         override val name: String,
         override val type: String,
         override val desc: String,
         override val race: String,
+        val archetype: String,
         override val cardSets: List<CardSet>,
         override val cardImages: CardImages,
         override val cardPrices: CardPrice

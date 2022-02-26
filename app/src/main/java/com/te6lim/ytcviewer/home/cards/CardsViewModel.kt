@@ -3,12 +3,13 @@ package com.te6lim.ytcviewer.home.cards
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.te6lim.ytcviewer.models.Card
 import com.te6lim.ytcviewer.network.YtcApi
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
 
-class CardsViewModel() : ViewModel() {
+class CardsViewModel : ViewModel() {
 
     private val _propertiesString = MutableLiveData<String>()
     val propertiesString: LiveData<String>
@@ -31,99 +32,61 @@ class CardsViewModel() : ViewModel() {
 
 
     fun getProperties(type: String) {
-        when (selectedFilters.size) {
-            1 -> {
-                val key = selectedFilters.keys.toList()[0]
-                if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
-                    YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair("type", arrayOf("spell card"))),
-                        mapOf(Pair(key, selectedFilters[key]!!))
-                    ).enqueue(object : Callback<String> {
-                        override fun onResponse(call: Call<String>, response: Response<String>) {
-                            _propertiesString.value = "success"
-                        }
 
-                        override fun onFailure(call: Call<String>, t: Throwable) {
-                            _propertiesString.value = t.message
-                        }
-                    })
-                } else {
+        viewModelScope.launch {
 
-                    if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
-                        YtcApi.retrofitService.getCardsAsync(
-                            mapOf(Pair("type", arrayOf("trap card"))),
+            var cardsDeferred: Deferred<Card>? = null
+
+            when (selectedFilters.size) {
+                1 -> {
+                    val key = selectedFilters.keys.toList()[0]
+                    if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
+                        cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                            mapOf(Pair("type", arrayOf("spell card"))),
                             mapOf(Pair(key, selectedFilters[key]!!))
-                        ).enqueue(object : Callback<String> {
-                            override fun onResponse(
-                                call: Call<String>,
-                                response: Response<String>
-                            ) {
-                                _propertiesString.value = "success"
-                            }
-
-                            override fun onFailure(call: Call<String>, t: Throwable) {
-                                _propertiesString.value = t.message
-                            }
-                        })
+                        )
                     } else {
 
-                        YtcApi.retrofitService.getCardsAsync(
-                            mapOf(
-                                Pair(
-                                    key,
-                                    selectedFilters[key]!!
-                                )
+                        if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
+                            cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                                mapOf(Pair("type", arrayOf("trap card"))),
+                                mapOf(Pair(key, selectedFilters[key]!!))
                             )
-                        )
-                            .enqueue(object : Callback<String> {
-                                override fun onResponse(
-                                    call: Call<String>,
-                                    response: Response<String>
-                                ) {
-                                    _propertiesString.value = "success"
-                                }
+                        } else {
 
-                                override fun onFailure(call: Call<String>, t: Throwable) {
-                                    _propertiesString.value = t.message
-                                }
-                            })
+                            cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                                mapOf(Pair(key, selectedFilters[key]!!))
+                            )
 
+                        }
                     }
+                }
+
+                2 -> {
+                    val keys = selectedFilters.keys.toList()
+                    cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!)),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!))
+                    )
+                }
+
+                3 -> {
+                    val keys = selectedFilters.keys.toList()
+                    cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!)),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!)),
+                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!))
+                    )
                 }
             }
 
-            2 -> {
-                val keys = selectedFilters.keys.toList()
-                YtcApi.retrofitService.getCardsAsync(
-                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!!)),
-                    mapOf(Pair(keys[1], selectedFilters[keys[1]]!!))
-                ).enqueue(object : Callback<String> {
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        _propertiesString.value = "success"
-                    }
-
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        _propertiesString.value = t.message
-                    }
-                })
+            try {
+                cardsDeferred?.await()
+                _propertiesString.value = "success"
+            } catch (e: Exception) {
+                _propertiesString.value = e.message
             }
 
-            3 -> {
-                val keys = selectedFilters.keys.toList()
-                YtcApi.retrofitService.getCardsAsync(
-                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!!)),
-                    mapOf(Pair(keys[1], selectedFilters[keys[1]]!!)),
-                    mapOf(Pair(keys[2], selectedFilters[keys[2]]!!))
-                ).enqueue(object : Callback<String> {
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        _propertiesString.value = "success"
-                    }
-
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        _propertiesString.value = t.message
-                    }
-                })
-            }
         }
     }
 

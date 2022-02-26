@@ -109,11 +109,8 @@ class CardsFragment : Fragment() {
 
                     lastChecked?.let { getProperties(it) }
 
-                    if (hasFilters) {
-                        setHasSelectedFilters(false)
-                    } else {
-                        lastChecked?.let { category -> unMarkChip(category) }
-                    }
+                    if (hasFilters) setHasSelectedFilters(false)
+                    else lastChecked?.let { category -> unMarkChip(category) }
                 }
             }
         }
