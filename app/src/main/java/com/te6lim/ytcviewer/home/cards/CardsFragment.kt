@@ -107,15 +107,13 @@ class CardsFragment : Fragment() {
 
                 hasSelectedFilters.observe(viewLifecycleOwner) { hasFilters ->
 
+                    lastChecked?.let { getProperties(it) }
+
                     if (hasFilters) {
                         setHasSelectedFilters(false)
                     } else {
-                        lastChecked?.let { category ->
-                            unMarkChip(category)
-                        }
+                        lastChecked?.let { category -> unMarkChip(category) }
                     }
-
-                    //getProperties()
                 }
             }
         }

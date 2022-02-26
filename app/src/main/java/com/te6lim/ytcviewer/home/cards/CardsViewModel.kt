@@ -30,12 +30,15 @@ class CardsViewModel() : ViewModel() {
     private var selectedAttributeFilters = arrayOf<String>()
 
 
-    fun getProperties() {
+    fun getProperties(type: String) {
         when (selectedFilters.size) {
             1 -> {
                 val key = selectedFilters.keys.toList()[0]
-                YtcApi.retrofitService.getCardsAsync(mapOf(Pair(key, selectedFilters[key]!!)))
-                    .enqueue(object : Callback<String> {
+                if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
+                    YtcApi.retrofitService.getCardsAsync(
+                        mapOf(Pair("type", arrayOf("spell card"))),
+                        mapOf(Pair(key, selectedFilters[key]!!))
+                    ).enqueue(object : Callback<String> {
                         override fun onResponse(call: Call<String>, response: Response<String>) {
                             _propertiesString.value = "success"
                         }
@@ -44,6 +47,49 @@ class CardsViewModel() : ViewModel() {
                             _propertiesString.value = t.message
                         }
                     })
+                } else {
+
+                    if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
+                        YtcApi.retrofitService.getCardsAsync(
+                            mapOf(Pair("type", arrayOf("trap card"))),
+                            mapOf(Pair(key, selectedFilters[key]!!))
+                        ).enqueue(object : Callback<String> {
+                            override fun onResponse(
+                                call: Call<String>,
+                                response: Response<String>
+                            ) {
+                                _propertiesString.value = "success"
+                            }
+
+                            override fun onFailure(call: Call<String>, t: Throwable) {
+                                _propertiesString.value = t.message
+                            }
+                        })
+                    } else {
+
+                        YtcApi.retrofitService.getCardsAsync(
+                            mapOf(
+                                Pair(
+                                    key,
+                                    selectedFilters[key]!!
+                                )
+                            )
+                        )
+                            .enqueue(object : Callback<String> {
+                                override fun onResponse(
+                                    call: Call<String>,
+                                    response: Response<String>
+                                ) {
+                                    _propertiesString.value = "success"
+                                }
+
+                                override fun onFailure(call: Call<String>, t: Throwable) {
+                                    _propertiesString.value = t.message
+                                }
+                            })
+
+                    }
+                }
             }
 
             2 -> {
