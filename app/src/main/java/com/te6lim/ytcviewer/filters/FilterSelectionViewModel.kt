@@ -9,8 +9,9 @@ import com.te6lim.ytcviewer.R
 class FilterSelectionViewModel(private val category: String) :
     ViewModel() {
 
-    enum class CardFilterCategory {
-        Type, Race, Attribute, Spell, Trap;
+    enum class CardFilterCategory(val query: String) {
+        Type("type"), Race("race"),
+        Attribute("attribute"), Spell("spell card"), Trap("trap card");
 
         val n = name
     }

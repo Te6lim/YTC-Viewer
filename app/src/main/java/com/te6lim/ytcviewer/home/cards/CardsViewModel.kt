@@ -6,15 +6,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.models.Card
+import com.te6lim.ytcviewer.models.Data
 import com.te6lim.ytcviewer.network.YtcApi
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 
 class CardsViewModel : ViewModel() {
 
-    private val _propertiesString = MutableLiveData<String>()
+    /*private val _propertiesString = MutableLiveData<String>()
     val propertiesString: LiveData<String>
-        get() = _propertiesString
+        get() = _propertiesString*/
+
+    private val _cards = MutableLiveData<List<Card>>()
+    val cards: LiveData<List<Card>>
+        get() = _cards
 
     private val _checkedCategories =
         MutableLiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>(
@@ -36,57 +41,52 @@ class CardsViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            var cardsDeferred: Deferred<Card>? = null
+            var cardsDeferred: Deferred<Data>? = null
+            val keys = selectedFilters.keys.toList()
 
             when (selectedFilters.size) {
                 1 -> {
-                    val key = selectedFilters.keys.toList()[0]
                     if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
                         cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                            mapOf(Pair("type", arrayOf("spell card"))),
-                            mapOf(Pair(key, selectedFilters[key]!!))
+                            mapOf(Pair("type", arrayOf("spell card")[0])),
+                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0]))
                         )
                     } else {
-
                         cardsDeferred =
                             if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
                                 YtcApi.retrofitService.getCardsAsync(
-                                    mapOf(Pair("type", arrayOf("trap card"))),
-                                    mapOf(Pair(key, selectedFilters[key]!!))
+                                    mapOf(Pair("type", arrayOf("trap card")[0])),
+                                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0]))
                                 )
                             } else {
-
                                 YtcApi.retrofitService.getCardsAsync(
-                                    mapOf(Pair(key, selectedFilters[key]!!))
+                                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0]))
                                 )
-
                             }
                     }
                 }
 
                 2 -> {
-                    val keys = selectedFilters.keys.toList()
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!)),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!))
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0])),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!![0]))
                     )
                 }
 
                 3 -> {
-                    val keys = selectedFilters.keys.toList()
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!)),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!)),
-                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!))
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0])),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!![0])),
+                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!![0]))
                     )
                 }
             }
 
             try {
-                cardsDeferred?.await()
-                _propertiesString.value = "success"
+                _cards.value = cardsDeferred!!.await().data
+                val x = 2
             } catch (e: Exception) {
-                _propertiesString.value = e.message
+                e.message
             }
 
         }
@@ -152,13 +152,13 @@ class CardsViewModel : ViewModel() {
 
         val map = mutableMapOf<String, Array<String>>()
         if (selectedTypeFilters.isNotEmpty())
-            map[FilterSelectionViewModel.CardFilterCategory.Type.name] = selectedTypeFilters
+            map[FilterSelectionViewModel.CardFilterCategory.Type.query] = selectedTypeFilters
 
         if (selectedRaceFilters.isNotEmpty())
-            map[FilterSelectionViewModel.CardFilterCategory.Race.name] = selectedRaceFilters
+            map[FilterSelectionViewModel.CardFilterCategory.Race.query] = selectedRaceFilters
 
         if (selectedAttributeFilters.isNotEmpty())
-            map[FilterSelectionViewModel.CardFilterCategory.Attribute.name] =
+            map[FilterSelectionViewModel.CardFilterCategory.Attribute.query] =
                 selectedAttributeFilters
 
         selectedFilters = map

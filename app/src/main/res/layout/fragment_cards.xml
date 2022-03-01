@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:background="@color/background"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +49,16 @@
             app:spanCount="3"
             tools:itemCount="20"
             tools:listitem="@layout/item_card" />
+
+        <!--<TextView
+            android:id="@+id/responseText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.propertiesString}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardFilter"/>-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout5"
@@ -75,7 +85,7 @@
                         android:id="@+id/searchDescription"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

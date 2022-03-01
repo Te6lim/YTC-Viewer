@@ -33,14 +33,8 @@ class CardsFragment : Fragment() {
         binding.viewModel = cardsViewModel
         binding.lifecycleOwner = this
 
-        with(homeViewModel) {
-            searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
-                with(binding.cardFilter) {
-                    visibility = if (isClicked) View.VISIBLE
-                    else View.GONE
-                }
-            }
-        }
+        val adapter = CardListAdapter()
+        binding.cards.adapter = adapter
 
         with(cardsViewModel) {
 
@@ -92,7 +86,18 @@ class CardsFragment : Fragment() {
                 binding.cardFilter.addView(chip)
             }
 
+            cards.observe(viewLifecycleOwner) {
+                adapter.submitList(it)
+            }
+
             with(homeViewModel) {
+
+                searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
+                    with(binding.cardFilter) {
+                        visibility = if (isClicked) View.VISIBLE
+                        else View.GONE
+                    }
+                }
 
                 filterList.observe(viewLifecycleOwner) {
                     it?.let {
