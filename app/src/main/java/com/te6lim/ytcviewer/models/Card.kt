@@ -48,8 +48,8 @@ class CardSet(
 )
 
 class CardImages(
-    val imageUrl: String? = null,
-    val imageUrlSmall: String? = null
+    @Json(name = "image_url") val imageUrl: String? = null,
+    @Json(name = "image_url_small") val imageUrlSmall: String? = null
 )
 
 class CardPrice(

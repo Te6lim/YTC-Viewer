@@ -35,6 +35,8 @@ class CardViewHolder(
     }
 
     fun bind(card: Card) {
+
+        itemCardBinding.card = card
         itemCardBinding.cardName.text = card.name
     }
 

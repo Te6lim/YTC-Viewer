@@ -10,7 +10,7 @@ import com.te6lim.ytcviewer.models.Card
 fun ImageView.setImage(card: Card?) {
     card?.let {
         Glide.with(this.context).load(
-            card.cardImages?.get(0)?.imageUrl?.toUri()
+            card.cardImages?.get(0)?.imageUrlSmall?.toUri()
         ).into(this)
         /*setImageDrawable(ContextCompat.getDrawable(context, R.drawable.tornado_dragon))*/
     }
