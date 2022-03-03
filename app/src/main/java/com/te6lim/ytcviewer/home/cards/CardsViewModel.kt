@@ -50,11 +50,11 @@ class CardsViewModel : ViewModel() {
 
                     if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
                         cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                            mapOf(Pair("type", arrayOf("spell card")[0])),
+                            mapOf(Pair("type", "spell card")),
                             mapOf(
                                 Pair(
                                     keys[0],
-                                    selectedFilters[keys[0]]!!.convertsToSingleString()
+                                    selectedFilters[keys[0]]!!.formattedString()
                                 )
                             )
                         )
@@ -62,11 +62,11 @@ class CardsViewModel : ViewModel() {
                         cardsDeferred =
                             if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
                                 YtcApi.retrofitService.getCardsAsync(
-                                    mapOf(Pair("type", arrayOf("trap card")[0])),
+                                    mapOf(Pair("type", "trap card")),
                                     mapOf(
                                         Pair(
                                             keys[0],
-                                            selectedFilters[keys[0]]!!.convertsToSingleString()
+                                            selectedFilters[keys[0]]!!.formattedString()
                                         )
                                     )
                                 )
@@ -75,7 +75,7 @@ class CardsViewModel : ViewModel() {
                                     mapOf(
                                         Pair(
                                             keys[0],
-                                            selectedFilters[keys[0]]!!.convertsToSingleString()
+                                            selectedFilters[keys[0]]!!.formattedString()
                                         )
                                     )
                                 )
@@ -85,16 +85,16 @@ class CardsViewModel : ViewModel() {
 
                 2 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.convertsToSingleString())),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.convertsToSingleString()))
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString()))
                     )
                 }
 
                 3 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.convertsToSingleString())),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.convertsToSingleString())),
-                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.convertsToSingleString()))
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
+                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.formattedString()))
                     )
                 }
             }
@@ -108,8 +108,7 @@ class CardsViewModel : ViewModel() {
         }
     }
 
-    private fun Array<String>.convertsToSingleString(): String {
-        val keys = selectedFilters.keys.toList()
+    private fun Array<String>.formattedString(): String {
         val arguments = StringBuilder().apply {
             for ((i, string) in this.withIndex()) {
                 append(string)

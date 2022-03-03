@@ -43,6 +43,8 @@
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="12sp"
+            android:ellipsize="end"
+            android:singleLine="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
