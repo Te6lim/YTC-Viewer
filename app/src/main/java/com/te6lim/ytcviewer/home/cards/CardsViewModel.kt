@@ -51,18 +51,33 @@ class CardsViewModel : ViewModel() {
                     if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
                         cardsDeferred = YtcApi.retrofitService.getCardsAsync(
                             mapOf(Pair("type", arrayOf("spell card")[0])),
-                            mapOf(Pair(keys[0], getParametersString(keys[0])))
+                            mapOf(
+                                Pair(
+                                    keys[0],
+                                    selectedFilters[keys[0]]!!.convertsToSingleString()
+                                )
+                            )
                         )
                     } else {
                         cardsDeferred =
                             if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
                                 YtcApi.retrofitService.getCardsAsync(
                                     mapOf(Pair("type", arrayOf("trap card")[0])),
-                                    mapOf(Pair(keys[0], getParametersString(keys[0])))
+                                    mapOf(
+                                        Pair(
+                                            keys[0],
+                                            selectedFilters[keys[0]]!!.convertsToSingleString()
+                                        )
+                                    )
                                 )
                             } else {
                                 YtcApi.retrofitService.getCardsAsync(
-                                    mapOf(Pair(keys[0], getParametersString(keys[0])))
+                                    mapOf(
+                                        Pair(
+                                            keys[0],
+                                            selectedFilters[keys[0]]!!.convertsToSingleString()
+                                        )
+                                    )
                                 )
                             }
                     }
@@ -70,23 +85,22 @@ class CardsViewModel : ViewModel() {
 
                 2 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], getParametersString(keys[0]))),
-                        mapOf(Pair(keys[1], getParametersString(keys[1])))
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.convertsToSingleString())),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.convertsToSingleString()))
                     )
                 }
 
                 3 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], getParametersString(keys[0]))),
-                        mapOf(Pair(keys[1], getParametersString(keys[1]))),
-                        mapOf(Pair(keys[2], getParametersString(keys[2])))
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.convertsToSingleString())),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.convertsToSingleString())),
+                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.convertsToSingleString()))
                     )
                 }
             }
 
             try {
                 _cards.value = cardsDeferred!!.await().data
-                val x = 2
             } catch (e: Exception) {
                 e.message
             }
@@ -94,12 +108,12 @@ class CardsViewModel : ViewModel() {
         }
     }
 
-    private fun getParametersString(key: String): String {
+    private fun Array<String>.convertsToSingleString(): String {
         val keys = selectedFilters.keys.toList()
         val arguments = StringBuilder().apply {
-            for ((i, string) in selectedFilters[keys[0]]!!.withIndex()) {
+            for ((i, string) in this.withIndex()) {
                 append(string)
-                if (i != selectedFilters[key]!!.size - 1) append(",")
+                if (i != size - 1) append(",")
             }
         }
         return arguments.toString()
