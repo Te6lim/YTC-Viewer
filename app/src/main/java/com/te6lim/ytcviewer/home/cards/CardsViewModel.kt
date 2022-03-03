@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.models.Card
-import com.te6lim.ytcviewer.models.Data
+import com.te6lim.ytcviewer.models.Response
 import com.te6lim.ytcviewer.network.YtcApi
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
@@ -41,26 +41,28 @@ class CardsViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            var cardsDeferred: Deferred<Data>? = null
+            var cardsDeferred: Deferred<Response>? = null
+
             val keys = selectedFilters.keys.toList()
 
             when (selectedFilters.size) {
                 1 -> {
+
                     if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
                         cardsDeferred = YtcApi.retrofitService.getCardsAsync(
                             mapOf(Pair("type", arrayOf("spell card")[0])),
-                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0]))
+                            mapOf(Pair(keys[0], getParametersString(keys[0])))
                         )
                     } else {
                         cardsDeferred =
                             if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
                                 YtcApi.retrofitService.getCardsAsync(
                                     mapOf(Pair("type", arrayOf("trap card")[0])),
-                                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0]))
+                                    mapOf(Pair(keys[0], getParametersString(keys[0])))
                                 )
                             } else {
                                 YtcApi.retrofitService.getCardsAsync(
-                                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0]))
+                                    mapOf(Pair(keys[0], getParametersString(keys[0])))
                                 )
                             }
                     }
@@ -68,16 +70,16 @@ class CardsViewModel : ViewModel() {
 
                 2 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0])),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!![0]))
+                        mapOf(Pair(keys[0], getParametersString(keys[0]))),
+                        mapOf(Pair(keys[1], getParametersString(keys[1])))
                     )
                 }
 
                 3 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!![0])),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!![0])),
-                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!![0]))
+                        mapOf(Pair(keys[0], getParametersString(keys[0]))),
+                        mapOf(Pair(keys[1], getParametersString(keys[1]))),
+                        mapOf(Pair(keys[2], getParametersString(keys[2])))
                     )
                 }
             }
@@ -90,6 +92,17 @@ class CardsViewModel : ViewModel() {
             }
 
         }
+    }
+
+    private fun getParametersString(key: String): String {
+        val keys = selectedFilters.keys.toList()
+        val arguments = StringBuilder().apply {
+            for ((i, string) in selectedFilters[keys[0]]!!.withIndex()) {
+                append(string)
+                if (i != selectedFilters[key]!!.size - 1) append(",")
+            }
+        }
+        return arguments.toString()
     }
 
     fun addCategoryToChecked(category: String) {

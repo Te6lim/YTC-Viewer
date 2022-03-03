@@ -3,7 +3,7 @@ package com.te6lim.ytcviewer.network
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.te6lim.ytcviewer.models.Data
+import com.te6lim.ytcviewer.models.Response
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -35,20 +35,20 @@ interface YtcApiService {
     @GET("cardinfo.php")
     fun getCardsAsync(
         @QueryMap query: Map<String, String>
-    ): Deferred<Data>
+    ): Deferred<Response>
 
     @GET("cardinfo.php")
     fun getCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>
-    ): Deferred<Data>
+    ): Deferred<Response>
 
     @GET("cardinfo.php")
     fun getCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
         @QueryMap query3: Map<String, String>
-    ): Deferred<Data>
+    ): Deferred<Response>
 }
 
 object YtcApi {

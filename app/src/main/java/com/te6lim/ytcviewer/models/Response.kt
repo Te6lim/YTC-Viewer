@@ -1,5 +1,5 @@
 package com.te6lim.ytcviewer.models
 
-class Data(
+class Response(
     val data: List<Card>
 )
