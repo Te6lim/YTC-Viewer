@@ -110,7 +110,7 @@ class CardsViewModel : ViewModel() {
 
     private fun Array<String>.formattedString(): String {
         val arguments = StringBuilder().apply {
-            for ((i, string) in this.withIndex()) {
+            for ((i, string) in this@formattedString.withIndex()) {
                 append(string)
                 if (i != size - 1) append(",")
             }
