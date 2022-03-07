@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
@@ -20,8 +18,6 @@ class CardsFragment : Fragment() {
     private lateinit var cardsViewModel: CardsViewModel
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var binding: FragmentCardsBinding
-
-    private var spanCount: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,11 +36,6 @@ class CardsFragment : Fragment() {
 
         val adapter = CardListAdapter()
         binding.cards.adapter = adapter
-
-        spanCount = savedInstanceState?.getInt("S") ?: 0
-
-        if (spanCount != 0)
-            binding.cards.layoutManager = GridLayoutManager(requireContext(), spanCount)
 
         with(cardsViewModel) {
 
@@ -97,19 +88,6 @@ class CardsFragment : Fragment() {
             }
 
             cards.observe(viewLifecycleOwner) {
-
-                if (spanCount == 0) spanCount = binding.cards.width / 140
-
-                if (this@CardsFragment::binding.isInitialized) {
-                    binding.cards.layoutManager =
-                        object : GridLayoutManager(requireContext(), spanCount) {
-                            override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
-                                lp?.let { params -> params.width = (width / spanCount) - 16 }
-                                return true
-                            }
-                        }
-                }
-
                 adapter.submitList(it)
             }
 
@@ -153,9 +131,5 @@ class CardsFragment : Fragment() {
         cardsViewModel.removeAllCheckedCategory()
         binding.cardFilter.clearCheck()
 
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt("S", spanCount)
     }
 }

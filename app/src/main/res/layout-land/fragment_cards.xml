@@ -39,6 +39,8 @@
             android:layout_height="0dp"
             android:background="@color/background"
             android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="6"
             android:scrollbarSize="@dimen/small_spacing"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"

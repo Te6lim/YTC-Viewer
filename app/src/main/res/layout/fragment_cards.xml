@@ -41,6 +41,8 @@
             android:scrollbarSize="@dimen/small_spacing"
             android:scrollbars="vertical"
             android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.50"

@@ -1,6 +1,6 @@
 package com.te6lim.ytcviewer.models
 
-open class Response(
+sealed class Response(
     open val data: List<Card>
 ) {
     class MonsterCardResponse(

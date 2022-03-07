@@ -2,7 +2,7 @@ package com.te6lim.ytcviewer.models
 
 import com.squareup.moshi.Json
 
-open class Card(
+sealed class Card(
     open val name: String,
     open val type: String,
     open val desc: String,
@@ -32,7 +32,7 @@ open class Card(
         override val type: String,
         override val desc: String,
         override val race: String,
-        val archetype: String,
+        val archetype: String? = null,
         @Json(name = "card_sets") override val cardSets: List<CardSet?>?,
         @Json(name = "card_images") override val cardImages: List<CardImages?>?,
         @Json(name = "card_prices") override val cardPrices: List<CardPrice?>?

@@ -24,8 +24,6 @@ class CardsViewModel : ViewModel() {
     val checkedCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
         get() = _checkedCategories
 
-    private var isMonsterFilter = false
-
     private var selectedFilters = mapOf<String, Array<String>>()
 
     private var selectedTypeFilters = arrayOf<String>()
@@ -99,7 +97,6 @@ class CardsViewModel : ViewModel() {
 
             try {
                 _cards.value = cardsDeferred!!.await().data
-                val x = 0
             } catch (e: Exception) {
                 e.message
             }
@@ -118,14 +115,6 @@ class CardsViewModel : ViewModel() {
     }
 
     fun addCategoryToChecked(category: String) {
-        if (
-            FilterSelectionViewModel.CardFilterCategory.valueOf(category) !=
-            FilterSelectionViewModel.CardFilterCategory.Spell &&
-            FilterSelectionViewModel.CardFilterCategory.valueOf(category) !=
-            FilterSelectionViewModel.CardFilterCategory.Trap
-        ) {
-            isMonsterFilter = true
-        } else isMonsterFilter = false
         val map = _checkedCategories.value!!.toMutableMap()
         map[category] = FilterSelectionViewModel.CardFilterCategory.valueOf(category)
         _checkedCategories.value = map
