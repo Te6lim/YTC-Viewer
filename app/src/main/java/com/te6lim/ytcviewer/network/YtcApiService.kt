@@ -35,20 +35,26 @@ interface YtcApiService {
     @GET("cardinfo.php")
     fun getCardsAsync(
         @QueryMap query: Map<String, String>
-    ): Deferred<Response>
+    ): Deferred<Response.MonsterCardResponse>
 
     @GET("cardinfo.php")
     fun getCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>
-    ): Deferred<Response>
+    ): Deferred<Response.MonsterCardResponse>
+
+    @GET("cardinfo.php")
+    fun getNonMonsterCardsAsync(
+        @QueryMap query1: Map<String, String>,
+        @QueryMap query2: Map<String, String>
+    ): Deferred<Response.NonMonsterCardResponse>
 
     @GET("cardinfo.php")
     fun getCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
         @QueryMap query3: Map<String, String>
-    ): Deferred<Response>
+    ): Deferred<Response.MonsterCardResponse>
 }
 
 object YtcApi {

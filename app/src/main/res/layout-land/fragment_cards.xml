@@ -161,6 +161,10 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <include
+                        layout="@layout/network_failure_screen"
+                        android:visibility="gone" />
+
                 </FrameLayout>
 
             </ScrollView>

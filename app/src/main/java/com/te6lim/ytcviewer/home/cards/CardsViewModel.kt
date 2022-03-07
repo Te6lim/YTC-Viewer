@@ -13,10 +13,6 @@ import kotlinx.coroutines.launch
 
 class CardsViewModel : ViewModel() {
 
-    /*private val _propertiesString = MutableLiveData<String>()
-    val propertiesString: LiveData<String>
-        get() = _propertiesString*/
-
     private val _cards = MutableLiveData<List<Card>>()
     val cards: LiveData<List<Card>>
         get() = _cards
@@ -27,6 +23,8 @@ class CardsViewModel : ViewModel() {
         )
     val checkedCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
         get() = _checkedCategories
+
+    private var isMonsterFilter = false
 
     private var selectedFilters = mapOf<String, Array<String>>()
 
@@ -49,7 +47,7 @@ class CardsViewModel : ViewModel() {
                 1 -> {
 
                     if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
-                        cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                        cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                             mapOf(Pair("type", "spell card")),
                             mapOf(
                                 Pair(
@@ -61,7 +59,7 @@ class CardsViewModel : ViewModel() {
                     } else {
                         cardsDeferred =
                             if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
-                                YtcApi.retrofitService.getCardsAsync(
+                                YtcApi.retrofitService.getNonMonsterCardsAsync(
                                     mapOf(Pair("type", "trap card")),
                                     mapOf(
                                         Pair(
@@ -101,6 +99,7 @@ class CardsViewModel : ViewModel() {
 
             try {
                 _cards.value = cardsDeferred!!.await().data
+                val x = 0
             } catch (e: Exception) {
                 e.message
             }
@@ -119,6 +118,14 @@ class CardsViewModel : ViewModel() {
     }
 
     fun addCategoryToChecked(category: String) {
+        if (
+            FilterSelectionViewModel.CardFilterCategory.valueOf(category) !=
+            FilterSelectionViewModel.CardFilterCategory.Spell &&
+            FilterSelectionViewModel.CardFilterCategory.valueOf(category) !=
+            FilterSelectionViewModel.CardFilterCategory.Trap
+        ) {
+            isMonsterFilter = true
+        } else isMonsterFilter = false
         val map = _checkedCategories.value!!.toMutableMap()
         map[category] = FilterSelectionViewModel.CardFilterCategory.valueOf(category)
         _checkedCategories.value = map
