@@ -16,4 +16,8 @@
     <string name="close">Close</string>
     <string name="dissatisfied">dissatisfied</string>
     <string name="card_image">Card image</string>
+    <string name="network_error_please_retry">Network error, please retry…</string>
+    <string name="retry">Retry</string>
+    <string name="connection_error_image">Connection error image</string>
+    <string name="could_not_find_search_query">Could not find search query</string>
 </resources>

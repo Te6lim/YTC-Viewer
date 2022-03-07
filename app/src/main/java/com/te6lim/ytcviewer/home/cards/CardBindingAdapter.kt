@@ -12,6 +12,5 @@ fun ImageView.setImage(card: Card?) {
         Glide.with(this.context).load(
             card.cardImages?.get(0)?.imageUrlSmall?.toUri()
         ).into(this)
-        /*setImageDrawable(ContextCompat.getDrawable(context, R.drawable.tornado_dragon))*/
     }
 }
