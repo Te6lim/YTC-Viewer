@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
 
                 checkedChipName.observe(viewLifecycleOwner) {
                     if (it != null) {
-
+                        binding.searchBar.isIconified = true
                         findNavController().navigate(
                             HomeFragmentDirections
                                 .actionHomeFragmentToFilterSelectionFragment(it)
@@ -90,7 +90,6 @@ class HomeFragment : Fragment() {
             homeViewModel.setFilterList(it)
             savedStateHandle.remove<List<String>>(FILTER_LIST_KEY)
         }
-
 
         return binding.root
     }
