@@ -5,16 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
-import com.te6lim.ytcviewer.models.Card
-import com.te6lim.ytcviewer.models.Response
+import com.te6lim.ytcviewer.network.NetworkCard
+import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.YtcApi
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 
 class CardsViewModel : ViewModel() {
 
-    private val _cards = MutableLiveData<List<Card>>()
-    val cards: LiveData<List<Card>>
+    private val _cards = MutableLiveData<List<NetworkCard>>()
+    val cards: LiveData<List<NetworkCard>>
         get() = _cards
 
     private val _checkedCategories =

@@ -5,13 +5,14 @@ import androidx.room.*
 
 @Entity(tableName = "image_table")
 data class ImageCache(
-    @PrimaryKey(autoGenerate = false) val id: Long,
-    @ColumnInfo(name = "image") val image: Image? = null
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    @ColumnInfo val image: Image? = null,
+    @ColumnInfo val imageSmall: Image? = null
 )
 
 @Dao
 interface ImageCacheDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(image: ImageCache): Long
 }
