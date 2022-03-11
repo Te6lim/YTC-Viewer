@@ -12,6 +12,7 @@ import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.home.HomeViewModel
+import com.te6lim.ytcviewer.network.NetworkStatus
 
 class CardsFragment : Fragment() {
 
@@ -22,14 +23,13 @@ class CardsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        retainInstance = true
         setHasOptionsMenu(true)
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_cards, container, false)
 
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
-        cardsViewModel = ViewModelProvider(requireActivity())[CardsViewModel::class.java]
+        cardsViewModel = ViewModelProvider(this)[CardsViewModel::class.java]
 
         binding.viewModel = cardsViewModel
         binding.lifecycleOwner = this
@@ -85,6 +85,45 @@ class CardsFragment : Fragment() {
                     }
 
                 binding.cardFilter.addView(chip)
+            }
+
+            networkStatus.observe(viewLifecycleOwner) { status ->
+                when (status) {
+                    NetworkStatus.DONE -> {
+                        with(binding) {
+                            searchDescription.visibility = View.GONE
+                            networkErrorScreen.visibility = View.GONE
+                            unknownQueryScreen.visibility = View.GONE
+                            loadingScreen.visibility = View.GONE
+                            infoScreen.visibility = View.GONE
+                            cards.visibility = View.VISIBLE
+                        }
+                    }
+
+                    NetworkStatus.LOADING -> {
+                        with(binding) {
+                            searchDescription.visibility = View.GONE
+                            networkErrorScreen.visibility = View.GONE
+                            unknownQueryScreen.visibility = View.GONE
+                            loadingScreen.visibility = View.VISIBLE
+                            infoScreen.visibility = View.VISIBLE
+                            cards.visibility = View.GONE
+                        }
+                    }
+
+                    NetworkStatus.ERROR -> {
+                        with(binding) {
+                            searchDescription.visibility = View.GONE
+                            networkErrorScreen.visibility = View.VISIBLE
+                            unknownQueryScreen.visibility = View.GONE
+                            loadingScreen.visibility = View.GONE
+                            infoScreen.visibility = View.VISIBLE
+                            cards.visibility = View.GONE
+                        }
+                    }
+                    else -> {
+                    }
+                }
             }
 
             cards.observe(viewLifecycleOwner) {

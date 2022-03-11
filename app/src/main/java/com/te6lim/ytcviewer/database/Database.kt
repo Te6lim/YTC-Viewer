@@ -84,6 +84,7 @@ interface NonMonsterDao {
 )
 @TypeConverters(Converter::class)
 abstract class CardDatabase : RoomDatabase() {
+
     abstract val monsterDao: MonsterDao
     abstract val nonMonsterDao: NonMonsterDao
 

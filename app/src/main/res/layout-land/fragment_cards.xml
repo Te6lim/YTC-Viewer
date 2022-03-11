@@ -111,7 +111,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/constraintLayout"
+                        android:id="@+id/unknown_query_screen"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:visibility="gone"
@@ -165,7 +165,13 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <include
+                        android:id="@+id/network_error_screen"
                         layout="@layout/network_failure_screen"
+                        android:visibility="gone" />
+
+                    <include
+                        android:id="@+id/loadingScreen"
+                        layout="@layout/loading_screen"
                         android:visibility="gone" />
 
                 </FrameLayout>

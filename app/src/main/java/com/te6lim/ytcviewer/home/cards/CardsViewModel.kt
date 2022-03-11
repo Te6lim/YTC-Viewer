@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.network.NetworkCard
+import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.YtcApi
 import kotlinx.coroutines.Deferred
@@ -32,6 +33,9 @@ class CardsViewModel : ViewModel() {
 
     private var selectedAttributeFilters = arrayOf<String>()
 
+    private val _networkStatus = MutableLiveData<NetworkStatus>()
+    val networkStatus: LiveData<NetworkStatus>
+        get() = _networkStatus
 
     fun getProperties(type: String) {
 
@@ -96,9 +100,11 @@ class CardsViewModel : ViewModel() {
             }
 
             try {
+                _networkStatus.value = NetworkStatus.LOADING
                 _cards.value = cardsDeferred!!.await().data
+                _networkStatus.value = NetworkStatus.DONE
             } catch (e: Exception) {
-                e.message
+                _networkStatus.value = NetworkStatus.ERROR
             }
 
         }

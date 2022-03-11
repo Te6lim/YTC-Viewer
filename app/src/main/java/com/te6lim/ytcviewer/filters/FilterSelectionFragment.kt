@@ -93,7 +93,7 @@ class FilterSelectionFragment : Fragment() {
                     previousBackStackEntry?.savedStateHandle?.set(
                         FILTER_LIST_KEY, viewModel.selectedFilters
                     )
-                    requireActivity().onBackPressed()
+                    popBackStack()
                 }
                 true
             }

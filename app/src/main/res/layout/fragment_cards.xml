@@ -88,11 +88,7 @@
                         android:id="@+id/searchDescription"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="visible"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:visibility="visible">
 
                         <TextView
                             android:id="@+id/textView20"
@@ -123,14 +119,10 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/constraintLayout"
+                        android:id="@+id/unknown_query_screen"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:visibility="gone">
 
 
                         <ImageView
@@ -177,7 +169,13 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <include
+                        android:id="@+id/network_error_screen"
                         layout="@layout/network_failure_screen"
+                        android:visibility="gone" />
+
+                    <include
+                        android:id="@+id/loadingScreen"
+                        layout="@layout/loading_screen"
                         android:visibility="gone" />
 
                 </FrameLayout>
