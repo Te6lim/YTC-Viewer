@@ -75,6 +75,7 @@ interface NonMonsterDao {
     entities = [DatabaseMonsterCard::class, DatabaseNonMonsterCard::class],
     version = 1, exportSchema = false
 )
+@TypeConverters(Converter::class)
 abstract class CardDatabase : RoomDatabase() {
     abstract val monsterDao: MonsterDao
     abstract val nonMonsterDao: NonMonsterDao
@@ -90,7 +91,7 @@ abstract class CardDatabase : RoomDatabase() {
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context, CardDatabase::class.java, "cardDatabase"
-                    ).build()
+                    ).addTypeConverter(Converter()).build()
                     INSTANCE = instance
                 }
                 return instance
