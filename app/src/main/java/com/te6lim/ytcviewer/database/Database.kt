@@ -1,6 +1,7 @@
 package com.te6lim.ytcviewer.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
@@ -46,7 +47,10 @@ interface MonsterDao {
     fun update(card: DatabaseMonsterCard)
 
     @Query("SELECT * FROM monsterDatabaseCard WHERE id = :key")
-    fun get(key: Long)
+    fun get(key: Long): DatabaseMonsterCard
+
+    @Query("SELECT * FROM monsterDatabaseCard")
+    fun getAll(): LiveData<List<DatabaseMonsterCard>>
 
     @Query("DELETE FROM monsterDatabaseCard")
     fun clear()
@@ -65,7 +69,10 @@ interface NonMonsterDao {
     fun update(card: DatabaseNonMonsterCard)
 
     @Query("SELECT * FROM nonMonsterDatabaseCard WHERE id = :key")
-    fun get(key: Long)
+    fun get(key: Long): DatabaseNonMonsterCard
+
+    @Query("SELECT * FROM nonMonsterDatabaseCard")
+    fun getAll(): LiveData<List<DatabaseNonMonsterCard>>
 
     @Query("DELETE FROM nonMonsterDatabaseCard")
     fun clear()
