@@ -81,6 +81,8 @@ class CardsFragment : Fragment() {
                                 addCategoryToChecked(category.name)
                                 homeViewModel.setChipChecked(category.name)
                             } else unMarkChip(category.name)
+
+                            setLastChecked(category.name)
                         }
                     }
 
@@ -150,10 +152,10 @@ class CardsFragment : Fragment() {
 
                 hasSelectedFilters.observe(viewLifecycleOwner) { hasFilters ->
 
-                    lastChecked?.let { getProperties(it) }
-
-                    if (hasFilters) setHasSelectedFilters(false)
-                    else lastChecked?.let { category -> unMarkChip(category) }
+                    if (hasFilters) {
+                        getProperties()
+                        setHasSelectedFilters(false)
+                    } else lastChecked?.let { category -> unMarkChip(category) }
                 }
             }
         }
@@ -164,6 +166,7 @@ class CardsFragment : Fragment() {
     private fun unMarkChip(category: String) {
         cardsViewModel.removeCategoryFromChecked(category)
         binding.cardFilter.findViewWithTag<Chip>(category).isChecked = false
+        cardsViewModel.setLastChecked(category)
     }
 
     private fun unMarkAllChips() {

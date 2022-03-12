@@ -22,22 +22,15 @@ class HomeViewModel : ViewModel() {
     val filterList: LiveData<List<String>?>
         get() = _filterList
 
-    var lastChecked: String? = null
-        private set
-
     fun setSearchBarClicked(value: Boolean) {
         _searchBarClicked.value = value
     }
 
     fun setChipChecked(value: String?) {
-        value?.let {
-            lastChecked = it
-        }
         _checkedChipName.value = value
     }
 
     fun setHasSelectedFilters(value: Boolean) {
-        if (!value) lastChecked = null
         _hasSelectedFilters.value = value
     }
 

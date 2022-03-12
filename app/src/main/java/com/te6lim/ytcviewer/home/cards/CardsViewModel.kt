@@ -1,9 +1,6 @@
 package com.te6lim.ytcviewer.home.cards
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.network.NetworkCard
 import com.te6lim.ytcviewer.network.NetworkStatus
@@ -22,8 +19,12 @@ class CardsViewModel : ViewModel() {
         MutableLiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>(
             mutableMapOf()
         )
+
     val checkedCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
         get() = _checkedCategories
+
+    var lastChecked: String? = null
+        private set
 
     private var selectedFilters = mapOf<String, Array<String>>()
 
@@ -37,7 +38,91 @@ class CardsViewModel : ViewModel() {
     val networkStatus: LiveData<NetworkStatus>
         get() = _networkStatus
 
-    fun getProperties(type: String) {
+    private val _searchKey = MutableLiveData<String>()
+    val searchKey: LiveData<String>
+        get() = _searchKey
+
+    fun setSearchKey(value: String) {
+        _searchKey.value = value
+    }
+
+    fun setLastChecked(value: String?) {
+        checkedCategories.value?.let {
+            lastChecked = if (it.isEmpty()) null
+            else value
+        } ?: run { lastChecked = null }
+    }
+
+    private fun getPropertiesWithSearch(key: String) {
+        viewModelScope.launch {
+
+            var cardsDeferred: Deferred<Response>? = null
+
+            val keys = selectedFilters.keys.toList()
+
+            when (selectedFilters.size) {
+                1 -> {
+
+                    if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
+                        cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsWithSearchAsync(
+                            mapOf(Pair("type", "spell card")),
+                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())), key
+                        )
+                    } else {
+                        cardsDeferred =
+                            if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Trap.name
+                            ) {
+                                YtcApi.retrofitService.getNonMonsterCardsWithSearchAsync(
+                                    mapOf(Pair("type", "trap card")),
+                                    mapOf(
+                                        Pair(
+                                            keys[0], selectedFilters[keys[0]]!!.formattedString()
+                                        )
+                                    ), key
+                                )
+                            } else {
+                                YtcApi.retrofitService.getCardsWithSearchAsync(
+                                    mapOf(
+                                        Pair(
+                                            keys[0],
+                                            selectedFilters[keys[0]]!!.formattedString()
+                                        )
+                                    ), key
+                                )
+                            }
+                    }
+                }
+
+                2 -> {
+                    cardsDeferred = YtcApi.retrofitService.getCardsWithSearchAsync(
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
+                        key
+                    )
+                }
+
+                3 -> {
+                    cardsDeferred = YtcApi.retrofitService.getCardsWithSearchAsync(
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
+                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.formattedString())),
+                        key
+                    )
+                }
+            }
+
+            try {
+                _networkStatus.value = NetworkStatus.LOADING
+                _cards.value = cardsDeferred!!.await().data
+                _networkStatus.value = NetworkStatus.DONE
+            } catch (e: Exception) {
+                _networkStatus.value = NetworkStatus.ERROR
+            }
+
+        }
+    }
+
+    fun getProperties() {
 
         viewModelScope.launch {
 
@@ -48,7 +133,7 @@ class CardsViewModel : ViewModel() {
             when (selectedFilters.size) {
                 1 -> {
 
-                    if (type == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
+                    if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
                         cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                             mapOf(Pair("type", "spell card")),
                             mapOf(
@@ -60,7 +145,7 @@ class CardsViewModel : ViewModel() {
                         )
                     } else {
                         cardsDeferred =
-                            if (type == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
+                            if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
                                 YtcApi.retrofitService.getNonMonsterCardsAsync(
                                     mapOf(Pair("type", "trap card")),
                                     mapOf(
@@ -106,7 +191,6 @@ class CardsViewModel : ViewModel() {
             } catch (e: Exception) {
                 _networkStatus.value = NetworkStatus.ERROR
             }
-
         }
     }
 
@@ -129,6 +213,7 @@ class CardsViewModel : ViewModel() {
     fun removeCategoryFromChecked(category: String) {
         val map = _checkedCategories.value!!.toMutableMap()
         map.remove(category)
+        if (map.isEmpty()) lastChecked = null
 
         when (FilterSelectionViewModel.CardFilterCategory.valueOf(category)) {
             FilterSelectionViewModel.CardFilterCategory.Type ->
