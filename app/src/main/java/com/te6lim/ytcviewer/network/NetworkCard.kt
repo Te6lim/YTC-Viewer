@@ -2,7 +2,7 @@ package com.te6lim.ytcviewer.network
 
 import com.squareup.moshi.Json
 
-sealed class NetworkCard(
+open class NetworkCard(
     open val id: Long,
     open val name: String,
     open val type: String,

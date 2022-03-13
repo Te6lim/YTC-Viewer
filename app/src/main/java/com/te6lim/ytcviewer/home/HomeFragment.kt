@@ -80,6 +80,18 @@ class HomeFragment : Fragment() {
                             chipGroupDivider.visibility = View.VISIBLE
                         }
                     }
+
+                    this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextSubmit(query: String?): Boolean {
+                            query?.let {
+                                setSearchKey(query)
+                            }
+                            return true
+                        }
+
+                        override fun onQueryTextChange(newText: String?) = true
+
+                    })
                 }
             }
         }

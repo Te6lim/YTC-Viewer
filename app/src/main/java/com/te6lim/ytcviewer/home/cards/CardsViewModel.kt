@@ -44,65 +44,15 @@ class CardsViewModel : ViewModel() {
         _searchKey.value = value
     }
 
-    private fun getPropertiesWithSearch(key: String) {
+    fun getPropertiesWithSearch(key: String) {
         viewModelScope.launch {
 
-            var cardsDeferred: Deferred<Response>? = null
-
-            val keys = selectedFilters.keys.toList()
-
-            when (selectedFilters.size) {
-                1 -> {
-
-                    if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
-                        cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsWithSearchAsync(
-                            mapOf(Pair("type", "spell card")),
-                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())), key
-                        )
-                    } else {
-                        cardsDeferred =
-                            if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Trap.name
-                            ) {
-                                YtcApi.retrofitService.getNonMonsterCardsWithSearchAsync(
-                                    mapOf(Pair("type", "trap card")),
-                                    mapOf(
-                                        Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())
-                                    ), key
-                                )
-                            } else {
-                                YtcApi.retrofitService.getCardsWithSearchAsync(
-                                    mapOf(
-                                        Pair(
-                                            keys[0],
-                                            selectedFilters[keys[0]]!!.formattedString()
-                                        )
-                                    ), key
-                                )
-                            }
-                    }
-                }
-
-                2 -> {
-                    cardsDeferred = YtcApi.retrofitService.getCardsWithSearchAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
-                        key
-                    )
-                }
-
-                3 -> {
-                    cardsDeferred = YtcApi.retrofitService.getCardsWithSearchAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
-                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.formattedString())),
-                        key
-                    )
-                }
-            }
+            val cardsDeferred: Deferred<Response> =
+                YtcApi.retrofitService.getCardsBySearchAsync(key)
 
             try {
                 _networkStatus.value = NetworkStatus.LOADING
-                _cards.value = cardsDeferred!!.await().data
+                _cards.value = cardsDeferred.await().data
                 _networkStatus.value = NetworkStatus.DONE
             } catch (e: Exception) {
                 _networkStatus.value = NetworkStatus.ERROR

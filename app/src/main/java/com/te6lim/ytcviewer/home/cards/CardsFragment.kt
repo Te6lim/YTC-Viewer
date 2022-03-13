@@ -146,6 +146,10 @@ class CardsFragment : Fragment() {
                     }
                 } ?: unMarkChip(cardsViewModel.lastChecked!!)
             }
+
+            searchKey.observe(viewLifecycleOwner) {
+                cardsViewModel.getPropertiesWithSearch(it)
+            }
         }
 
         return binding.root

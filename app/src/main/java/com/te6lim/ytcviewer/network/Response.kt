@@ -1,6 +1,6 @@
 package com.te6lim.ytcviewer.network
 
-sealed class Response(
+open class Response(
     open val data: List<NetworkCard>
 ) {
     class MonsterCardResponse(

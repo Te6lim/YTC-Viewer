@@ -60,7 +60,12 @@ interface YtcApiService {
         @QueryMap query3: Map<String, String>
     ): Deferred<Response.MonsterCardResponse>
 
-    // Get cards with search
+    @GET("cardinfo.php")
+    fun getCardsBySearchAsync(
+        @Query("fname") searchString: String
+    ): Deferred<Response>
+
+    /*// Get cards with search
     @GET("cardinfo.php")
     fun getCardsWithSearchAsync(
         @QueryMap query: Map<String, String>,
@@ -87,7 +92,7 @@ interface YtcApiService {
         @QueryMap query2: Map<String, String>,
         @QueryMap query3: Map<String, String>,
         @Query("fname") searchWord: String
-    ): Deferred<Response.MonsterCardResponse>
+    ): Deferred<Response.MonsterCardResponse>*/
 }
 
 object YtcApi {
