@@ -24,11 +24,13 @@ class CardsViewModel : ViewModel() {
     var lastChecked: String? = null
         private set
 
+    var lastSearchQuery: String? = null
+        private set
+
     private val selectedFilters = MutableLiveData<MutableMap<String, Array<String>>>()
 
     val filterTransformation = Transformations.map(selectedFilters) {
-        getProperties(it)
-        it.toMap()
+        getProperties()
     }
 
     private var selectedTypeFilters = arrayOf<String>()
@@ -42,6 +44,7 @@ class CardsViewModel : ViewModel() {
         get() = _networkStatus
 
     fun getPropertiesWithSearch(key: String) {
+        lastSearchQuery = key
         viewModelScope.launch {
 
             val cardsDeferred: Deferred<Response> =
@@ -58,14 +61,14 @@ class CardsViewModel : ViewModel() {
         }
     }
 
-    private fun getProperties(filterMap: Map<String, Array<String>>) {
+    fun getProperties() {
         viewModelScope.launch {
 
             var cardsDeferred: Deferred<Response>? = null
 
-            val keys = filterMap.keys.toList()
+            val keys = selectedFilters.value!!.keys.toList()
 
-            when (filterMap.size) {
+            when (selectedFilters.value!!.size) {
                 1 -> {
 
                     if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
@@ -74,19 +77,20 @@ class CardsViewModel : ViewModel() {
                             mapOf(
                                 Pair(
                                     keys[0],
-                                    filterMap[keys[0]]!!.formattedString()
+                                    selectedFilters.value!![keys[0]]!!.formattedString()
                                 )
                             )
                         )
                     } else {
                         cardsDeferred =
-                            if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
+                            if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Trap.name
+                            ) {
                                 YtcApi.retrofitService.getNonMonsterCardsAsync(
                                     mapOf(Pair("type", "trap card")),
                                     mapOf(
                                         Pair(
                                             keys[0],
-                                            filterMap[keys[0]]!!.formattedString()
+                                            selectedFilters.value!![keys[0]]!!.formattedString()
                                         )
                                     )
                                 )
@@ -95,7 +99,7 @@ class CardsViewModel : ViewModel() {
                                     mapOf(
                                         Pair(
                                             keys[0],
-                                            filterMap[keys[0]]!!.formattedString()
+                                            selectedFilters.value!![keys[0]]!!.formattedString()
                                         )
                                     )
                                 )
@@ -105,16 +109,16 @@ class CardsViewModel : ViewModel() {
 
                 2 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], filterMap[keys[0]]!!.formattedString())),
-                        mapOf(Pair(keys[1], filterMap[keys[1]]!!.formattedString()))
+                        mapOf(Pair(keys[0], selectedFilters.value!![keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], selectedFilters.value!![keys[1]]!!.formattedString()))
                     )
                 }
 
                 3 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], filterMap[keys[0]]!!.formattedString())),
-                        mapOf(Pair(keys[1], filterMap[keys[1]]!!.formattedString())),
-                        mapOf(Pair(keys[2], filterMap[keys[2]]!!.formattedString()))
+                        mapOf(Pair(keys[0], selectedFilters.value!![keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], selectedFilters.value!![keys[1]]!!.formattedString())),
+                        mapOf(Pair(keys[2], selectedFilters.value!![keys[2]]!!.formattedString()))
                     )
                 }
             }
@@ -216,6 +220,5 @@ class CardsViewModel : ViewModel() {
 
     private fun removeFilter(key: String) {
         selectedFilters.value = selectedFilters.value!!.apply { remove(key) }
-        val x = 0
     }
 }

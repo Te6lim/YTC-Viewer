@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +37,13 @@ class CardsFragment : Fragment() {
 
         val adapter = CardListAdapter()
         binding.cards.adapter = adapter
+
+        binding.networkErrorScreen.findViewById<Button>(R.id.retry_button)
+            .setOnClickListener {
+                cardsViewModel.lastSearchQuery?.let {
+                    cardsViewModel.getPropertiesWithSearch(it)
+                } ?: cardsViewModel.getProperties()
+            }
 
         with(cardsViewModel) {
             checkedCategories.observe(viewLifecycleOwner) {
