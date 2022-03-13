@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ItemCardBinding
-import com.te6lim.ytcviewer.network.NetworkCard
+import com.te6lim.ytcviewer.domain.DomainCard
 
-class CardListAdapter : ListAdapter<NetworkCard, CardViewHolder>(DiffCallback) {
+class CardListAdapter : ListAdapter<DomainCard, CardViewHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder.create(parent)
     }
@@ -34,20 +34,20 @@ class CardViewHolder(
         }
     }
 
-    fun bind(networkCard: NetworkCard) {
+    fun bind(card: DomainCard) {
 
-        itemCardBinding.card = networkCard
-        itemCardBinding.cardName.text = networkCard.name
+        itemCardBinding.card = card
+        itemCardBinding.cardName.text = card.name
     }
 
 }
 
-object DiffCallback : DiffUtil.ItemCallback<NetworkCard>() {
-    override fun areItemsTheSame(oldItem: NetworkCard, newItem: NetworkCard): Boolean {
+object DiffCallback : DiffUtil.ItemCallback<DomainCard>() {
+    override fun areItemsTheSame(oldItem: DomainCard, newItem: DomainCard): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: NetworkCard, newItem: NetworkCard): Boolean {
+    override fun areContentsTheSame(oldItem: DomainCard, newItem: DomainCard): Boolean {
         return oldItem.name == newItem.name
     }
 

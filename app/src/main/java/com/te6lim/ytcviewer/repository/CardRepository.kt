@@ -16,7 +16,7 @@ class CardRepository(
 ) {
 
     private enum class CardType {
-        MONSTER, NON_MONSTER, GENERAL
+        MONSTER, NON_MONSTER
     }
 
     private val job = Job()
@@ -33,6 +33,9 @@ class CardRepository(
     ) {
         it.toDomainNonMonsterCards()
     }
+
+    private val _cardMix = MutableLiveData<List<DomainCard>>()
+    val cardMix: LiveData<List<DomainCard>> get() = _cardMix
 
     var lastSearchQuery: String? = null
         private set
@@ -145,7 +148,7 @@ class CardRepository(
         }
     }
 
-    /*fun getCardsWithSearch(key: String) {
+    fun getCardsWithSearch(key: String) {
         lastSearchQuery = key
         scope.launch {
 
@@ -154,13 +157,13 @@ class CardRepository(
 
             try {
                 networkStatus.value = NetworkStatus.LOADING
-                cardsDeferred.await().data
+                _cardMix.value = cardsDeferred.await().data.toDomainCards()
                 networkStatus.value = NetworkStatus.DONE
             } catch (e: Exception) {
                 networkStatus.value = NetworkStatus.ERROR
             }
 
         }
-    }*/
+    }
 
 }

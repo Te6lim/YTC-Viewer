@@ -40,10 +40,10 @@ data class DatabaseNonMonsterCard(
 @Dao
 interface MonsterDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(card: DatabaseMonsterCard): Long
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMany(vararg card: DatabaseMonsterCard)
 
     @Update
@@ -62,10 +62,10 @@ interface MonsterDao {
 @Dao
 interface NonMonsterDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(card: DatabaseNonMonsterCard): Long
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMany(vararg card: DatabaseNonMonsterCard)
 
     @Update

@@ -3,6 +3,7 @@ package com.te6lim.ytcviewer.network
 import com.squareup.moshi.Json
 import com.te6lim.ytcviewer.database.DatabaseMonsterCard
 import com.te6lim.ytcviewer.database.DatabaseNonMonsterCard
+import com.te6lim.ytcviewer.domain.DomainCard
 
 open class NetworkCard(
     open val id: Long,
@@ -85,6 +86,15 @@ fun List<NetworkCard>.toDatabaseNonMonsterCards()
             id = it.id, name = it.name, desc = it.desc, type = it.type, race = it.race,
             archetype = it.archetype, cardSets = it.cardSets, cardImages = it.cardImages,
             cardPrices = it.cardPrices
+        )
+    }
+}
+
+fun List<NetworkCard>.toDomainCards(): List<DomainCard> {
+    return map {
+        DomainCard(
+            id = it.id, name = it.name, type = it.type, desc = it.desc, race = it.race,
+            cardSets = it.cardSets, cardImages = it.cardImages, cardPrices = it.cardPrices
         )
     }
 }
