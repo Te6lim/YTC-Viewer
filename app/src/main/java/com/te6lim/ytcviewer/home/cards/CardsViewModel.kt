@@ -1,30 +1,21 @@
 package com.te6lim.ytcviewer.home.cards
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
-import com.te6lim.ytcviewer.network.NetworkCard
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.MutableMap
-import kotlin.collections.isNotEmpty
-import kotlin.collections.mutableMapOf
+import com.te6lim.ytcviewer.network.NetworkStatus
+import com.te6lim.ytcviewer.repository.CardRepository
 import kotlin.collections.set
-import kotlin.collections.toMutableMap
-import kotlin.collections.toTypedArray
 
-class CardsViewModel : ViewModel() {
-
-    private val _cards = MutableLiveData<List<NetworkCard>>()
-    val cards: LiveData<List<NetworkCard>>
-        get() = _cards
+class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     private val selectedFilters = MutableLiveData<MutableMap<String, Array<String>>>()
 
+    private val _networkStatus = MutableLiveData<NetworkStatus>()
+    val networkStatus: LiveData<NetworkStatus> get() = _networkStatus
+
     val filterTransformation = Transformations.map(selectedFilters) {
-        getProperties()
+        repository.getCards(it, lastChecked!!)
     }
 
     private val _checkedCategories =
@@ -42,12 +33,21 @@ class CardsViewModel : ViewModel() {
 
     private var selectedAttributeFilters = arrayOf<String>()
 
-    fun getPropertiesWithSearch(key: String) {
+    private val repository = CardRepository(cardDb, _networkStatus)
 
+    val cards = repository.resolveCardListSource()
+
+    var lastSearchQuery: String? = null
+        private set
+
+    fun getCards() {
+        lastSearchQuery = null
+        repository.getCards(selectedFilters.value!!, lastChecked!!)
     }
 
-    fun getProperties() {
-
+    fun getCardsWithSearch(value: String) {
+        lastSearchQuery = value
+        repository.getCardsWithSearch(value)
     }
 
     fun addCategoryToChecked(category: String) {
@@ -127,5 +127,14 @@ class CardsViewModel : ViewModel() {
 
     private fun removeFilter(key: String) {
         selectedFilters.value = selectedFilters.value!!.apply { remove(key) }
+    }
+}
+
+class CardsViewModelFactory(private val cardDb: CardDatabase) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CardsViewModel::class.java))
+            return CardsViewModel(cardDb) as T
+        else throw java.lang.IllegalArgumentException("unknown viewModel class")
     }
 }

@@ -41,8 +41,8 @@ class CardsFragment : Fragment() {
         binding.networkErrorScreen.findViewById<Button>(R.id.retry_button)
             .setOnClickListener {
                 cardsViewModel.lastSearchQuery?.let {
-                    cardsViewModel.getPropertiesWithSearch(it)
-                } ?: cardsViewModel.getProperties()
+                    cardsViewModel.getCardsWithSearch(it)
+                } ?: cardsViewModel.getCards()
             }
 
         with(cardsViewModel) {
@@ -159,7 +159,7 @@ class CardsFragment : Fragment() {
             searchKey.observe(viewLifecycleOwner) {
                 it?.let { searchKey ->
                     unMarkAllChips()
-                    cardsViewModel.getPropertiesWithSearch(searchKey)
+                    cardsViewModel.getCardsWithSearch(searchKey)
                     setSearchKey(null)
                 }
             }

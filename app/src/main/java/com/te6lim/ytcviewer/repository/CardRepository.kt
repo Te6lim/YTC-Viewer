@@ -1,8 +1,6 @@
 package com.te6lim.ytcviewer.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toDomainMonsterCards
 import com.te6lim.ytcviewer.database.toDomainNonMonsterCards
@@ -22,23 +20,52 @@ class CardRepository(
     private val job = Job()
     private val scope = CoroutineScope(job + Dispatchers.Main)
 
-    val monsterCards: LiveData<List<DomainCard>> = Transformations.map(
+    private val monsterCards: LiveData<List<DomainCard>> = Transformations.map(
         cardDb.monsterDao.getAll()
     ) {
         it.toDomainMonsterCards()
     }
 
-    val nonMonsterCards: LiveData<List<DomainCard>> = Transformations.map(
+    private val nonMonsterCards: LiveData<List<DomainCard>> = Transformations.map(
         cardDb.nonMonsterDao.getAll()
     ) {
         it.toDomainNonMonsterCards()
     }
 
-    private val _cardMix = MutableLiveData<List<DomainCard>>()
-    val cardMix: LiveData<List<DomainCard>> get() = _cardMix
+    private val cardMix = MutableLiveData<List<DomainCard>>()
 
-    var lastSearchQuery: String? = null
-        private set
+    fun resolveCardListSource(): LiveData<List<DomainCard>> {
+        val mediator = MediatorLiveData<List<DomainCard>>()
+
+        val monsterCardsObserver = Observer<List<DomainCard>> {
+            monsterCards.value?.let {
+                mediator.value ?: run {
+                    mediator.value = it
+                }
+            }
+        }
+
+        val nonMonsterCardsObserver = Observer<List<DomainCard>> {
+            nonMonsterCards.value?.let {
+                mediator.value ?: run {
+                    mediator.value = it
+                }
+            }
+        }
+
+        val cardMixObserver = Observer<List<DomainCard>> {
+            cardMix.value?.let {
+                mediator.value ?: run {
+                    mediator.value = it
+                }
+            }
+        }
+
+        mediator.addSource(monsterCards, monsterCardsObserver)
+        mediator.addSource(nonMonsterCards, nonMonsterCardsObserver)
+        mediator.addSource(cardMix, cardMixObserver)
+        return mediator
+    }
 
     private var type: CardType? = null
 
@@ -53,7 +80,6 @@ class CardRepository(
     }
 
     fun getCards(selectedFilters: Map<String, Array<String>>, lastChecked: String) {
-        lastSearchQuery = null
         scope.launch {
             withContext(Dispatchers.IO) {
                 var cardsDeferred: Deferred<Response>? = null
@@ -149,7 +175,6 @@ class CardRepository(
     }
 
     fun getCardsWithSearch(key: String) {
-        lastSearchQuery = key
         scope.launch {
 
             val cardsDeferred: Deferred<Response> =
@@ -157,7 +182,7 @@ class CardRepository(
 
             try {
                 networkStatus.value = NetworkStatus.LOADING
-                _cardMix.value = cardsDeferred.await().data.toDomainCards()
+                cardMix.value = cardsDeferred.await().data.toDomainCards()
                 networkStatus.value = NetworkStatus.DONE
             } catch (e: Exception) {
                 networkStatus.value = NetworkStatus.ERROR
