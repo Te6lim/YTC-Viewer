@@ -4,10 +4,10 @@ open class Response(
     open val data: List<NetworkCard>
 ) {
     class MonsterCardResponse(
-        override val data: List<NetworkCard.MonsterNetworkCard>
+        override val data: List<NetworkCard.NetworkMonsterCard>
     ) : Response(data)
 
     class NonMonsterCardResponse(
-        override val data: List<NetworkCard.NonMonsterNetworkCard>
+        override val data: List<NetworkCard.NetworkNonMonsterCard>
     ) : Response(data)
 }

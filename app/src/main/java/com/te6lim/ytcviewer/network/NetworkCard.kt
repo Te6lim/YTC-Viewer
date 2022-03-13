@@ -1,6 +1,8 @@
 package com.te6lim.ytcviewer.network
 
 import com.squareup.moshi.Json
+import com.te6lim.ytcviewer.database.DatabaseMonsterCard
+import com.te6lim.ytcviewer.database.DatabaseNonMonsterCard
 
 open class NetworkCard(
     open val id: Long,
@@ -13,7 +15,7 @@ open class NetworkCard(
     @Json(name = "card_prices") open val cardPrices: List<CardPrice?>?
 ) {
 
-    data class MonsterNetworkCard(
+    data class NetworkMonsterCard(
         override val id: Long,
         override val name: String,
         override val type: String,
@@ -29,7 +31,7 @@ open class NetworkCard(
 
     ) : NetworkCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
 
-    data class NonMonsterNetworkCard(
+    data class NetworkNonMonsterCard(
         override val id: Long,
         override val name: String,
         override val type: String,
@@ -63,3 +65,24 @@ class CardPrice(
     val amazonPrice: String? = null,
     val coolStuffIncPrice: String? = null
 )
+
+fun List<NetworkCard.NetworkMonsterCard>.toDatabaseMonsterCards(): List<DatabaseMonsterCard> {
+    return map {
+        DatabaseMonsterCard(
+            id = it.id, name = it.name, type = it.type, desc = it.desc, race = it.race,
+            atk = it.atk, def = it.def, level = it.level, attribute = it.attribute,
+            cardSets = it.cardSets, cardImages = it.cardImages, cardPrices = it.cardPrices
+        )
+    }
+}
+
+fun List<NetworkCard.NetworkNonMonsterCard>.toDatabaseNonMonsterCards()
+        : List<DatabaseNonMonsterCard> {
+    return map {
+        DatabaseNonMonsterCard(
+            id = it.id, name = it.name, desc = it.desc, type = it.type, race = it.race,
+            archetype = it.archetype, cardSets = it.cardSets, cardImages = it.cardImages,
+            cardPrices = it.cardPrices
+        )
+    }
+}

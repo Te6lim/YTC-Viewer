@@ -3,6 +3,7 @@ package com.te6lim.ytcviewer.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet
@@ -16,9 +17,11 @@ data class DatabaseMonsterCard(
     @ColumnInfo val race: String,
     @ColumnInfo val atk: Int? = null,
     @ColumnInfo val def: Int? = null,
+    @ColumnInfo val level: Int? = null,
+    @ColumnInfo val attribute: String,
     @ColumnInfo val cardSets: List<CardSet?>? = null,
     @ColumnInfo val cardImages: List<CardImage?>? = null,
-    @ColumnInfo val cardPrice: List<CardPrice?>? = null
+    @ColumnInfo val cardPrices: List<CardPrice?>? = null
 )
 
 @Entity(tableName = "nonMonsterDatabaseCard")
@@ -31,7 +34,7 @@ data class DatabaseNonMonsterCard(
     @ColumnInfo val archetype: String? = null,
     @ColumnInfo val cardSets: List<CardSet?>? = null,
     @ColumnInfo val cardImages: List<CardImage?>? = null,
-    @ColumnInfo val cardPrice: List<CardPrice?>? = null
+    @ColumnInfo val cardPrices: List<CardPrice?>? = null
 )
 
 @Dao
@@ -105,5 +108,25 @@ abstract class CardDatabase : RoomDatabase() {
                 return instance
             }
         }
+    }
+}
+
+fun List<DatabaseMonsterCard>.toDomainMonsterCards(): List<DomainCard.DomainMonsterCard> {
+    return map {
+        DomainCard.DomainMonsterCard(
+            id = it.id, name = it.name, type = it.type, desc = it.desc, race = it.race,
+            atk = it.atk, def = it.def, level = it.level, attribute = it.attribute,
+            cardSets = it.cardSets, cardImages = it.cardImages, cardPrices = it.cardPrices
+        )
+    }
+}
+
+fun List<DatabaseNonMonsterCard>.toDomainNonMonsterCards(): List<DomainCard.DomainNonMonsterCard> {
+    return map {
+        DomainCard.DomainNonMonsterCard(
+            id = it.id, name = it.name, desc = it.desc, type = it.type, race = it.race,
+            archetype = it.archetype, cardSets = it.cardSets, cardImages = it.cardImages,
+            cardPrices = it.cardPrices
+        )
     }
 }

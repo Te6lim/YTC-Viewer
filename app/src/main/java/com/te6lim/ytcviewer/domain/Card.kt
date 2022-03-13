@@ -5,7 +5,7 @@ import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet
 
-sealed class DomainCard(
+open class DomainCard(
     open val id: Long,
     open val name: String,
     open val type: String,
@@ -16,7 +16,7 @@ sealed class DomainCard(
     open val cardPrices: List<CardPrice?>?
 ) {
 
-    data class MonsterCard(
+    data class DomainMonsterCard(
         override val id: Long,
         override val name: String,
         override val type: String,
@@ -32,7 +32,7 @@ sealed class DomainCard(
 
     ) : DomainCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
 
-    data class NonMonsterCard(
+    data class DomainNonMonsterCard(
         override val id: Long,
         override val name: String,
         override val type: String,
