@@ -1,19 +1,31 @@
 package com.te6lim.ytcviewer.home.cards
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.network.NetworkCard
-import com.te6lim.ytcviewer.network.NetworkStatus
-import com.te6lim.ytcviewer.network.Response
-import com.te6lim.ytcviewer.network.YtcApi
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.launch
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableMap
+import kotlin.collections.isNotEmpty
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
+import kotlin.collections.toMutableMap
+import kotlin.collections.toTypedArray
 
 class CardsViewModel : ViewModel() {
 
     private val _cards = MutableLiveData<List<NetworkCard>>()
     val cards: LiveData<List<NetworkCard>>
         get() = _cards
+
+    private val selectedFilters = MutableLiveData<MutableMap<String, Array<String>>>()
+
+    val filterTransformation = Transformations.map(selectedFilters) {
+        getProperties()
+    }
 
     private val _checkedCategories =
         MutableLiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>(mutableMapOf())
@@ -24,123 +36,18 @@ class CardsViewModel : ViewModel() {
     var lastChecked: String? = null
         private set
 
-    var lastSearchQuery: String? = null
-        private set
-
-    private val selectedFilters = MutableLiveData<MutableMap<String, Array<String>>>()
-
-    val filterTransformation = Transformations.map(selectedFilters) {
-        getProperties()
-    }
-
     private var selectedTypeFilters = arrayOf<String>()
 
     private var selectedRaceFilters = arrayOf<String>()
 
     private var selectedAttributeFilters = arrayOf<String>()
 
-    private val _networkStatus = MutableLiveData<NetworkStatus>()
-    val networkStatus: LiveData<NetworkStatus>
-        get() = _networkStatus
-
     fun getPropertiesWithSearch(key: String) {
-        lastSearchQuery = key
-        viewModelScope.launch {
 
-            val cardsDeferred: Deferred<Response> =
-                YtcApi.retrofitService.getCardsBySearchAsync(key)
-
-            try {
-                _networkStatus.value = NetworkStatus.LOADING
-                _cards.value = cardsDeferred.await().data
-                _networkStatus.value = NetworkStatus.DONE
-            } catch (e: Exception) {
-                _networkStatus.value = NetworkStatus.ERROR
-            }
-
-        }
     }
 
     fun getProperties() {
-        viewModelScope.launch {
 
-            var cardsDeferred: Deferred<Response>? = null
-
-            val keys = selectedFilters.value!!.keys.toList()
-
-            when (selectedFilters.value!!.size) {
-                1 -> {
-
-                    if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
-                        cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
-                            mapOf(Pair("type", "spell card")),
-                            mapOf(
-                                Pair(
-                                    keys[0],
-                                    selectedFilters.value!![keys[0]]!!.formattedString()
-                                )
-                            )
-                        )
-                    } else {
-                        cardsDeferred =
-                            if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Trap.name
-                            ) {
-                                YtcApi.retrofitService.getNonMonsterCardsAsync(
-                                    mapOf(Pair("type", "trap card")),
-                                    mapOf(
-                                        Pair(
-                                            keys[0],
-                                            selectedFilters.value!![keys[0]]!!.formattedString()
-                                        )
-                                    )
-                                )
-                            } else {
-                                YtcApi.retrofitService.getCardsAsync(
-                                    mapOf(
-                                        Pair(
-                                            keys[0],
-                                            selectedFilters.value!![keys[0]]!!.formattedString()
-                                        )
-                                    )
-                                )
-                            }
-                    }
-                }
-
-                2 -> {
-                    cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters.value!![keys[0]]!!.formattedString())),
-                        mapOf(Pair(keys[1], selectedFilters.value!![keys[1]]!!.formattedString()))
-                    )
-                }
-
-                3 -> {
-                    cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters.value!![keys[0]]!!.formattedString())),
-                        mapOf(Pair(keys[1], selectedFilters.value!![keys[1]]!!.formattedString())),
-                        mapOf(Pair(keys[2], selectedFilters.value!![keys[2]]!!.formattedString()))
-                    )
-                }
-            }
-
-            try {
-                _networkStatus.value = NetworkStatus.LOADING
-                _cards.value = cardsDeferred!!.await().data
-                _networkStatus.value = NetworkStatus.DONE
-            } catch (e: Exception) {
-                _networkStatus.value = NetworkStatus.ERROR
-            }
-        }
-    }
-
-    private fun Array<String>.formattedString(): String {
-        val arguments = StringBuilder().apply {
-            for ((i, string) in this@formattedString.withIndex()) {
-                append(string)
-                if (i != size - 1) append(",")
-            }
-        }
-        return arguments.toString()
     }
 
     fun addCategoryToChecked(category: String) {

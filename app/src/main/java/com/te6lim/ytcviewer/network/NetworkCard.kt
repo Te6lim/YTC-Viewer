@@ -66,8 +66,9 @@ class CardPrice(
     val coolStuffIncPrice: String? = null
 )
 
-fun List<NetworkCard.NetworkMonsterCard>.toDatabaseMonsterCards(): List<DatabaseMonsterCard> {
+fun List<NetworkCard>.toDatabaseMonsterCards(): List<DatabaseMonsterCard> {
     return map {
+        it as NetworkCard.NetworkMonsterCard
         DatabaseMonsterCard(
             id = it.id, name = it.name, type = it.type, desc = it.desc, race = it.race,
             atk = it.atk, def = it.def, level = it.level, attribute = it.attribute,
@@ -76,9 +77,10 @@ fun List<NetworkCard.NetworkMonsterCard>.toDatabaseMonsterCards(): List<Database
     }
 }
 
-fun List<NetworkCard.NetworkNonMonsterCard>.toDatabaseNonMonsterCards()
+fun List<NetworkCard>.toDatabaseNonMonsterCards()
         : List<DatabaseNonMonsterCard> {
     return map {
+        it as NetworkCard.NetworkNonMonsterCard
         DatabaseNonMonsterCard(
             id = it.id, name = it.name, desc = it.desc, type = it.type, race = it.race,
             archetype = it.archetype, cardSets = it.cardSets, cardImages = it.cardImages,
