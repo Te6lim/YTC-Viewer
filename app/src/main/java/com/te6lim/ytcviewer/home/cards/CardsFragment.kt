@@ -38,7 +38,6 @@ class CardsFragment : Fragment() {
         binding.cards.adapter = adapter
 
         with(cardsViewModel) {
-
             checkedCategories.observe(viewLifecycleOwner) {
                 it.forEach { item ->
                     binding.cardFilter.findViewWithTag<Chip>(item.key).isChecked = true
@@ -81,8 +80,6 @@ class CardsFragment : Fragment() {
                                 addCategoryToChecked(category.name)
                                 homeViewModel.setChipChecked(category.name)
                             } else unMarkChip(category.name)
-
-                            setLastChecked(category.name)
                         }
                     }
 
@@ -131,32 +128,23 @@ class CardsFragment : Fragment() {
             cards.observe(viewLifecycleOwner) {
                 adapter.submitList(it)
             }
+        }
 
-            with(homeViewModel) {
+        with(homeViewModel) {
+            searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
+                with(binding.cardFilter) {
+                    visibility = if (isClicked) View.VISIBLE else View.GONE
+                }
+            }
 
-                searchBarClicked.observe(viewLifecycleOwner) { isClicked ->
-                    with(binding.cardFilter) {
-                        visibility = if (isClicked) View.VISIBLE else View.GONE
+            filterList.observe(viewLifecycleOwner) { list ->
+                list?.let { filterList ->
+                    if (list.isNotEmpty()) {
+                        cardsViewModel.setSelectedFilter(filterList)
+                        cardsViewModel.getProperties()
+                        setFilterList(listOf())
                     }
-                }
-
-                filterList.observe(viewLifecycleOwner) {
-                    it?.let {
-                        setSelectedFilter(
-                            FilterSelectionViewModel.CardFilterCategory.valueOf(lastChecked!!), it
-                        )
-                        setHasSelectedFilters(true)
-                        setFilterList(null)
-                    }
-                }
-
-                hasSelectedFilters.observe(viewLifecycleOwner) { hasFilters ->
-
-                    if (hasFilters) {
-                        getProperties()
-                        setHasSelectedFilters(false)
-                    } else lastChecked?.let { category -> unMarkChip(category) }
-                }
+                } ?: unMarkChip(cardsViewModel.lastChecked!!)
             }
         }
 
@@ -166,7 +154,6 @@ class CardsFragment : Fragment() {
     private fun unMarkChip(category: String) {
         cardsViewModel.removeCategoryFromChecked(category)
         binding.cardFilter.findViewWithTag<Chip>(category).isChecked = false
-        cardsViewModel.setLastChecked(category)
     }
 
     private fun unMarkAllChips() {

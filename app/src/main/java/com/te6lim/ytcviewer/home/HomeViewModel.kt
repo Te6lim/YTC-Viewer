@@ -14,9 +14,6 @@ class HomeViewModel : ViewModel() {
     val checkedChipName: LiveData<String?>
         get() = _checkedChipName
 
-    private val _hasSelectedFilters = MutableLiveData(false)
-    val hasSelectedFilters: LiveData<Boolean>
-        get() = _hasSelectedFilters
 
     private val _filterList = MutableLiveData<List<String>?>()
     val filterList: LiveData<List<String>?>
@@ -28,10 +25,6 @@ class HomeViewModel : ViewModel() {
 
     fun setChipChecked(value: String?) {
         _checkedChipName.value = value
-    }
-
-    fun setHasSelectedFilters(value: Boolean) {
-        _hasSelectedFilters.value = value
     }
 
     fun setFilterList(value: List<String>?) {

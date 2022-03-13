@@ -48,6 +48,15 @@ class FilterSelectionFragment : Fragment() {
             }
         )
 
+        (binding.filterToolbar as Toolbar).setNavigationOnClickListener {
+            with(findNavController()) {
+                previousBackStackEntry?.savedStateHandle?.set(
+                    FILTER_LIST_KEY, null
+                )
+            }
+            requireActivity().onBackPressed()
+        }
+
         val adapter = FilterSelectionAdapter(object : CardFilterCallback() {
             override fun getColor(filter: CardFilter): Int = ContextCompat.getColor(
                 requireContext(),
@@ -93,7 +102,7 @@ class FilterSelectionFragment : Fragment() {
                     previousBackStackEntry?.savedStateHandle?.set(
                         FILTER_LIST_KEY, viewModel.selectedFilters
                     )
-                    popBackStack()
+                    requireActivity().onBackPressed()
                 }
                 true
             }
