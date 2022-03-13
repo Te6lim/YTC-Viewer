@@ -81,102 +81,100 @@ class CardRepository(
 
     fun getCards(selectedFilters: Map<String, Array<String>>, lastChecked: String) {
         scope.launch {
-            withContext(Dispatchers.IO) {
-                var cardsDeferred: Deferred<Response>? = null
+            var cardsDeferred: Deferred<Response>? = null
 
-                val keys = selectedFilters.keys.toList()
+            val keys = selectedFilters.keys.toList()
 
-                when (selectedFilters.size) {
-                    1 -> {
-                        if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
-                            type = CardType.NON_MONSTER
-                            cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
-                                mapOf(Pair("type", "spell card")),
-                                mapOf(
-                                    Pair(
-                                        keys[0],
-                                        selectedFilters[keys[0]]!!.formattedString()
-                                    )
+            when (selectedFilters.size) {
+                1 -> {
+                    if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
+                        type = CardType.NON_MONSTER
+                        cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
+                            mapOf(Pair("type", "spell card")),
+                            mapOf(
+                                Pair(
+                                    keys[0],
+                                    selectedFilters[keys[0]]!!.formattedString()
                                 )
                             )
-                        } else {
-                            cardsDeferred =
-                                if (lastChecked == FilterSelectionViewModel
-                                        .CardFilterCategory.Trap.name
-                                ) {
-                                    type = CardType.NON_MONSTER
-                                    YtcApi.retrofitService.getNonMonsterCardsAsync(
-                                        mapOf(Pair("type", "trap card")),
-                                        mapOf(
-                                            Pair(
-                                                keys[0],
-                                                selectedFilters[keys[0]]!!.formattedString()
-                                            )
+                        )
+                    } else {
+                        cardsDeferred =
+                            if (lastChecked == FilterSelectionViewModel
+                                    .CardFilterCategory.Trap.name
+                            ) {
+                                type = CardType.NON_MONSTER
+                                YtcApi.retrofitService.getNonMonsterCardsAsync(
+                                    mapOf(Pair("type", "trap card")),
+                                    mapOf(
+                                        Pair(
+                                            keys[0],
+                                            selectedFilters[keys[0]]!!.formattedString()
                                         )
                                     )
-                                } else {
-                                    type = CardType.MONSTER
-                                    YtcApi.retrofitService.getCardsAsync(
-                                        mapOf(
-                                            Pair(
-                                                keys[0],
-                                                selectedFilters[keys[0]]!!.formattedString()
-                                            )
+                                )
+                            } else {
+                                type = CardType.MONSTER
+                                YtcApi.retrofitService.getCardsAsync(
+                                    mapOf(
+                                        Pair(
+                                            keys[0],
+                                            selectedFilters[keys[0]]!!.formattedString()
                                         )
                                     )
-                                }
-                        }
-                    }
-
-                    2 -> {
-                        type = CardType.MONSTER
-                        cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
-                            mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString()))
-                        )
-                    }
-
-                    3 -> {
-                        type = CardType.MONSTER
-                        cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
-                            mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
-                            mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.formattedString()))
-                        )
+                                )
+                            }
                     }
                 }
 
-                try {
-                    networkStatus.value = NetworkStatus.LOADING
+                2 -> {
+                    type = CardType.MONSTER
+                    cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString()))
+                    )
+                }
+
+                3 -> {
+                    type = CardType.MONSTER
+                    cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
+                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.formattedString()))
+                    )
+                }
+            }
+
+            try {
+                networkStatus.value = NetworkStatus.LOADING
+                val cardList = cardsDeferred!!.await().data
+                networkStatus.value = NetworkStatus.DONE
+                withContext(Dispatchers.IO) {
                     when (type) {
                         CardType.MONSTER -> {
                             cardDb.monsterDao.insertMany(
-                                *(cardsDeferred!!.await().data)
-                                    .toDatabaseMonsterCards().toTypedArray()
+                                *cardList.toDatabaseMonsterCards().toTypedArray()
                             )
                         }
 
                         CardType.NON_MONSTER -> {
                             cardDb.nonMonsterDao.insertMany(
-                                *(cardsDeferred!!.await().data)
-                                    .toDatabaseNonMonsterCards().toTypedArray()
+                                *cardList.toDatabaseNonMonsterCards().toTypedArray()
                             )
                         }
 
                         else -> {
                         }
                     }
-                    networkStatus.value = NetworkStatus.DONE
-                } catch (e: Exception) {
-                    networkStatus.value = NetworkStatus.ERROR
                 }
+            } catch (e: Exception) {
+                networkStatus.value = NetworkStatus.ERROR
             }
         }
     }
 
     fun getCardsWithSearch(key: String) {
         scope.launch {
-
             val cardsDeferred: Deferred<Response> =
                 YtcApi.retrofitService.getCardsBySearchAsync(key)
 

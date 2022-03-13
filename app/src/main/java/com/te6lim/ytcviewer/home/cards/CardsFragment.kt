@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
+import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.home.HomeViewModel
@@ -30,7 +31,11 @@ class CardsFragment : Fragment() {
 
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
-        cardsViewModel = ViewModelProvider(this)[CardsViewModel::class.java]
+        cardsViewModel = ViewModelProvider(
+            this, CardsViewModelFactory(
+                CardDatabase.getInstance(requireContext())
+            )
+        )[CardsViewModel::class.java]
 
         binding.viewModel = cardsViewModel
         binding.lifecycleOwner = this
