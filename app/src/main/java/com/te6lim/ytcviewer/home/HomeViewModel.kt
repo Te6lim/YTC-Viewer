@@ -14,8 +14,8 @@ class HomeViewModel : ViewModel() {
     val checkedChipName: LiveData<String?>
         get() = _checkedChipName
 
-    private val _searchKey = MutableLiveData<String>()
-    val searchKey: LiveData<String>
+    private val _searchKey = MutableLiveData<String?>()
+    val searchKey: LiveData<String?>
         get() = _searchKey
 
 
@@ -35,7 +35,7 @@ class HomeViewModel : ViewModel() {
         _filterList.value = value
     }
 
-    fun setSearchKey(value: String) {
+    fun setSearchKey(value: String?) {
         _searchKey.value = value
     }
 }

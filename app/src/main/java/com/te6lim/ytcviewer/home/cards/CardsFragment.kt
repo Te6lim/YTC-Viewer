@@ -125,6 +125,8 @@ class CardsFragment : Fragment() {
                 }
             }
 
+            filterTransformation.observe(viewLifecycleOwner) {}
+
             cards.observe(viewLifecycleOwner) {
                 adapter.submitList(it)
             }
@@ -141,14 +143,17 @@ class CardsFragment : Fragment() {
                 list?.let { filterList ->
                     if (list.isNotEmpty()) {
                         cardsViewModel.setSelectedFilter(filterList)
-                        cardsViewModel.getProperties()
                         setFilterList(listOf())
                     }
                 } ?: unMarkChip(cardsViewModel.lastChecked!!)
             }
 
             searchKey.observe(viewLifecycleOwner) {
-                cardsViewModel.getPropertiesWithSearch(it)
+                it?.let { searchKey ->
+                    unMarkAllChips()
+                    cardsViewModel.getPropertiesWithSearch(searchKey)
+                    setSearchKey(null)
+                }
             }
         }
 

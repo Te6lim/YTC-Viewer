@@ -24,7 +24,12 @@ class CardsViewModel : ViewModel() {
     var lastChecked: String? = null
         private set
 
-    private var selectedFilters = mapOf<String, Array<String>>()
+    private val selectedFilters = MutableLiveData<MutableMap<String, Array<String>>>()
+
+    val filterTransformation = Transformations.map(selectedFilters) {
+        getProperties(it)
+        it.toMap()
+    }
 
     private var selectedTypeFilters = arrayOf<String>()
 
@@ -35,14 +40,6 @@ class CardsViewModel : ViewModel() {
     private val _networkStatus = MutableLiveData<NetworkStatus>()
     val networkStatus: LiveData<NetworkStatus>
         get() = _networkStatus
-
-    private val _searchKey = MutableLiveData<String>()
-    val searchKey: LiveData<String>
-        get() = _searchKey
-
-    fun setSearchKey(value: String) {
-        _searchKey.value = value
-    }
 
     fun getPropertiesWithSearch(key: String) {
         viewModelScope.launch {
@@ -61,14 +58,14 @@ class CardsViewModel : ViewModel() {
         }
     }
 
-    fun getProperties() {
+    private fun getProperties(filterMap: Map<String, Array<String>>) {
         viewModelScope.launch {
 
             var cardsDeferred: Deferred<Response>? = null
 
-            val keys = selectedFilters.keys.toList()
+            val keys = filterMap.keys.toList()
 
-            when (selectedFilters.size) {
+            when (filterMap.size) {
                 1 -> {
 
                     if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
@@ -77,7 +74,7 @@ class CardsViewModel : ViewModel() {
                             mapOf(
                                 Pair(
                                     keys[0],
-                                    selectedFilters[keys[0]]!!.formattedString()
+                                    filterMap[keys[0]]!!.formattedString()
                                 )
                             )
                         )
@@ -89,7 +86,7 @@ class CardsViewModel : ViewModel() {
                                     mapOf(
                                         Pair(
                                             keys[0],
-                                            selectedFilters[keys[0]]!!.formattedString()
+                                            filterMap[keys[0]]!!.formattedString()
                                         )
                                     )
                                 )
@@ -98,7 +95,7 @@ class CardsViewModel : ViewModel() {
                                     mapOf(
                                         Pair(
                                             keys[0],
-                                            selectedFilters[keys[0]]!!.formattedString()
+                                            filterMap[keys[0]]!!.formattedString()
                                         )
                                     )
                                 )
@@ -108,16 +105,16 @@ class CardsViewModel : ViewModel() {
 
                 2 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString()))
+                        mapOf(Pair(keys[0], filterMap[keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], filterMap[keys[1]]!!.formattedString()))
                     )
                 }
 
                 3 -> {
                     cardsDeferred = YtcApi.retrofitService.getCardsAsync(
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
-                        mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
-                        mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.formattedString()))
+                        mapOf(Pair(keys[0], filterMap[keys[0]]!!.formattedString())),
+                        mapOf(Pair(keys[1], filterMap[keys[1]]!!.formattedString())),
+                        mapOf(Pair(keys[2], filterMap[keys[2]]!!.formattedString()))
                     )
                 }
             }
@@ -167,6 +164,8 @@ class CardsViewModel : ViewModel() {
         }
 
         _checkedCategories.value = map
+
+        removeFilter(FilterSelectionViewModel.CardFilterCategory.valueOf(category).query)
     }
 
     fun removeAllCheckedCategory() {
@@ -211,7 +210,12 @@ class CardsViewModel : ViewModel() {
                 map[FilterSelectionViewModel.CardFilterCategory.Attribute.query] =
                     selectedAttributeFilters
 
-            selectedFilters = map
+            selectedFilters.value = map
         }
+    }
+
+    private fun removeFilter(key: String) {
+        selectedFilters.value = selectedFilters.value!!.apply { remove(key) }
+        val x = 0
     }
 }
