@@ -78,8 +78,7 @@ fun List<NetworkCard>.toDatabaseMonsterCards(): List<DatabaseMonsterCard> {
     }
 }
 
-fun List<NetworkCard>.toDatabaseNonMonsterCards()
-        : List<DatabaseNonMonsterCard> {
+fun List<NetworkCard>.toDatabaseNonMonsterCards(): List<DatabaseNonMonsterCard> {
     return map {
         it as NetworkCard.NetworkNonMonsterCard
         DatabaseNonMonsterCard(

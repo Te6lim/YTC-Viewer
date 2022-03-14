@@ -35,8 +35,6 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     private val repository = CardRepository(cardDb, _networkStatus)
 
-    val cards = repository.resolveCardListSource()
-
     var lastSearchQuery: String? = null
         private set
 

@@ -12,34 +12,34 @@ import com.te6lim.ytcviewer.network.CardSet
 class Converter {
 
     @TypeConverter
-    fun List<CardImage>.toJsonString(): String {
+    fun List<CardImage?>?.toJsonString(): String {
         return Gson().toJson(this)
     }
 
     @TypeConverter
-    fun String.toCardImageList(): List<CardImage> {
+    fun String?.toCardImageList(): List<CardImage> {
         return Gson().fromJson(this, object : TypeToken<List<CardImage>>() {}.type)
     }
 
     @JvmName("toJsonStringCardSet")
     @TypeConverter
-    fun List<CardSet>.toJsonString(): String {
+    fun List<CardSet?>?.toJsonString(): String {
         return Gson().toJson(this)
     }
 
     @TypeConverter
-    fun String.toCardSetList(): List<CardSet> {
+    fun String?.toCardSetList(): List<CardSet> {
         return Gson().fromJson(this, object : TypeToken<List<CardSet>>() {}.type)
     }
 
     @JvmName("toJsonStringCardPrice")
     @TypeConverter
-    fun List<CardPrice>.toJsonString(): String {
+    fun List<CardPrice?>?.toJsonString(): String {
         return Gson().toJson(this)
     }
 
     @TypeConverter
-    fun String.toCardPriceList(): List<CardPrice> {
+    fun String?.toCardPriceList(): List<CardPrice> {
         return Gson().fromJson(this, object : TypeToken<List<CardPrice>>() {}.type)
     }
 }

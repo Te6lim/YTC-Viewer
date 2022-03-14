@@ -20,19 +20,15 @@ class CardRepository(
     private val job = Job()
     private val scope = CoroutineScope(job + Dispatchers.Main)
 
-    private val monsterCards: LiveData<List<DomainCard>> = Transformations.map(
+    val monsterCards: LiveData<List<DomainCard>> = Transformations.map(
         cardDb.monsterDao.getAll()
-    ) {
-        it.toDomainMonsterCards()
-    }
+    ) { it.toDomainMonsterCards() }
 
-    private val nonMonsterCards: LiveData<List<DomainCard>> = Transformations.map(
+    val nonMonsterCards: LiveData<List<DomainCard>> = Transformations.map(
         cardDb.nonMonsterDao.getAll()
-    ) {
-        it.toDomainNonMonsterCards()
-    }
+    ) { it.toDomainNonMonsterCards() }
 
-    private val cardMix = MutableLiveData<List<DomainCard>>()
+    val cardMix = MutableLiveData<List<DomainCard>>()
 
     fun resolveCardListSource(): LiveData<List<DomainCard>> {
         val mediator = MediatorLiveData<List<DomainCard>>()
@@ -91,39 +87,31 @@ class CardRepository(
                         type = CardType.NON_MONSTER
                         cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                             mapOf(Pair("type", "spell card")),
-                            mapOf(
-                                Pair(
-                                    keys[0],
-                                    selectedFilters[keys[0]]!!.formattedString()
-                                )
-                            )
+                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString()))
                         )
                     } else {
-                        cardsDeferred =
-                            if (lastChecked == FilterSelectionViewModel
-                                    .CardFilterCategory.Trap.name
-                            ) {
-                                type = CardType.NON_MONSTER
-                                YtcApi.retrofitService.getNonMonsterCardsAsync(
-                                    mapOf(Pair("type", "trap card")),
-                                    mapOf(
-                                        Pair(
-                                            keys[0],
-                                            selectedFilters[keys[0]]!!.formattedString()
-                                        )
+                        if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
+                            type = CardType.NON_MONSTER
+                            cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
+                                mapOf(Pair("type", "trap card")),
+                                mapOf(
+                                    Pair(
+                                        keys[0],
+                                        selectedFilters[keys[0]]!!.formattedString()
                                     )
                                 )
-                            } else {
-                                type = CardType.MONSTER
-                                YtcApi.retrofitService.getCardsAsync(
-                                    mapOf(
-                                        Pair(
-                                            keys[0],
-                                            selectedFilters[keys[0]]!!.formattedString()
-                                        )
+                            )
+                        } else {
+                            type = CardType.MONSTER
+                            cardsDeferred = YtcApi.retrofitService.getCardsAsync(
+                                mapOf(
+                                    Pair(
+                                        keys[0],
+                                        selectedFilters[keys[0]]!!.formattedString()
                                     )
                                 )
-                            }
+                            )
+                        }
                     }
                 }
 
@@ -148,16 +136,16 @@ class CardRepository(
             try {
                 networkStatus.value = NetworkStatus.LOADING
                 val cardList = cardsDeferred!!.await().data
-                networkStatus.value = NetworkStatus.DONE
                 withContext(Dispatchers.IO) {
                     when (type) {
                         CardType.MONSTER -> {
-                            cardDb.monsterDao.insertMany(
-                                *cardList.toDatabaseMonsterCards().toTypedArray()
-                            )
+                            val array = cardList.toDatabaseMonsterCards().toTypedArray()
+                            cardDb.monsterDao.insertMany(*array)
+                            networkStatus.postValue(NetworkStatus.DONE)
                         }
 
                         CardType.NON_MONSTER -> {
+                            cardDb.nonMonsterDao.clear()
                             cardDb.nonMonsterDao.insertMany(
                                 *cardList.toDatabaseNonMonsterCards().toTypedArray()
                             )
@@ -185,8 +173,6 @@ class CardRepository(
             } catch (e: Exception) {
                 networkStatus.value = NetworkStatus.ERROR
             }
-
         }
     }
-
 }
