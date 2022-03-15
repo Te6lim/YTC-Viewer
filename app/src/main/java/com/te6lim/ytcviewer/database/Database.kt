@@ -53,7 +53,7 @@ interface MonsterDao {
     fun get(key: Long): DatabaseMonsterCard
 
     @Query("SELECT * FROM monsterDatabaseCard")
-    fun getAll(): LiveData<List<DatabaseMonsterCard>>
+    fun getAll(): LiveData<List<DatabaseMonsterCard>?>
 
     @Query("DELETE FROM monsterDatabaseCard")
     fun clear()
@@ -75,7 +75,7 @@ interface NonMonsterDao {
     fun get(key: Long): DatabaseNonMonsterCard
 
     @Query("SELECT * FROM nonMonsterDatabaseCard")
-    fun getAll(): LiveData<List<DatabaseNonMonsterCard>>
+    fun getAll(): LiveData<List<DatabaseNonMonsterCard>?>
 
     @Query("DELETE FROM nonMonsterDatabaseCard")
     fun clear()

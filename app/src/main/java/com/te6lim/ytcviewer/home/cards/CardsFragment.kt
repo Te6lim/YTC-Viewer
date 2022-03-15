@@ -139,6 +139,12 @@ class CardsFragment : Fragment() {
             }
 
             filterTransformation.observe(viewLifecycleOwner) {}
+
+            cards.observe(viewLifecycleOwner) {
+                it?.let {
+                    adapter.submitList(it)
+                }
+            }
         }
 
         with(homeViewModel) {

@@ -17,8 +17,8 @@ class Converter {
     }
 
     @TypeConverter
-    fun String?.toCardImageList(): List<CardImage> {
-        return Gson().fromJson(this, object : TypeToken<List<CardImage>>() {}.type)
+    fun String?.toCardImageList(): List<CardImage?>? {
+        return Gson().fromJson(this, object : TypeToken<List<CardImage?>?>() {}.type)
     }
 
     @JvmName("toJsonStringCardSet")
@@ -28,8 +28,8 @@ class Converter {
     }
 
     @TypeConverter
-    fun String?.toCardSetList(): List<CardSet> {
-        return Gson().fromJson(this, object : TypeToken<List<CardSet>>() {}.type)
+    fun String?.toCardSetList(): List<CardSet?>? {
+        return Gson().fromJson(this, object : TypeToken<List<CardSet?>?>() {}.type)
     }
 
     @JvmName("toJsonStringCardPrice")
@@ -39,7 +39,7 @@ class Converter {
     }
 
     @TypeConverter
-    fun String?.toCardPriceList(): List<CardPrice> {
-        return Gson().fromJson(this, object : TypeToken<List<CardPrice>>() {}.type)
+    fun String?.toCardPriceList(): List<CardPrice?>? {
+        return Gson().fromJson(this, object : TypeToken<List<CardPrice?>?>() {}.type)
     }
 }

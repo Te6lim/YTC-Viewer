@@ -20,39 +20,40 @@ class CardRepository(
     private val job = Job()
     private val scope = CoroutineScope(job + Dispatchers.Main)
 
-    val monsterCards: LiveData<List<DomainCard>> = Transformations.map(
+    private val monsterCards: LiveData<List<DomainCard>> = Transformations.map(
         cardDb.monsterDao.getAll()
-    ) { it.toDomainMonsterCards() }
+    ) { it?.toDomainMonsterCards() }
 
-    val nonMonsterCards: LiveData<List<DomainCard>> = Transformations.map(
+    private val nonMonsterCards: LiveData<List<DomainCard>> = Transformations.map(
         cardDb.nonMonsterDao.getAll()
-    ) { it.toDomainNonMonsterCards() }
+    ) { it?.toDomainNonMonsterCards() }
 
-    val cardMix = MutableLiveData<List<DomainCard>>()
+    private val cardMix = MutableLiveData<List<DomainCard>>()
 
-    fun resolveCardListSource(): LiveData<List<DomainCard>> {
-        val mediator = MediatorLiveData<List<DomainCard>>()
+    fun resolveCardListSource(): MutableLiveData<List<DomainCard>?> {
+        val mediator = MediatorLiveData<List<DomainCard>?>()
 
         val monsterCardsObserver = Observer<List<DomainCard>> {
             monsterCards.value?.let {
-                mediator.value ?: run {
+                if (mediator.value.isNullOrEmpty())
                     mediator.value = it
-                }
             }
         }
 
         val nonMonsterCardsObserver = Observer<List<DomainCard>> {
             nonMonsterCards.value?.let {
-                mediator.value ?: run {
-                    mediator.value = it
+                mediator.value?.let { mediatorList ->
+                    if (mediator.value.isNullOrEmpty())
+                        mediator.value = it
                 }
             }
         }
 
         val cardMixObserver = Observer<List<DomainCard>> {
             cardMix.value?.let {
-                mediator.value ?: run {
-                    mediator.value = it
+                mediator.value?.let { mediatorList ->
+                    if (mediator.value.isNullOrEmpty())
+                        mediator.value = it
                 }
             }
         }
@@ -140,15 +141,16 @@ class CardRepository(
                     when (type) {
                         CardType.MONSTER -> {
                             val array = cardList.toDatabaseMonsterCards().toTypedArray()
+                            cardDb.monsterDao.clear()
                             cardDb.monsterDao.insertMany(*array)
                             networkStatus.postValue(NetworkStatus.DONE)
                         }
 
                         CardType.NON_MONSTER -> {
+                            val array = cardList.toDatabaseNonMonsterCards().toTypedArray()
                             cardDb.nonMonsterDao.clear()
-                            cardDb.nonMonsterDao.insertMany(
-                                *cardList.toDatabaseNonMonsterCards().toTypedArray()
-                            )
+                            cardDb.nonMonsterDao.insertMany(*array)
+                            networkStatus.postValue(NetworkStatus.DONE)
                         }
 
                         else -> {

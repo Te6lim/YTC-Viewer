@@ -2,6 +2,7 @@ package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
 import com.te6lim.ytcviewer.database.CardDatabase
+import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
@@ -15,6 +16,8 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     val networkStatus: LiveData<NetworkStatus> get() = _networkStatus
 
     val filterTransformation = Transformations.map(selectedFilters) {
+        if (it.isNotEmpty())
+            _cards.value = null
         repository.getCards(it, lastChecked!!)
     }
 
@@ -34,6 +37,9 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     private var selectedAttributeFilters = arrayOf<String>()
 
     private val repository = CardRepository(cardDb, _networkStatus)
+
+    private val _cards = repository.resolveCardListSource()
+    val cards: LiveData<List<DomainCard>?> get() = _cards
 
     var lastSearchQuery: String? = null
         private set
