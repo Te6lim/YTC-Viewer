@@ -16,9 +16,11 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     val networkStatus: LiveData<NetworkStatus> get() = _networkStatus
 
     val filterTransformation = Transformations.map(selectedFilters) {
-        if (it.isNotEmpty())
+        if (it.isNotEmpty()) {
+            lastSearchQuery = null
             _cards.value = null
-        repository.getCards(it, lastChecked!!)
+            repository.getCards(it, lastChecked!!)
+        }
     }
 
     private val _checkedCategories =
@@ -46,11 +48,13 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     fun getCards() {
         lastSearchQuery = null
+        _cards.value = null
         repository.getCards(selectedFilters.value!!, lastChecked!!)
     }
 
     fun getCardsWithSearch(value: String) {
         lastSearchQuery = value
+        _cards.value = null
         repository.getCardsWithSearch(value)
     }
 

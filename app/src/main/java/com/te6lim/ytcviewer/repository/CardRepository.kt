@@ -42,19 +42,15 @@ class CardRepository(
 
         val nonMonsterCardsObserver = Observer<List<DomainCard>> {
             nonMonsterCards.value?.let {
-                mediator.value?.let { mediatorList ->
-                    if (mediator.value.isNullOrEmpty())
-                        mediator.value = it
-                }
+                if (mediator.value.isNullOrEmpty())
+                    mediator.value = it
             }
         }
 
         val cardMixObserver = Observer<List<DomainCard>> {
             cardMix.value?.let {
-                mediator.value?.let { mediatorList ->
-                    if (mediator.value.isNullOrEmpty())
-                        mediator.value = it
-                }
+                if (mediator.value.isNullOrEmpty())
+                    mediator.value = it
             }
         }
 
