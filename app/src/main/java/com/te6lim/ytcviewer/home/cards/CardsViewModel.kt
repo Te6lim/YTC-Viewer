@@ -84,6 +84,8 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
         _checkedCategories.value = map
 
+        if (map.isEmpty()) _cards.value = null
+
         removeFilter(FilterSelectionViewModel.CardFilterCategory.valueOf(category).query)
     }
 
@@ -91,7 +93,12 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
         selectedTypeFilters = arrayOf()
         selectedRaceFilters = arrayOf()
         selectedAttributeFilters = arrayOf()
+        _checkedCategories.value?.forEach {
+            removeFilter(FilterSelectionViewModel.CardFilterCategory.valueOf(it.key).query)
+        }
         _checkedCategories.value = mutableMapOf()
+        _cards.value = null
+
     }
 
     fun setSelectedFilter(filters: List<String>) {

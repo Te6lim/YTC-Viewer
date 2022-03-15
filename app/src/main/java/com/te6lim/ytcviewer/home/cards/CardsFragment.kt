@@ -143,6 +143,15 @@ class CardsFragment : Fragment() {
             cards.observe(viewLifecycleOwner) {
                 it?.let {
                     adapter.submitList(it)
+                } ?: run {
+                    with(binding) {
+                        searchDescription.visibility = View.VISIBLE
+                        networkErrorScreen.visibility = View.GONE
+                        unknownQueryScreen.visibility = View.GONE
+                        loadingScreen.visibility = View.GONE
+                        infoScreen.visibility = View.VISIBLE
+                        cards.visibility = View.GONE
+                    }
                 }
             }
         }
