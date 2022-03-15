@@ -35,15 +35,27 @@ class CardRepository(
 
         val monsterCardsObserver = Observer<List<DomainCard>> {
             monsterCards.value?.let {
-                if (mediator.value.isNullOrEmpty())
-                    mediator.value = it
+                if (it.isNotEmpty()) {
+                    if (mediator.value.isNullOrEmpty()) {
+                        mediator.value = it
+                        scope.launch {
+                            withContext(Dispatchers.IO) { cardDb.nonMonsterDao.clear() }
+                        }
+                    }
+                }
             }
         }
 
         val nonMonsterCardsObserver = Observer<List<DomainCard>> {
             nonMonsterCards.value?.let {
-                if (mediator.value.isNullOrEmpty())
-                    mediator.value = it
+                if (it.isNotEmpty()) {
+                    if (mediator.value.isNullOrEmpty()) {
+                        mediator.value = it
+                        scope.launch {
+                            withContext(Dispatchers.IO) { cardDb.monsterDao.clear() }
+                        }
+                    }
+                }
             }
         }
 

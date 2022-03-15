@@ -101,17 +101,6 @@ class CardsFragment : Fragment() {
 
             networkStatus.observe(viewLifecycleOwner) { status ->
                 when (status) {
-                    NetworkStatus.DONE -> {
-                        with(binding) {
-                            searchDescription.visibility = View.GONE
-                            networkErrorScreen.visibility = View.GONE
-                            unknownQueryScreen.visibility = View.GONE
-                            loadingScreen.visibility = View.GONE
-                            infoScreen.visibility = View.GONE
-                            cards.visibility = View.VISIBLE
-                        }
-                    }
-
                     NetworkStatus.LOADING -> {
                         with(binding) {
                             searchDescription.visibility = View.GONE
@@ -142,6 +131,14 @@ class CardsFragment : Fragment() {
 
             cards.observe(viewLifecycleOwner) {
                 it?.let {
+                    with(binding) {
+                        searchDescription.visibility = View.GONE
+                        networkErrorScreen.visibility = View.GONE
+                        unknownQueryScreen.visibility = View.GONE
+                        loadingScreen.visibility = View.GONE
+                        infoScreen.visibility = View.GONE
+                        cards.visibility = View.VISIBLE
+                    }
                     adapter.submitList(it)
                 } ?: run {
                     with(binding) {
