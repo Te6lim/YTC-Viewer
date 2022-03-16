@@ -5,7 +5,8 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toDomainMonsterCards
 import com.te6lim.ytcviewer.database.toDomainNonMonsterCards
 import com.te6lim.ytcviewer.domain.DomainCard
-import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
+import com.te6lim.ytcviewer.filters.CardFilter
+import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.*
 import kotlinx.coroutines.*
 
@@ -30,7 +31,7 @@ class CardRepository(
 
     private val cardMix = MutableLiveData<List<DomainCard>>()
 
-    fun resolveCardListSource(): MutableLiveData<List<DomainCard>?> {
+    fun resolveCardListSource(addCategory: (String) -> Unit): MutableLiveData<List<DomainCard>?> {
         val mediator = MediatorLiveData<List<DomainCard>?>()
 
         val monsterCardsObserver = Observer<List<DomainCard>> {
@@ -38,6 +39,8 @@ class CardRepository(
                 if (it.isNotEmpty()) {
                     if (mediator.value.isNullOrEmpty()) {
                         mediator.value = it
+                        type = CardType.MONSTER
+                        checkFiltersOnStart(it, addCategory)
                         scope.launch {
                             withContext(Dispatchers.IO) { cardDb.nonMonsterDao.clear() }
                         }
@@ -51,6 +54,8 @@ class CardRepository(
                 if (it.isNotEmpty()) {
                     if (mediator.value.isNullOrEmpty()) {
                         mediator.value = it
+                        type = CardType.NON_MONSTER
+                        checkFiltersOnStart(it, addCategory)
                         scope.launch {
                             withContext(Dispatchers.IO) { cardDb.monsterDao.clear() }
                         }
@@ -92,14 +97,14 @@ class CardRepository(
 
             when (selectedFilters.size) {
                 1 -> {
-                    if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Spell.name) {
+                    if (lastChecked == CardFilterCategory.Spell.name) {
                         type = CardType.NON_MONSTER
                         cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                             mapOf(Pair("type", "spell card")),
                             mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString()))
                         )
                     } else {
-                        if (lastChecked == FilterSelectionViewModel.CardFilterCategory.Trap.name) {
+                        if (lastChecked == CardFilterCategory.Trap.name) {
                             type = CardType.NON_MONSTER
                             cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                                 mapOf(Pair("type", "trap card")),
@@ -184,5 +189,32 @@ class CardRepository(
                 networkStatus.value = NetworkStatus.ERROR
             }
         }
+    }
+
+    private fun checkFiltersOnStart(list: List<DomainCard>, addCategory: (String) -> Unit) {
+        val filters = mutableListOf(
+            CardFilterCategory.Type, CardFilterCategory.Race,
+            CardFilterCategory.Attribute
+        )
+
+        if (type == CardType.NON_MONSTER) filters.remove(CardFilterCategory.Attribute)
+
+        var initial = list[0]
+        list.forEach {
+            if (filters.isNotEmpty()) {
+                if (CardFilter.isEffectMonster(initial.type) != CardFilter.isEffectMonster(it.type))
+                    filters.remove(CardFilterCategory.Type)
+                if (initial.race != it.race) filters.remove(CardFilterCategory.Race)
+                if (type == CardType.MONSTER) {
+                    it as DomainCard.DomainMonsterCard
+                    if ((initial as DomainCard.DomainMonsterCard).attribute != it.attribute)
+                        filters.remove(CardFilterCategory.Attribute)
+
+                    initial = it
+                }
+            }
+        }
+
+        filters.forEach { addCategory(it.name) }
     }
 }

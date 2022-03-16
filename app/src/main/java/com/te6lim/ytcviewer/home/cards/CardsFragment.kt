@@ -12,7 +12,7 @@ import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
-import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
+import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.HomeViewModel
 import com.te6lim.ytcviewer.network.NetworkStatus
 
@@ -32,9 +32,7 @@ class CardsFragment : Fragment() {
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         cardsViewModel = ViewModelProvider(
-            this, CardsViewModelFactory(
-                CardDatabase.getInstance(requireContext())
-            )
+            this, CardsViewModelFactory(CardDatabase.getInstance(requireContext()))
         )[CardsViewModel::class.java]
 
         binding.viewModel = cardsViewModel
@@ -58,7 +56,7 @@ class CardsFragment : Fragment() {
             }
 
             val chipInflater = LayoutInflater.from(binding.cardFilter.context)
-            FilterSelectionViewModel.CardFilterCategory.values().forEach { category ->
+            CardFilterCategory.values().forEach { category ->
                 val chip = chipInflater
                     .inflate(R.layout.filter_selection, binding.cardFilter, false)
                     .apply {
@@ -70,21 +68,15 @@ class CardsFragment : Fragment() {
 
                             if (isChecked) {
 
-                                if (
-                                    tag == FilterSelectionViewModel.CardFilterCategory.Spell.name ||
-                                    tag == FilterSelectionViewModel.CardFilterCategory.Trap.name
+                                if (tag == CardFilterCategory.Spell.name ||
+                                    tag == CardFilterCategory.Trap.name
                                 ) {
                                     unMarkAllChips()
                                 } else {
                                     checkedCategories.value?.let {
-                                        if (it.containsKey(
-                                                FilterSelectionViewModel
-                                                    .CardFilterCategory.Spell.name
-                                            ) ||
-                                            it.containsKey(
-                                                FilterSelectionViewModel
-                                                    .CardFilterCategory.Trap.name
-                                            )
+                                        if (
+                                            it.containsKey(CardFilterCategory.Spell.name) ||
+                                            it.containsKey(CardFilterCategory.Trap.name)
                                         ) {
                                             unMarkAllChips()
                                         }

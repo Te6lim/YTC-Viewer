@@ -3,7 +3,7 @@ package com.te6lim.ytcviewer.home.cards
 import androidx.lifecycle.*
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.domain.DomainCard
-import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
+import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
 import kotlin.collections.set
@@ -24,9 +24,9 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     }
 
     private val _checkedCategories =
-        MutableLiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>(mutableMapOf())
+        MutableLiveData<Map<String, CardFilterCategory>>(mutableMapOf())
 
-    val checkedCategories: LiveData<Map<String, FilterSelectionViewModel.CardFilterCategory>>
+    val checkedCategories: LiveData<Map<String, CardFilterCategory>>
         get() = _checkedCategories
 
     var lastChecked: String? = null
@@ -40,7 +40,7 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     private val repository = CardRepository(cardDb, _networkStatus)
 
-    private val _cards = repository.resolveCardListSource()
+    private val _cards = repository.resolveCardListSource(this::addCategoryToChecked)
     val cards: LiveData<List<DomainCard>?> get() = _cards
 
     var lastSearchQuery: String? = null
@@ -60,7 +60,7 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     fun addCategoryToChecked(category: String) {
         val map = _checkedCategories.value!!.toMutableMap()
-        map[category] = FilterSelectionViewModel.CardFilterCategory.valueOf(category)
+        map[category] = CardFilterCategory.valueOf(category)
         lastChecked = category
         _checkedCategories.value = map
     }
@@ -69,15 +69,12 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
         val map = _checkedCategories.value!!.toMutableMap()
         map.remove(category)
 
-        when (FilterSelectionViewModel.CardFilterCategory.valueOf(category)) {
-            FilterSelectionViewModel.CardFilterCategory.Type ->
-                selectedTypeFilters = arrayOf()
+        when (CardFilterCategory.valueOf(category)) {
+            CardFilterCategory.Type -> selectedTypeFilters = arrayOf()
 
-            FilterSelectionViewModel.CardFilterCategory.Race ->
-                selectedRaceFilters = arrayOf()
+            CardFilterCategory.Race -> selectedRaceFilters = arrayOf()
 
-            FilterSelectionViewModel.CardFilterCategory.Attribute ->
-                selectedAttributeFilters = arrayOf()
+            CardFilterCategory.Attribute -> selectedAttributeFilters = arrayOf()
 
             else -> throw IllegalArgumentException()
         }
@@ -86,7 +83,7 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
         if (map.isEmpty()) _cards.value = null
 
-        removeFilter(FilterSelectionViewModel.CardFilterCategory.valueOf(category).query)
+        removeFilter(CardFilterCategory.valueOf(category).query)
     }
 
     fun removeAllCheckedCategory() {
@@ -94,7 +91,7 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
         selectedRaceFilters = arrayOf()
         selectedAttributeFilters = arrayOf()
         _checkedCategories.value?.forEach {
-            removeFilter(FilterSelectionViewModel.CardFilterCategory.valueOf(it.key).query)
+            removeFilter(CardFilterCategory.valueOf(it.key).query)
         }
         _checkedCategories.value = mutableMapOf()
         _cards.value = null
@@ -103,38 +100,37 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     fun setSelectedFilter(filters: List<String>) {
         lastChecked?.let {
-            when (FilterSelectionViewModel.CardFilterCategory.valueOf(it)) {
-                FilterSelectionViewModel.CardFilterCategory.Type -> {
+            when (CardFilterCategory.valueOf(it)) {
+                CardFilterCategory.Type -> {
                     selectedTypeFilters = filters.toTypedArray()
                 }
 
-                FilterSelectionViewModel.CardFilterCategory.Race -> {
+                CardFilterCategory.Race -> {
                     selectedRaceFilters = filters.toTypedArray()
                 }
 
-                FilterSelectionViewModel.CardFilterCategory.Attribute -> {
+                CardFilterCategory.Attribute -> {
                     selectedAttributeFilters = filters.toTypedArray()
                 }
 
-                FilterSelectionViewModel.CardFilterCategory.Spell -> {
+                CardFilterCategory.Spell -> {
                     selectedRaceFilters = filters.toTypedArray()
                 }
 
-                FilterSelectionViewModel.CardFilterCategory.Trap -> {
+                CardFilterCategory.Trap -> {
                     selectedRaceFilters = filters.toTypedArray()
                 }
             }
 
             val map = mutableMapOf<String, Array<String>>()
             if (selectedTypeFilters.isNotEmpty())
-                map[FilterSelectionViewModel.CardFilterCategory.Type.query] = selectedTypeFilters
+                map[CardFilterCategory.Type.query] = selectedTypeFilters
 
             if (selectedRaceFilters.isNotEmpty())
-                map[FilterSelectionViewModel.CardFilterCategory.Race.query] = selectedRaceFilters
+                map[CardFilterCategory.Race.query] = selectedRaceFilters
 
             if (selectedAttributeFilters.isNotEmpty())
-                map[FilterSelectionViewModel.CardFilterCategory.Attribute.query] =
-                    selectedAttributeFilters
+                map[CardFilterCategory.Attribute.query] = selectedAttributeFilters
 
             selectedFilters.value = map
         }
