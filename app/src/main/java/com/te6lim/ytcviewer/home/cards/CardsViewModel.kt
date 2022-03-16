@@ -6,6 +6,7 @@ import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
+import com.te6lim.ytcviewer.repository.OfflineLoad
 import kotlin.collections.set
 
 class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
@@ -38,9 +39,17 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     private var selectedAttributeFilters = arrayOf<String>()
 
-    private val repository = CardRepository(cardDb, _networkStatus)
+    private val repository = CardRepository(cardDb, _networkStatus, object : OfflineLoad {
 
-    private val _cards = repository.resolveCardListSource(this::addCategoryToChecked)
+        override fun checkCategory(category: String) {
+            addCategoryToChecked(category)
+        }
+
+        override fun hasCheckedCategory() = checkedCategories.value?.isNotEmpty() ?: false
+
+    })
+
+    private val _cards = repository.resolveCardListSource()
     val cards: LiveData<List<DomainCard>?> get() = _cards
 
     var lastSearchQuery: String? = null
@@ -137,7 +146,9 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     }
 
     private fun removeFilter(key: String) {
-        selectedFilters.value = selectedFilters.value!!.apply { remove(key) }
+        selectedFilters.value?.let {
+            if (it.isNotEmpty()) selectedFilters.value = it.apply { remove(key) }
+        }
     }
 }
 

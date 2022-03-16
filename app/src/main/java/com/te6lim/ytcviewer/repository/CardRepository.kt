@@ -11,7 +11,8 @@ import com.te6lim.ytcviewer.network.*
 import kotlinx.coroutines.*
 
 class CardRepository(
-    private val cardDb: CardDatabase, private val networkStatus: MutableLiveData<NetworkStatus>
+    private val cardDb: CardDatabase, private val networkStatus: MutableLiveData<NetworkStatus>,
+    private val offlineLoad: OfflineLoad
 ) {
 
     private enum class CardType {
@@ -31,7 +32,7 @@ class CardRepository(
 
     private val cardMix = MutableLiveData<List<DomainCard>>()
 
-    fun resolveCardListSource(addCategory: (String) -> Unit): MutableLiveData<List<DomainCard>?> {
+    fun resolveCardListSource(): MutableLiveData<List<DomainCard>?> {
         val mediator = MediatorLiveData<List<DomainCard>?>()
 
         val monsterCardsObserver = Observer<List<DomainCard>> {
@@ -40,7 +41,8 @@ class CardRepository(
                     if (mediator.value.isNullOrEmpty()) {
                         mediator.value = it
                         type = CardType.MONSTER
-                        checkFiltersOnStart(it, addCategory)
+                        if (!offlineLoad.hasCheckedCategory())
+                            checkFiltersOnStart(it)
                         scope.launch {
                             withContext(Dispatchers.IO) { cardDb.nonMonsterDao.clear() }
                         }
@@ -55,7 +57,7 @@ class CardRepository(
                     if (mediator.value.isNullOrEmpty()) {
                         mediator.value = it
                         type = CardType.NON_MONSTER
-                        checkFiltersOnStart(it, addCategory)
+                        if (!offlineLoad.hasCheckedCategory()) checkFiltersOnStart(it)
                         scope.launch {
                             withContext(Dispatchers.IO) { cardDb.monsterDao.clear() }
                         }
@@ -191,7 +193,7 @@ class CardRepository(
         }
     }
 
-    private fun checkFiltersOnStart(list: List<DomainCard>, addCategory: (String) -> Unit) {
+    private fun checkFiltersOnStart(list: List<DomainCard>) {
         val filters = mutableListOf(
             CardFilterCategory.Type, CardFilterCategory.Race,
             CardFilterCategory.Attribute
@@ -215,6 +217,13 @@ class CardRepository(
             }
         }
 
-        filters.forEach { addCategory(it.name) }
+        filters.forEach { offlineLoad.checkCategory(it.name) }
     }
+}
+
+interface OfflineLoad {
+
+    fun checkCategory(category: String)
+
+    fun hasCheckedCategory(): Boolean
 }
