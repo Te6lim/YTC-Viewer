@@ -12,7 +12,7 @@ import kotlinx.coroutines.*
 
 class CardRepository(
     private val cardDb: CardDatabase, private val networkStatus: MutableLiveData<NetworkStatus>,
-    private val offlineLoad: OfflineLoad
+    private val connectivityResolver: ConnectivityResolver
 ) {
 
     private enum class CardType {
@@ -41,8 +41,8 @@ class CardRepository(
                     if (mediator.value.isNullOrEmpty()) {
                         mediator.value = it
                         type = CardType.MONSTER
-                        if (!offlineLoad.hasCheckedCategory())
-                            checkFiltersOnStart(it)
+                        if (!connectivityResolver.hasSelectedCategory())
+                            selectCategories(it)
                         scope.launch {
                             withContext(Dispatchers.IO) { cardDb.nonMonsterDao.clear() }
                         }
@@ -57,7 +57,7 @@ class CardRepository(
                     if (mediator.value.isNullOrEmpty()) {
                         mediator.value = it
                         type = CardType.NON_MONSTER
-                        if (!offlineLoad.hasCheckedCategory()) checkFiltersOnStart(it)
+                        if (!connectivityResolver.hasSelectedCategory()) selectCategories(it)
                         scope.launch {
                             withContext(Dispatchers.IO) { cardDb.monsterDao.clear() }
                         }
@@ -193,8 +193,8 @@ class CardRepository(
         }
     }
 
-    private fun checkFiltersOnStart(list: List<DomainCard>) {
-        val filters = mutableListOf(
+    private fun selectCategories(list: List<DomainCard>) {
+        var filters = mutableListOf(
             CardFilterCategory.Type, CardFilterCategory.Race,
             CardFilterCategory.Attribute
         )
@@ -202,28 +202,34 @@ class CardRepository(
         if (type == CardType.NON_MONSTER) filters.remove(CardFilterCategory.Attribute)
 
         var initial = list[0]
-        list.forEach {
-            if (filters.isNotEmpty()) {
-                if (CardFilter.isEffectMonster(initial.type) != CardFilter.isEffectMonster(it.type))
-                    filters.remove(CardFilterCategory.Type)
-                if (initial.race != it.race) filters.remove(CardFilterCategory.Race)
-                if (type == CardType.MONSTER) {
+
+        if (type == CardType.MONSTER) {
+            list.forEach {
+                if (filters.isNotEmpty()) {
+                    if (CardFilter.isEffectMonster(initial.type) != CardFilter.isEffectMonster(it.type))
+                        filters.remove(CardFilterCategory.Type)
+                    if (initial.race != it.race) filters.remove(CardFilterCategory.Race)
                     it as DomainCard.DomainMonsterCard
                     if ((initial as DomainCard.DomainMonsterCard).attribute != it.attribute)
                         filters.remove(CardFilterCategory.Attribute)
-
                     initial = it
                 }
             }
+        } else {
+            filters = if (initial.type == CardFilterCategory.Spell.query) mutableListOf(
+                CardFilterCategory.Spell
+            ) else mutableListOf(CardFilterCategory.Trap)
         }
 
-        filters.forEach { offlineLoad.checkCategory(it.name) }
+        filters.forEach { connectivityResolver.selectCategoryOnOfflineLoad(it.name) }
     }
 }
 
-interface OfflineLoad {
+interface ConnectivityResolver {
 
-    fun checkCategory(category: String)
+    fun selectCategoryOnOfflineLoad(category: String)
 
-    fun hasCheckedCategory(): Boolean
+    fun hasSelectedCategory(): Boolean
+
+    fun isOnline(): Boolean = false
 }

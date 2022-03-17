@@ -49,7 +49,7 @@ class CardsFragment : Fragment() {
             }
 
         with(cardsViewModel) {
-            checkedCategories.observe(viewLifecycleOwner) {
+            selectedCategories.observe(viewLifecycleOwner) {
                 it.forEach { item ->
                     binding.cardFilter.findViewWithTag<Chip>(item.key).isChecked = true
                 }
@@ -73,7 +73,7 @@ class CardsFragment : Fragment() {
                                 ) {
                                     unMarkAllChips()
                                 } else {
-                                    checkedCategories.value?.let {
+                                    selectedCategories.value?.let {
                                         if (
                                             it.containsKey(CardFilterCategory.Spell.name) ||
                                             it.containsKey(CardFilterCategory.Trap.name)
@@ -82,7 +82,7 @@ class CardsFragment : Fragment() {
                                         }
                                     }
                                 }
-                                addCategoryToChecked(category.name)
+                                addToSelectedCategories(category.name)
                                 homeViewModel.setChipChecked(category.name)
                             } else unMarkChip(category.name)
                         }
@@ -174,12 +174,12 @@ class CardsFragment : Fragment() {
     }
 
     private fun unMarkChip(category: String) {
-        cardsViewModel.removeCategoryFromChecked(category)
+        cardsViewModel.removeCategoryFromSelected(category)
         binding.cardFilter.findViewWithTag<Chip>(category).isChecked = false
     }
 
     private fun unMarkAllChips() {
-        cardsViewModel.removeAllCheckedCategory()
+        cardsViewModel.removeAllSelectedCategory()
         binding.cardFilter.clearCheck()
 
     }

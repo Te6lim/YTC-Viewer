@@ -6,7 +6,7 @@ import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
-import com.te6lim.ytcviewer.repository.OfflineLoad
+import com.te6lim.ytcviewer.repository.ConnectivityResolver
 import kotlin.collections.set
 
 class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
@@ -24,11 +24,11 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
         }
     }
 
-    private val _checkedCategories =
+    private val _selectedCategories =
         MutableLiveData<Map<String, CardFilterCategory>>(mutableMapOf())
 
-    val checkedCategories: LiveData<Map<String, CardFilterCategory>>
-        get() = _checkedCategories
+    val selectedCategories: LiveData<Map<String, CardFilterCategory>>
+        get() = _selectedCategories
 
     var lastChecked: String? = null
         private set
@@ -39,13 +39,13 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     private var selectedAttributeFilters = arrayOf<String>()
 
-    private val repository = CardRepository(cardDb, _networkStatus, object : OfflineLoad {
+    private val repository = CardRepository(cardDb, _networkStatus, object : ConnectivityResolver {
 
-        override fun checkCategory(category: String) {
-            addCategoryToChecked(category)
+        override fun selectCategoryOnOfflineLoad(category: String) {
+            addToSelectedCategories(category)
         }
 
-        override fun hasCheckedCategory() = checkedCategories.value?.isNotEmpty() ?: false
+        override fun hasSelectedCategory() = selectedCategories.value?.isNotEmpty() ?: false
 
     })
 
@@ -67,15 +67,15 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
         repository.getCardsWithSearch(value)
     }
 
-    fun addCategoryToChecked(category: String) {
-        val map = _checkedCategories.value!!.toMutableMap()
+    fun addToSelectedCategories(category: String) {
+        val map = _selectedCategories.value!!.toMutableMap()
         map[category] = CardFilterCategory.valueOf(category)
         lastChecked = category
-        _checkedCategories.value = map
+        _selectedCategories.value = map
     }
 
-    fun removeCategoryFromChecked(category: String) {
-        val map = _checkedCategories.value!!.toMutableMap()
+    fun removeCategoryFromSelected(category: String) {
+        val map = _selectedCategories.value!!.toMutableMap()
         map.remove(category)
 
         when (CardFilterCategory.valueOf(category)) {
@@ -88,21 +88,21 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
             else -> throw IllegalArgumentException()
         }
 
-        _checkedCategories.value = map
+        _selectedCategories.value = map
 
         if (map.isEmpty()) _cards.value = null
 
         removeFilter(CardFilterCategory.valueOf(category).query)
     }
 
-    fun removeAllCheckedCategory() {
+    fun removeAllSelectedCategory() {
         selectedTypeFilters = arrayOf()
         selectedRaceFilters = arrayOf()
         selectedAttributeFilters = arrayOf()
-        _checkedCategories.value?.forEach {
+        _selectedCategories.value?.forEach {
             removeFilter(CardFilterCategory.valueOf(it.key).query)
         }
-        _checkedCategories.value = mutableMapOf()
+        _selectedCategories.value = mutableMapOf()
         _cards.value = null
 
     }
