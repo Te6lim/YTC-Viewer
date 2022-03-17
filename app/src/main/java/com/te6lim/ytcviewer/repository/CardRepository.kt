@@ -1,6 +1,7 @@
 package com.te6lim.ytcviewer.repository
 
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toDomainMonsterCards
 import com.te6lim.ytcviewer.database.toDomainNonMonsterCards
@@ -9,6 +10,7 @@ import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.*
 import kotlinx.coroutines.*
+import java.util.*
 
 class CardRepository(
     private val cardDb: CardDatabase, private val networkStatus: MutableLiveData<NetworkStatus>,
@@ -216,7 +218,10 @@ class CardRepository(
                 }
             }
         } else {
-            filters = if (initial.type == CardFilterCategory.Spell.query) mutableListOf(
+            filters = if (
+                initial.type.lowercase(Locale.getDefault())
+                == CardFilterCategory.Spell.query.lowercase(Locale.getDefault())
+            ) mutableListOf(
                 CardFilterCategory.Spell
             ) else mutableListOf(CardFilterCategory.Trap)
         }
