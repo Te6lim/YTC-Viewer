@@ -85,7 +85,9 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
             CardFilterCategory.Attribute -> selectedAttributeFilters = arrayOf()
 
-            else -> throw IllegalArgumentException()
+            CardFilterCategory.Spell -> selectedRaceFilters = arrayOf()
+
+            CardFilterCategory.Trap -> selectedRaceFilters = arrayOf()
         }
 
         _selectedCategories.value = map
