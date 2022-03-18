@@ -58,7 +58,7 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     fun getCards() {
         lastSearchQuery = null
         _cards.value = null
-        repository.getCards(selectedFilters.value!!, lastChecked!!)
+        repository.getCardStream(selectedFilters.value!!, lastChecked!!)
     }
 
     fun getCardsWithSearch(value: String) {

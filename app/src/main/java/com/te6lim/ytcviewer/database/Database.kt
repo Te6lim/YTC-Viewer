@@ -1,7 +1,7 @@
 package com.te6lim.ytcviewer.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.network.CardImage
@@ -52,8 +52,8 @@ interface MonsterDao {
     @Query("SELECT * FROM monsterDatabaseCard WHERE id = :key")
     fun get(key: Long): DatabaseMonsterCard
 
-    @Query("SELECT * FROM monsterDatabaseCard")
-    fun getAll(): LiveData<List<DatabaseMonsterCard>?>
+    @Query("SELECT * FROM monsterDatabaseCard ORDER BY name ASC")
+    fun getAll(): PagingSource<Int, DatabaseMonsterCard>
 
     @Query("DELETE FROM monsterDatabaseCard")
     fun clear()
@@ -74,8 +74,8 @@ interface NonMonsterDao {
     @Query("SELECT * FROM nonMonsterDatabaseCard WHERE id = :key")
     fun get(key: Long): DatabaseNonMonsterCard
 
-    @Query("SELECT * FROM nonMonsterDatabaseCard")
-    fun getAll(): LiveData<List<DatabaseNonMonsterCard>?>
+    @Query("SELECT * FROM nonMonsterDatabaseCard ORDER BY name ASC")
+    fun getAll(): PagingSource<Int, DatabaseNonMonsterCard>
 
     @Query("DELETE FROM nonMonsterDatabaseCard")
     fun clear()
