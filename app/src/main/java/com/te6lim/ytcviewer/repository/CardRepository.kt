@@ -3,9 +3,8 @@ package com.te6lim.ytcviewer.repository
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.paging.*
-import com.te6lim.ytcviewer.database.CardDatabase
+import com.te6lim.ytcviewer.database.*
 import com.te6lim.ytcviewer.domain.DomainCard
-import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.cards.CardPagingSource
 import com.te6lim.ytcviewer.home.cards.CardsSourceMediator
@@ -29,13 +28,30 @@ class CardRepository(
     private val job = Job()
     private val scope = CoroutineScope(job + Dispatchers.Main)
 
-    private val monsterCards: LiveData<List<DomainCard>> = Transformations.map(
-        cardDb.monsterDao.getAll()
-    ) { it?.toDomainMonsterCards() }
+    private val monsterCards = Pager(PagingConfig(PAGE_SIZE, enablePlaceholders = false))
+    {
+        DatabasePagingSource(cardDb, object : Callback {
 
-    private val nonMonsterCards: LiveData<List<DomainCard>> = Transformations.map(
-        cardDb.nonMonsterDao.getAll()
-    ) { it?.toDomainNonMonsterCards() }
+            override fun getCardListType() = CardType.MONSTER
+
+            override suspend fun getDatabaseMonsterCardsInRange(top: Int, bottom: Int)
+                    : List<DatabaseMonsterCard>? = cardDb.monsterDao.getAllInRange(top, bottom)
+
+        })
+    }.liveData
+
+    private val nonMonsterCards = Pager(PagingConfig(PAGE_SIZE, enablePlaceholders = false))
+    {
+        DatabasePagingSource(cardDb, object : Callback {
+
+            override fun getCardListType(): CardType = CardType.NON_MONSTER
+
+            override suspend fun getDatabaseNonMonsterCardsInRange(top: Int, bottom: Int)
+                    : List<DatabaseNonMonsterCard>? =
+                cardDb.nonMonsterDao.getAllInRange(top, bottom)
+
+        })
+    }.liveData
 
     private val cardMix = MutableLiveData<List<DomainCard>>()
 
@@ -51,50 +67,38 @@ class CardRepository(
         return arguments.toString()
     }
 
-    fun resolveCardListSource(): MutableLiveData<List<DomainCard>?> {
-        val mediator = MediatorLiveData<List<DomainCard>?>()
+    fun resolveCardListSource(): LiveData<PagingData<DomainCard>> {
+        val mediator = MediatorLiveData<PagingData<DomainCard>>()
 
-        val monsterCardsObserver = Observer<List<DomainCard>> {
+        val monsterCardsObserver = Observer<PagingData<DomainCard>> {
             monsterCards.value?.let {
-                if (it.isNotEmpty()) {
-                    if (mediator.value.isNullOrEmpty()) {
-                        mediator.value = it
-                        type = CardType.MONSTER
-                        if (!connectivityResolver.hasSelectedCategory())
-                            selectCategories(it)
-                        scope.launch {
-                            withContext(Dispatchers.IO) { cardDb.nonMonsterDao.clear() }
-                        }
-                    }
+                type = CardType.MONSTER
+                mediator.value = monsterCards.value
+                scope.launch {
+                    withContext(Dispatchers.IO) { cardDb.nonMonsterDao.clear() }
                 }
             }
         }
 
-        val nonMonsterCardsObserver = Observer<List<DomainCard>> {
+        val nonMonsterCardsObserver = Observer<PagingData<DomainCard>> {
             nonMonsterCards.value?.let {
-                if (it.isNotEmpty()) {
-                    if (mediator.value.isNullOrEmpty()) {
-                        mediator.value = it
-                        type = CardType.NON_MONSTER
-                        if (!connectivityResolver.hasSelectedCategory()) selectCategories(it)
-                        scope.launch {
-                            withContext(Dispatchers.IO) { cardDb.monsterDao.clear() }
-                        }
-                    }
+                type = CardType.NON_MONSTER
+                mediator.value = nonMonsterCards.value
+                scope.launch {
+                    withContext(Dispatchers.IO) { cardDb.monsterDao.clear() }
                 }
             }
         }
 
-        val cardMixObserver = Observer<List<DomainCard>> {
+        /*val cardMixObserver = Observer<PagingSource<Int, DomainCard>> {
             cardMix.value?.let {
-                if (mediator.value.isNullOrEmpty())
-                    mediator.value = it
+                if (dummyList.isNullOrEmpty())
             }
-        }
+        }*/
 
         mediator.addSource(monsterCards, monsterCardsObserver)
         mediator.addSource(nonMonsterCards, nonMonsterCardsObserver)
-        mediator.addSource(cardMix, cardMixObserver)
+        //mediator.addSource(cardMix, cardMixObserver)
         return mediator
     }
 
@@ -198,9 +202,9 @@ class CardRepository(
 
     @ExperimentalPagingApi
     fun getCardStream(selectedFilters: Map<String, Array<String>>, lastChecked: String)
-            : LiveData<PagingData<NetworkCard>> {
+            : LiveData<PagingData<DomainCard>> {
         val callback = object : Callback {
-            override suspend fun getCards(offset: Int): Response {
+            override suspend fun getNetworkCards(offset: Int): Response {
                 return getCards(selectedFilters, lastChecked, offset)
             }
 
@@ -215,7 +219,7 @@ class CardRepository(
         ).liveData
     }
 
-    private fun selectCategories(list: List<DomainCard>) {
+    /*private fun selectCategories(list: List<DomainCard>) {
         var filters = mutableListOf(
             CardFilterCategory.Type, CardFilterCategory.Race,
             CardFilterCategory.Attribute
@@ -247,7 +251,7 @@ class CardRepository(
         }
 
         filters.forEach { connectivityResolver.selectCategoryOnOfflineLoad(it.name) }
-    }
+    }*/
 }
 
 interface ConnectivityResolver {
@@ -255,11 +259,19 @@ interface ConnectivityResolver {
     fun selectCategoryOnOfflineLoad(category: String)
 
     fun hasSelectedCategory(): Boolean
-
-    fun isOnline(): Boolean = false
 }
 
 interface Callback {
-    suspend fun getCards(offset: Int): Response
+
+    suspend fun getNetworkCards(offset: Int): Response {
+        return Response(listOf())
+    }
+
+    suspend fun getDatabaseMonsterCardsInRange(top: Int, bottom: Int)
+            : List<DatabaseMonsterCard>? = null
+
+    suspend fun getDatabaseNonMonsterCardsInRange(top: Int, bottom: Int)
+            : List<DatabaseNonMonsterCard>? = null
+
     fun getCardListType(): CardType
 }

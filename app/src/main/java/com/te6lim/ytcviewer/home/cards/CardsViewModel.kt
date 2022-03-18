@@ -1,6 +1,8 @@
 package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
@@ -16,11 +18,11 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     private val _networkStatus = MutableLiveData<NetworkStatus>()
     val networkStatus: LiveData<NetworkStatus> get() = _networkStatus
 
+    @ExperimentalPagingApi
     val filterTransformation = Transformations.map(selectedFilters) {
         if (it.isNotEmpty()) {
             lastSearchQuery = null
-            _cards.value = null
-            repository.getCards(it, lastChecked!!)
+            _cards.value = repository.getCardStream(it, lastChecked!!).value
         }
     }
 
@@ -49,22 +51,17 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     })
 
-    private val _cards = repository.resolveCardListSource()
-    val cards: LiveData<List<DomainCard>?> get() = _cards
+    private var _cards = MutableLiveData<PagingData<DomainCard>?>()
+    val cards: LiveData<PagingData<DomainCard>?>
+        get() = _cards
 
     var lastSearchQuery: String? = null
         private set
 
+    @ExperimentalPagingApi
     fun getCards() {
         lastSearchQuery = null
-        _cards.value = null
-        repository.getCardStream(selectedFilters.value!!, lastChecked!!)
-    }
-
-    fun getCardsWithSearch(value: String) {
-        lastSearchQuery = value
-        _cards.value = null
-        repository.getCardsWithSearch(value)
+        _cards.value = repository.getCardStream(selectedFilters.value!!, lastChecked!!).value
     }
 
     fun addToSelectedCategories(category: String) {

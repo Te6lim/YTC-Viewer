@@ -1,7 +1,6 @@
 package com.te6lim.ytcviewer.database
 
 import android.content.Context
-import androidx.paging.PagingSource
 import androidx.room.*
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.network.CardImage
@@ -11,6 +10,7 @@ import com.te6lim.ytcviewer.network.CardSet
 @Entity(tableName = "monsterDatabaseCard")
 data class DatabaseMonsterCard(
     @PrimaryKey(autoGenerate = false) val id: Long,
+    @ColumnInfo val position: Long,
     @ColumnInfo val name: String,
     @ColumnInfo val type: String,
     @ColumnInfo val desc: String,
@@ -27,6 +27,7 @@ data class DatabaseMonsterCard(
 @Entity(tableName = "nonMonsterDatabaseCard")
 data class DatabaseNonMonsterCard(
     @PrimaryKey(autoGenerate = false) val id: Long,
+    @ColumnInfo val position: Long,
     @ColumnInfo val name: String,
     @ColumnInfo val type: String,
     @ColumnInfo val desc: String,
@@ -50,10 +51,16 @@ interface MonsterDao {
     fun update(card: DatabaseMonsterCard)
 
     @Query("SELECT * FROM monsterDatabaseCard WHERE id = :key")
-    fun get(key: Long): DatabaseMonsterCard
+    fun get(key: Long): DatabaseMonsterCard?
 
     @Query("SELECT * FROM monsterDatabaseCard ORDER BY name ASC")
-    fun getAll(): PagingSource<Int, DatabaseMonsterCard>
+    fun getAll(): List<DatabaseMonsterCard>?
+
+    @Query("SELECT * FROM monsterDatabaseCard WHERE position BETWEEN :top AND :bottom")
+    fun getAllInRange(top: Int, bottom: Int): List<DatabaseMonsterCard>?
+
+    @Query("SELECT * FROM monsterDatabaseCard LIMIT 1")
+    fun getOne(): DatabaseMonsterCard?
 
     @Query("DELETE FROM monsterDatabaseCard")
     fun clear()
@@ -72,10 +79,16 @@ interface NonMonsterDao {
     fun update(card: DatabaseNonMonsterCard)
 
     @Query("SELECT * FROM nonMonsterDatabaseCard WHERE id = :key")
-    fun get(key: Long): DatabaseNonMonsterCard
+    fun get(key: Long): DatabaseNonMonsterCard?
 
     @Query("SELECT * FROM nonMonsterDatabaseCard ORDER BY name ASC")
-    fun getAll(): PagingSource<Int, DatabaseNonMonsterCard>
+    fun getAll(): List<DatabaseNonMonsterCard>?
+
+    @Query("SELECT * FROM nonMonsterDatabaseCard WHERE position BETWEEN :top AND :bottom")
+    fun getAllInRange(top: Int, bottom: Int): List<DatabaseNonMonsterCard>?
+
+    @Query("SELECT * FROM nonMonsterDatabaseCard LIMIT 1")
+    fun getOne(): DatabaseNonMonsterCard?
 
     @Query("DELETE FROM nonMonsterDatabaseCard")
     fun clear()

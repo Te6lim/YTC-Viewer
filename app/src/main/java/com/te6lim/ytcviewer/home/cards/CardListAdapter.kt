@@ -3,20 +3,23 @@ package com.te6lim.ytcviewer.home.cards
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ItemCardBinding
 import com.te6lim.ytcviewer.domain.DomainCard
 
-class CardListAdapter : ListAdapter<DomainCard, CardViewHolder>(DiffCallback) {
+class CardListAdapter : PagingDataAdapter<DomainCard, CardViewHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        item?.let {
+            holder.bind(it)
+        }
     }
 }
 
