@@ -27,7 +27,9 @@ class DatabasePagingSource(private val cardDb: CardDatabase, private val callbac
 
             val nextKey = if (cards.isNullOrEmpty()) null else params.loadSize
             val prevKey = if (top == 0) null else params.loadSize - PAGE_SIZE
+
             LoadResult.Page(data = cards ?: listOf(), nextKey = nextKey, prevKey = prevKey)
+
         } catch (e: Exception) {
             LoadResult.Error(e)
         }

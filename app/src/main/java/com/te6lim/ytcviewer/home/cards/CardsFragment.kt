@@ -8,6 +8,8 @@ import android.widget.Button
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.database.CardDatabase
@@ -15,6 +17,7 @@ import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.HomeViewModel
 import com.te6lim.ytcviewer.network.NetworkStatus
+import kotlinx.coroutines.launch
 
 class CardsFragment : Fragment() {
 
@@ -22,6 +25,7 @@ class CardsFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var binding: FragmentCardsBinding
 
+    @OptIn(ExperimentalPagingApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -44,7 +48,7 @@ class CardsFragment : Fragment() {
         binding.networkErrorScreen.findViewById<Button>(R.id.retry_button)
             .setOnClickListener {
                 cardsViewModel.lastSearchQuery?.let {
-                    cardsViewModel.getCardsWithSearch(it)
+                    //cardsViewModel.getCardsWithSearch(it)
                 } ?: cardsViewModel.getCards()
             }
 
@@ -121,7 +125,7 @@ class CardsFragment : Fragment() {
 
             filterTransformation.observe(viewLifecycleOwner) {}
 
-            cards.observe(viewLifecycleOwner) {
+            cards?.observe(viewLifecycleOwner) {
                 it?.let {
                     with(binding) {
                         searchDescription.visibility = View.GONE
@@ -131,7 +135,9 @@ class CardsFragment : Fragment() {
                         infoScreen.visibility = View.GONE
                         cards.visibility = View.VISIBLE
                     }
-                    adapter.submitList(it)
+
+                    lifecycleScope.launch { adapter.submitData(it) }
+
                 } ?: run {
                     with(binding) {
                         searchDescription.visibility = View.VISIBLE
@@ -164,7 +170,7 @@ class CardsFragment : Fragment() {
             searchKey.observe(viewLifecycleOwner) {
                 it?.let { searchKey ->
                     unMarkAllChips()
-                    cardsViewModel.getCardsWithSearch(searchKey)
+                    //cardsViewModel.getCardsWithSearch(searchKey)
                     setSearchKey(null)
                 }
             }

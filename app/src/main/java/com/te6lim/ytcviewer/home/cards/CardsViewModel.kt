@@ -8,7 +8,6 @@ import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
-import com.te6lim.ytcviewer.repository.ConnectivityResolver
 import kotlin.collections.set
 
 class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
@@ -18,11 +17,12 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     private val _networkStatus = MutableLiveData<NetworkStatus>()
     val networkStatus: LiveData<NetworkStatus> get() = _networkStatus
 
-    @ExperimentalPagingApi
+    @OptIn(ExperimentalPagingApi::class)
     val filterTransformation = Transformations.map(selectedFilters) {
         if (it.isNotEmpty()) {
             lastSearchQuery = null
-            _cards.value = repository.getCardStream(it, lastChecked!!).value
+            _cards = repository.getCardStream(it, lastChecked!!)
+            val x = 0
         }
     }
 
@@ -41,27 +41,19 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     private var selectedAttributeFilters = arrayOf<String>()
 
-    private val repository = CardRepository(cardDb, _networkStatus, object : ConnectivityResolver {
+    private val repository = CardRepository(cardDb, _networkStatus)
 
-        override fun selectCategoryOnOfflineLoad(category: String) {
-            addToSelectedCategories(category)
-        }
-
-        override fun hasSelectedCategory() = selectedCategories.value?.isNotEmpty() ?: false
-
-    })
-
-    private var _cards = MutableLiveData<PagingData<DomainCard>?>()
-    val cards: LiveData<PagingData<DomainCard>?>
+    private var _cards: LiveData<PagingData<DomainCard>>? = null
+    val cards: LiveData<PagingData<DomainCard>>?
         get() = _cards
 
     var lastSearchQuery: String? = null
         private set
 
-    @ExperimentalPagingApi
+    @OptIn(ExperimentalPagingApi::class)
     fun getCards() {
         lastSearchQuery = null
-        _cards.value = repository.getCardStream(selectedFilters.value!!, lastChecked!!).value
+        _cards = repository.getCardStream(selectedFilters.value!!, lastChecked!!)
     }
 
     fun addToSelectedCategories(category: String) {
@@ -89,7 +81,7 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
         _selectedCategories.value = map
 
-        if (map.isEmpty()) _cards.value = null
+        if (map.isEmpty()) _cards = null
 
         removeFilter(CardFilterCategory.valueOf(category).query)
     }
@@ -102,7 +94,7 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
             removeFilter(CardFilterCategory.valueOf(it.key).query)
         }
         _selectedCategories.value = mutableMapOf()
-        _cards.value = null
+        _cards = null
 
     }
 

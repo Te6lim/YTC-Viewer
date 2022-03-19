@@ -24,13 +24,20 @@ class CardPagingSource(private val callback: Callback) : PagingSource<Int, Domai
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DomainCard> {
         val offset = params.key ?: START_OFFSET
         return try {
+
             val response = callback.getNetworkCards(offset)
-            if (callback.getCardListType() == CardType.MONSTER) response as Response.MonsterCardResponse
+
+            if (callback.getCardListType() == CardType.MONSTER)
+                response as Response.MonsterCardResponse
             else response as Response.NonMonsterCardResponse
+
             val cards = response.data.toDomainCards()
+
             val nextKey = if (cards.isEmpty()) null else params.loadSize
             val prevKey = if (offset == START_OFFSET) null else offset - PAGE_SIZE
+
             LoadResult.Page(cards, prevKey = prevKey, nextKey = nextKey)
+
         } catch (e: Exception) {
             LoadResult.Error(e)
         } catch (e: HttpException) {

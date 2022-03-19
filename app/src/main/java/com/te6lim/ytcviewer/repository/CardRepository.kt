@@ -1,12 +1,10 @@
 package com.te6lim.ytcviewer.repository
 
 import androidx.lifecycle.*
-import androidx.lifecycle.Observer
 import androidx.paging.*
 import com.te6lim.ytcviewer.database.*
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
-import com.te6lim.ytcviewer.home.cards.CardPagingSource
 import com.te6lim.ytcviewer.home.cards.CardsSourceMediator
 import com.te6lim.ytcviewer.network.*
 import kotlinx.coroutines.*
@@ -17,8 +15,7 @@ enum class CardType {
 }
 
 class CardRepository(
-    private val cardDb: CardDatabase, private val networkStatus: MutableLiveData<NetworkStatus>,
-    private val connectivityResolver: ConnectivityResolver
+    private val cardDb: CardDatabase, private val networkStatus: MutableLiveData<NetworkStatus>
 ) {
 
     companion object {
@@ -28,7 +25,7 @@ class CardRepository(
     private val job = Job()
     private val scope = CoroutineScope(job + Dispatchers.Main)
 
-    private val monsterCards = Pager(PagingConfig(PAGE_SIZE, enablePlaceholders = false))
+    /*private val monsterCards = Pager(PagingConfig(PAGE_SIZE, enablePlaceholders = false))
     {
         DatabasePagingSource(cardDb, object : Callback {
 
@@ -51,7 +48,7 @@ class CardRepository(
                 cardDb.nonMonsterDao.getAllInRange(top, bottom)
 
         })
-    }.liveData
+    }.liveData*/
 
     private val cardMix = MutableLiveData<List<DomainCard>>()
 
@@ -67,7 +64,7 @@ class CardRepository(
         return arguments.toString()
     }
 
-    fun resolveCardListSource(): LiveData<PagingData<DomainCard>> {
+    /*fun resolveCardListSource(): LiveData<PagingData<DomainCard>> {
         val mediator = MediatorLiveData<PagingData<DomainCard>>()
 
         val monsterCardsObserver = Observer<PagingData<DomainCard>> {
@@ -90,18 +87,19 @@ class CardRepository(
             }
         }
 
-        /*val cardMixObserver = Observer<PagingSource<Int, DomainCard>> {
+        *//*val cardMixObserver = Observer<PagingSource<Int, DomainCard>> {
             cardMix.value?.let {
                 if (dummyList.isNullOrEmpty())
             }
-        }*/
+        }*//*
 
         mediator.addSource(monsterCards, monsterCardsObserver)
         mediator.addSource(nonMonsterCards, nonMonsterCardsObserver)
         //mediator.addSource(cardMix, cardMixObserver)
         return mediator
-    }
+    }*/
 
+    @OptIn(ExperimentalPagingApi::class)
     suspend fun getCards(
         selectedFilters: Map<String, Array<String>>, lastChecked: String, offset: Int = 0
     ): Response {
@@ -200,23 +198,30 @@ class CardRepository(
         }
     }
 
-    @ExperimentalPagingApi
+    @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(selectedFilters: Map<String, Array<String>>, lastChecked: String)
             : LiveData<PagingData<DomainCard>> {
-        val callback = object : Callback {
-            override suspend fun getNetworkCards(offset: Int): Response {
-                return getCards(selectedFilters, lastChecked, offset)
-            }
-
-            override fun getCardListType(): CardType {
-                return type!!
-            }
-        }
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = CardsSourceMediator(cardDb, callback),
-            pagingSourceFactory = { CardPagingSource(callback) }
-        ).liveData
+            remoteMediator = CardsSourceMediator(cardDb, object : Callback {
+                override suspend fun getNetworkCards(offset: Int): Response {
+                    return getCards(selectedFilters, lastChecked, offset)
+                }
+
+                override fun getCardListType() = type!!
+            })
+        ) {
+            DatabasePagingSource(cardDb, object : Callback {
+                override fun getCardListType() = type!!
+
+                override suspend fun getDatabaseMonsterCardsInRange(top: Int, bottom: Int) =
+                    cardDb.monsterDao.getAllInRange(top, bottom)
+
+                override suspend fun getDatabaseNonMonsterCardsInRange(top: Int, bottom: Int) =
+                    cardDb.nonMonsterDao.getAllInRange(top, bottom)
+
+            })
+        }.liveData
     }
 
     /*private fun selectCategories(list: List<DomainCard>) {
@@ -254,12 +259,12 @@ class CardRepository(
     }*/
 }
 
-interface ConnectivityResolver {
+/*interface ConnectivityResolver {
 
     fun selectCategoryOnOfflineLoad(category: String)
 
     fun hasSelectedCategory(): Boolean
-}
+}*/
 
 interface Callback {
 
