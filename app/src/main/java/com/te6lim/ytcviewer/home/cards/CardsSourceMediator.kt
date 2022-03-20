@@ -8,13 +8,16 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.network.toDatabaseMonsterCards
 import com.te6lim.ytcviewer.network.toDatabaseNonMonsterCards
-import com.te6lim.ytcviewer.repository.Callback
+import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
 import com.te6lim.ytcviewer.repository.CardType
 import retrofit2.HttpException
 
 @OptIn(ExperimentalPagingApi::class)
-class CardsSourceMediator(private val cardDb: CardDatabase, private val callback: Callback) :
+class CardsSourceMediator(
+    private val cardDb: CardDatabase,
+    private val callback: CardRepository.Callback
+) :
     RemoteMediator<Int, DomainCard>() {
 
     override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -36,7 +39,7 @@ class CardsSourceMediator(private val cardDb: CardDatabase, private val callback
                 )
 
                 MediatorResult.Success(endOfPaginationReached = cards.isEmpty())
-            } ?: MediatorResult.Success(endOfPaginationReached = true)
+            } ?: MediatorResult.Success(endOfPaginationReached = false)
 
         } catch (e: Exception) {
             MediatorResult.Error(e)
@@ -52,7 +55,7 @@ class CardsSourceMediator(private val cardDb: CardDatabase, private val callback
                     return anchorPosition?.let {
                         closestPageToPosition(it)?.nextKey?.minus(PAGE_SIZE)
                             ?: closestPageToPosition(it)?.prevKey?.plus(PAGE_SIZE) ?: 0
-                    } ?: 0
+                    }
                 }
             }
 
@@ -61,7 +64,11 @@ class CardsSourceMediator(private val cardDb: CardDatabase, private val callback
             }
 
             LoadType.PREPEND -> {
-                return state.pages.last().prevKey
+                with(state) {
+                    return anchorPosition?.let {
+                        closestPageToPosition(it)?.prevKey
+                    }
+                }
             }
         }
     }

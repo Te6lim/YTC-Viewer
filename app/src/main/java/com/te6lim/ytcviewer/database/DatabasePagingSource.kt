@@ -3,12 +3,13 @@ package com.te6lim.ytcviewer.database
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.te6lim.ytcviewer.domain.DomainCard
-import com.te6lim.ytcviewer.repository.Callback
+import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
 import com.te6lim.ytcviewer.repository.CardType
 
-class DatabasePagingSource(private val cardDb: CardDatabase, private val callback: Callback) :
-    PagingSource<Int, DomainCard>() {
+class DatabasePagingSource(
+    private val cardDb: CardDatabase, private val callback: CardRepository.Callback
+) : PagingSource<Int, DomainCard>() {
     override fun getRefreshKey(state: PagingState<Int, DomainCard>): Int? {
         return state.anchorPosition?.let {
             state.closestPageToPosition(it)?.prevKey?.plus(PAGE_SIZE)

@@ -257,6 +257,21 @@ class CardRepository(
 
         filters.forEach { connectivityResolver.selectCategoryOnOfflineLoad(it.name) }
     }*/
+
+    interface Callback {
+
+        suspend fun getNetworkCards(offset: Int): Response {
+            return Response(listOf())
+        }
+
+        suspend fun getDatabaseMonsterCardsInRange(top: Int, bottom: Int)
+                : List<DatabaseMonsterCard>? = null
+
+        suspend fun getDatabaseNonMonsterCardsInRange(top: Int, bottom: Int)
+                : List<DatabaseNonMonsterCard>? = null
+
+        fun getCardListType(): CardType
+    }
 }
 
 /*interface ConnectivityResolver {
@@ -265,18 +280,3 @@ class CardRepository(
 
     fun hasSelectedCategory(): Boolean
 }*/
-
-interface Callback {
-
-    suspend fun getNetworkCards(offset: Int): Response {
-        return Response(listOf())
-    }
-
-    suspend fun getDatabaseMonsterCardsInRange(top: Int, bottom: Int)
-            : List<DatabaseMonsterCard>? = null
-
-    suspend fun getDatabaseNonMonsterCardsInRange(top: Int, bottom: Int)
-            : List<DatabaseNonMonsterCard>? = null
-
-    fun getCardListType(): CardType
-}

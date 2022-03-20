@@ -5,14 +5,15 @@ import androidx.paging.PagingState
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.toDomainCards
-import com.te6lim.ytcviewer.repository.Callback
+import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
 import com.te6lim.ytcviewer.repository.CardType
 import retrofit2.HttpException
 
 private const val START_OFFSET = 0
 
-class CardPagingSource(private val callback: Callback) : PagingSource<Int, DomainCard>() {
+class CardPagingSource(private val callback: CardRepository.Callback) :
+    PagingSource<Int, DomainCard>() {
 
     override fun getRefreshKey(state: PagingState<Int, DomainCard>): Int? {
         return state.anchorPosition?.let {
