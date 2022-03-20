@@ -100,7 +100,7 @@ class CardRepository(
     }*/
 
     @OptIn(ExperimentalPagingApi::class)
-    suspend fun getCards(
+    private suspend fun getCards(
         selectedFilters: Map<String, Array<String>>, lastChecked: String, offset: Int = 0
     ): Response {
         var cardsDeferred: Deferred<Response>? = null
@@ -219,7 +219,6 @@ class CardRepository(
 
                 override suspend fun getDatabaseNonMonsterCardsInRange(top: Int, bottom: Int) =
                     cardDb.nonMonsterDao.getAllInRange(top, bottom)
-
             })
         }.liveData
     }

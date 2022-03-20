@@ -6,6 +6,8 @@ import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
 import com.te6lim.ytcviewer.repository.CardType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DatabasePagingSource(
     private val cardDb: CardDatabase, private val callback: CardRepository.Callback
@@ -22,9 +24,11 @@ class DatabasePagingSource(
         val bottom = top + PAGE_SIZE
         return try {
 
-            val cards = if (callback.getCardListType() == CardType.MONSTER)
-                cardDb.monsterDao.getAllInRange(top, bottom)?.toDomainMonsterCards()
-            else cardDb.nonMonsterDao.getAllInRange(top, bottom)?.toDomainNonMonsterCards()
+            val cards = withContext(Dispatchers.IO) {
+                if (callback.getCardListType() == CardType.MONSTER)
+                    cardDb.monsterDao.getAllInRange(top, bottom)?.toDomainMonsterCards()
+                else cardDb.nonMonsterDao.getAllInRange(top, bottom)?.toDomainNonMonsterCards()
+            }
 
             val nextKey = if (cards.isNullOrEmpty()) null else params.loadSize
             val prevKey = if (top == 0) null else params.loadSize - PAGE_SIZE

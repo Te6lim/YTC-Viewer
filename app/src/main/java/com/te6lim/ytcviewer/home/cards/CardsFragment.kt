@@ -125,7 +125,7 @@ class CardsFragment : Fragment() {
 
             filterTransformation.observe(viewLifecycleOwner) {}
 
-            cards?.observe(viewLifecycleOwner) {
+            cards.observe(viewLifecycleOwner) {
                 it?.let {
                     with(binding) {
                         searchDescription.visibility = View.GONE

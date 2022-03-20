@@ -11,6 +11,8 @@ import com.te6lim.ytcviewer.network.toDatabaseNonMonsterCards
 import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
 import com.te6lim.ytcviewer.repository.CardType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 @OptIn(ExperimentalPagingApi::class)
@@ -32,11 +34,13 @@ class CardsSourceMediator(
                 val response = callback.getNetworkCards(it)
                 val cards = response.data
 
-                if (callback.getCardListType() == CardType.MONSTER)
-                    cardDb.monsterDao.insertMany(*cards.toDatabaseMonsterCards().toTypedArray())
-                else cardDb.nonMonsterDao.insertMany(
-                    *cards.toDatabaseNonMonsterCards().toTypedArray()
-                )
+                withContext(Dispatchers.IO) {
+                    if (callback.getCardListType() == CardType.MONSTER)
+                        cardDb.monsterDao.insertMany(*cards.toDatabaseMonsterCards().toTypedArray())
+                    else cardDb.nonMonsterDao.insertMany(
+                        *cards.toDatabaseNonMonsterCards().toTypedArray()
+                    )
+                }
 
                 MediatorResult.Success(endOfPaginationReached = cards.isEmpty())
             } ?: MediatorResult.Success(endOfPaginationReached = false)
@@ -55,7 +59,7 @@ class CardsSourceMediator(
                     return anchorPosition?.let {
                         closestPageToPosition(it)?.nextKey?.minus(PAGE_SIZE)
                             ?: closestPageToPosition(it)?.prevKey?.plus(PAGE_SIZE) ?: 0
-                    }
+                    } ?: 0
                 }
             }
 

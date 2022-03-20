@@ -2,9 +2,7 @@ package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.PagingData
 import com.te6lim.ytcviewer.database.CardDatabase
-import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
@@ -21,9 +19,11 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     val filterTransformation = Transformations.map(selectedFilters) {
         if (it.isNotEmpty()) {
             lastSearchQuery = null
-            _cards = repository.getCardStream(it, lastChecked!!)
-            val x = 0
         }
+    }
+
+    val cards = Transformations.switchMap(selectedFilters) {
+        repository.getCardStream(it, lastChecked!!)
     }
 
     private val _selectedCategories =
@@ -43,17 +43,13 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     private val repository = CardRepository(cardDb, _networkStatus)
 
-    private var _cards: LiveData<PagingData<DomainCard>>? = null
-    val cards: LiveData<PagingData<DomainCard>>?
-        get() = _cards
-
     var lastSearchQuery: String? = null
         private set
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCards() {
         lastSearchQuery = null
-        _cards = repository.getCardStream(selectedFilters.value!!, lastChecked!!)
+        //_cards = repository.getCardStream(selectedFilters.value!!, lastChecked!!)
     }
 
     fun addToSelectedCategories(category: String) {
@@ -81,9 +77,9 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
         _selectedCategories.value = map
 
-        if (map.isEmpty()) _cards = null
+        if (map.isEmpty()) //_cards = null
 
-        removeFilter(CardFilterCategory.valueOf(category).query)
+            removeFilter(CardFilterCategory.valueOf(category).query)
     }
 
     fun removeAllSelectedCategory() {
@@ -94,7 +90,7 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
             removeFilter(CardFilterCategory.valueOf(it.key).query)
         }
         _selectedCategories.value = mutableMapOf()
-        _cards = null
+        //_cards = null
 
     }
 
