@@ -8,6 +8,7 @@ import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.cards.CardsSourceMediator
 import com.te6lim.ytcviewer.network.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 enum class CardType {
@@ -200,7 +201,7 @@ class CardRepository(
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(selectedFilters: Map<String, Array<String>>, lastChecked: String)
-            : LiveData<PagingData<DomainCard>> {
+            : Flow<PagingData<DomainCard>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             remoteMediator = CardsSourceMediator(cardDb, object : Callback {
@@ -213,14 +214,8 @@ class CardRepository(
         ) {
             DatabasePagingSource(cardDb, object : Callback {
                 override fun getCardListType() = type!!
-
-                override suspend fun getDatabaseMonsterCardsInRange(top: Int, bottom: Int) =
-                    cardDb.monsterDao.getAllInRange(top, bottom)
-
-                override suspend fun getDatabaseNonMonsterCardsInRange(top: Int, bottom: Int) =
-                    cardDb.nonMonsterDao.getAllInRange(top, bottom)
             })
-        }.liveData
+        }.flow
     }
 
     /*private fun selectCategories(list: List<DomainCard>) {
@@ -262,12 +257,6 @@ class CardRepository(
         suspend fun getNetworkCards(offset: Int): Response {
             return Response(listOf())
         }
-
-        suspend fun getDatabaseMonsterCardsInRange(top: Int, bottom: Int)
-                : List<DatabaseMonsterCard>? = null
-
-        suspend fun getDatabaseNonMonsterCardsInRange(top: Int, bottom: Int)
-                : List<DatabaseNonMonsterCard>? = null
 
         fun getCardListType(): CardType
     }

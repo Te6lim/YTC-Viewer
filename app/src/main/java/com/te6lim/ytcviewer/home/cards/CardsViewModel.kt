@@ -15,15 +15,11 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     private val _networkStatus = MutableLiveData<NetworkStatus>()
     val networkStatus: LiveData<NetworkStatus> get() = _networkStatus
 
-    @OptIn(ExperimentalPagingApi::class)
-    val filterTransformation = Transformations.map(selectedFilters) {
+    val cards = Transformations.switchMap(selectedFilters) {
         if (it.isNotEmpty()) {
             lastSearchQuery = null
         }
-    }
-
-    val cards = Transformations.switchMap(selectedFilters) {
-        repository.getCardStream(it, lastChecked!!)
+        repository.getCardStream(it, lastChecked!!).asLiveData()
     }
 
     private val _selectedCategories =
@@ -77,9 +73,9 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
         _selectedCategories.value = map
 
-        if (map.isEmpty()) //_cards = null
+        //if (map.isEmpty()) _cards = null
 
-            removeFilter(CardFilterCategory.valueOf(category).query)
+        removeFilter(CardFilterCategory.valueOf(category).query)
     }
 
     fun removeAllSelectedCategory() {

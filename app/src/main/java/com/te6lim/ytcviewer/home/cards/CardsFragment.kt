@@ -123,22 +123,22 @@ class CardsFragment : Fragment() {
                 }
             }
 
-            filterTransformation.observe(viewLifecycleOwner) {}
-
             cards.observe(viewLifecycleOwner) {
                 it?.let {
-                    with(binding) {
+                    /*with(binding) {
                         searchDescription.visibility = View.GONE
                         networkErrorScreen.visibility = View.GONE
                         unknownQueryScreen.visibility = View.GONE
                         loadingScreen.visibility = View.GONE
                         infoScreen.visibility = View.GONE
                         cards.visibility = View.VISIBLE
+                    }*/
+
+                    lifecycleScope.launch {
+                        adapter.submitData(it)
                     }
 
-                    lifecycleScope.launch { adapter.submitData(it) }
-
-                } ?: run {
+                } /*?: run {
                     with(binding) {
                         searchDescription.visibility = View.VISIBLE
                         networkErrorScreen.visibility = View.GONE
@@ -147,7 +147,7 @@ class CardsFragment : Fragment() {
                         infoScreen.visibility = View.VISIBLE
                         cards.visibility = View.GONE
                     }
-                }
+                }*/
             }
         }
 
