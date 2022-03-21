@@ -1,5 +1,6 @@
 package com.te6lim.ytcviewer.home.cards
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,10 +34,17 @@ class CardsFragment : Fragment() {
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_cards, container, false)
 
+        val sharedPref = requireContext().getSharedPreferences(
+            getString(R.string.lastCachedKey), Context.MODE_PRIVATE
+        )
+
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         cardsViewModel = ViewModelProvider(
-            this, CardsViewModelFactory(CardDatabase.getInstance(requireContext()))
+            this, CardsViewModelFactory(
+                CardDatabase.getInstance(requireContext()),
+                sharedPref.getString(getString(R.string.type_name), null)
+            )
         )[CardsViewModel::class.java]
 
         binding.viewModel = cardsViewModel
@@ -120,6 +128,16 @@ class CardsFragment : Fragment() {
                     }
                     else -> {
                     }
+                }
+            }
+
+            lastTypeCached.observe(viewLifecycleOwner) {
+                sharedPref.apply {
+                    if (getString(getString(R.string.type_name), null) != it)
+                        with(edit()) {
+                            putString(getString(R.string.type_name), it)
+                            apply()
+                        }
                 }
             }
 

@@ -16,7 +16,7 @@ enum class CardType {
 }
 
 class CardRepository(
-    private val cardDb: CardDatabase, private val networkStatus: MutableLiveData<NetworkStatus>
+    private val cardDb: CardDatabase, private val lastTypeCached: MutableLiveData<CardType?>
 ) {
 
     companion object {
@@ -52,8 +52,6 @@ class CardRepository(
     }.liveData*/
 
     private val cardMix = MutableLiveData<List<DomainCard>>()
-
-    private var type: CardType? = null
 
     private fun Array<String>.formattedString(): String {
         val arguments = StringBuilder().apply {
@@ -111,7 +109,7 @@ class CardRepository(
         when (selectedFilters.size) {
             1 -> {
                 if (lastChecked == CardFilterCategory.Spell.name) {
-                    type = CardType.NON_MONSTER
+                    lastTypeCached.value = CardType.NON_MONSTER
                     cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                         mapOf(Pair("type", "spell card")),
                         mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
@@ -119,14 +117,14 @@ class CardRepository(
                     )
                 } else {
                     if (lastChecked == CardFilterCategory.Trap.name) {
-                        type = CardType.NON_MONSTER
+                        lastTypeCached.value = CardType.NON_MONSTER
                         cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                             mapOf(Pair("type", "trap card")),
                             mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
                             offset = offset
                         )
                     } else {
-                        type = CardType.MONSTER
+                        lastTypeCached.value = CardType.MONSTER
                         cardsDeferred = YtcApi.retrofitService.getCardsAsync(
                             mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
                             offset = offset
@@ -136,7 +134,7 @@ class CardRepository(
             }
 
             2 -> {
-                type = CardType.MONSTER
+                lastTypeCached.value = CardType.MONSTER
                 cardsDeferred = YtcApi.retrofitService.getCardsAsync(
                     mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
                     mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
@@ -145,7 +143,7 @@ class CardRepository(
             }
 
             3 -> {
-                type = CardType.MONSTER
+                lastTypeCached.value = CardType.MONSTER
                 cardsDeferred = YtcApi.retrofitService.getCardsAsync(
                     mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
                     mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
@@ -184,7 +182,7 @@ class CardRepository(
         return cardsDeferred!!.await()
     }
 
-    fun getCardsWithSearch(key: String) {
+    /*fun getCardsWithSearch(key: String) {
         scope.launch {
             val cardsDeferred: Deferred<Response> =
                 YtcApi.retrofitService.getCardsBySearchAsync(key)
@@ -197,7 +195,7 @@ class CardRepository(
                 networkStatus.value = NetworkStatus.ERROR
             }
         }
-    }
+    }*/
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(selectedFilters: Map<String, Array<String>>, lastChecked: String)
@@ -209,11 +207,11 @@ class CardRepository(
                     return getCards(selectedFilters, lastChecked, offset)
                 }
 
-                override fun getCardListType() = type!!
+                override fun getCardListType() = lastTypeCached.value
             })
         ) {
             DatabasePagingSource(cardDb, object : Callback {
-                override fun getCardListType() = type!!
+                override fun getCardListType() = lastTypeCached.value
             })
         }.flow
     }
@@ -258,7 +256,7 @@ class CardRepository(
             return Response(listOf())
         }
 
-        fun getCardListType(): CardType
+        fun getCardListType(): CardType?
     }
 }
 

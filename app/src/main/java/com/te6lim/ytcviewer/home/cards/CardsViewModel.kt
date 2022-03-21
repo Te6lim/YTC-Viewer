@@ -6,9 +6,10 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
+import com.te6lim.ytcviewer.repository.CardType
 import kotlin.collections.set
 
-class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
+class CardsViewModel(cardDb: CardDatabase, type: String?) : ViewModel() {
 
     private val selectedFilters = MutableLiveData<MutableMap<String, Array<String>>>()
 
@@ -37,10 +38,19 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
 
     private var selectedAttributeFilters = arrayOf<String>()
 
-    private val repository = CardRepository(cardDb, _networkStatus)
-
     var lastSearchQuery: String? = null
         private set
+
+    private val _lastTypeCached = MutableLiveData<CardType?>()
+    val lastTypeCached = Transformations.map(_lastTypeCached) {
+        it?.name
+    }
+
+    init {
+        _lastTypeCached.value = type?.let { CardType.valueOf(it) }
+    }
+
+    private val repository = CardRepository(cardDb, _lastTypeCached)
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCards() {
@@ -135,11 +145,12 @@ class CardsViewModel(cardDb: CardDatabase) : ViewModel() {
     }
 }
 
-class CardsViewModelFactory(private val cardDb: CardDatabase) : ViewModelProvider.Factory {
+class CardsViewModelFactory(private val cardDb: CardDatabase, private val lastTypeCached: String?) :
+    ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CardsViewModel::class.java))
-            return CardsViewModel(cardDb) as T
+            return CardsViewModel(cardDb, lastTypeCached) as T
         else throw java.lang.IllegalArgumentException("unknown viewModel class")
     }
 }

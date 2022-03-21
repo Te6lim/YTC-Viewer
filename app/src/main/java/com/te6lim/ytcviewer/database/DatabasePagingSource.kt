@@ -5,8 +5,10 @@ import androidx.paging.PagingState
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
+import com.te6lim.ytcviewer.repository.CardType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class DatabasePagingSource(
     private val cardDb: CardDatabase, private val callback: CardRepository.Callback
@@ -24,15 +26,19 @@ class DatabasePagingSource(
         return try {
 
             val cards = withContext(Dispatchers.IO) {
-                if (true/*callback.getCardListType() == CardType.MONSTER*/)
-                    cardDb.monsterDao.getAllInRange(top, bottom)?.toDomainMonsterCards()
-                else cardDb.nonMonsterDao.getAllInRange(top, bottom)?.toDomainNonMonsterCards()
+                callback.getCardListType()?.let {
+                    if (it == CardType.MONSTER)
+                        cardDb.monsterDao.getAllInRange(top, bottom)?.toDomainMonsterCards()
+                    else cardDb.nonMonsterDao.getAllInRange(top, bottom)?.toDomainNonMonsterCards()
+                }
             }
 
             val nextKey = if (cards.isNullOrEmpty()) null else top + PAGE_SIZE
             val prevKey = if (top == 0) null else top
 
-            LoadResult.Page(data = cards ?: listOf(), nextKey = nextKey, prevKey = prevKey)
+            cards?.let {
+                LoadResult.Page(data = it, nextKey = nextKey, prevKey = prevKey)
+            } ?: throw IOException()
 
         } catch (e: Exception) {
             LoadResult.Error(e)

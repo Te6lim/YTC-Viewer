@@ -20,4 +20,6 @@
     <string name="retry">Retry</string>
     <string name="connection_error_image">Connection error image</string>
     <string name="could_not_find_search_query">Could not find search query</string>
+    <string name="lastCachedKey">com.te6lim.ytcviewer.mySharedPrefKey</string>
+    <string name="type_name">type name</string>
 </resources>
