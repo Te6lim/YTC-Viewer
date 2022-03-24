@@ -22,7 +22,7 @@ abstract class CardDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: CardDatabase? = null
 
-        fun getInstance(context: Context): com.te6lim.ytcviewer.database.CardDatabase {
+        fun getInstance(context: Context): CardDatabase {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {

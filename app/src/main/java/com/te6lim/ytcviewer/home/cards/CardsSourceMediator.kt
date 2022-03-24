@@ -6,10 +6,10 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.DatabaseMonsterCard
+import com.te6lim.ytcviewer.database.RemoteKey
 import com.te6lim.ytcviewer.network.toDatabaseMonsterCards
 import com.te6lim.ytcviewer.network.toDatabaseNonMonsterCards
 import com.te6lim.ytcviewer.repository.CardRepository
-import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
 import com.te6lim.ytcviewer.repository.CardType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,7 +21,7 @@ class CardsSourceMediator(
     private val callback: CardRepository.Callback
 ) : RemoteMediator<Int, DatabaseMonsterCard>() {
 
-    private var offset: Int? = 0
+    private var key: Int? = 0
 
     override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
 
@@ -29,51 +29,73 @@ class CardsSourceMediator(
         loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>
     ): MediatorResult {
 
-        offset = getKey(loadType, state)
-        return try {
-            offset?.let {
-                val response = callback.getNetworkCards(it)
+        key = getKey(loadType, state)
+
+        key?.let { key ->
+
+            return try {
+                val response = callback.getNetworkCards(key)
                 val cards = response.data
 
+                if (loadType == LoadType.REFRESH) {
+                    db.monsterDao.clear()
+                    db.remoteKeysDao.clear()
+                }
+
+                val prevKey = if (key == 0) null else key - 1
+                val nextKey = if (cards.isEmpty()) null else key + 1
+
+                val keys = cards.map {
+                    RemoteKey(id = it.id, nextKey = nextKey, prevKey = prevKey)
+                }
+
                 withContext(Dispatchers.IO) {
-                    if (callback.getCardListType() == CardType.MONSTER)
+                    if (callback.getCardListType() == CardType.MONSTER) {
                         db.monsterDao.insertMany(*cards.toDatabaseMonsterCards().toTypedArray())
-                    else db.nonMonsterDao.insertMany(
+                        db.remoteKeysDao.insertMany(keys)
+                    } else db.nonMonsterDao.insertMany(
                         *cards.toDatabaseNonMonsterCards().toTypedArray()
                     )
                 }
 
                 MediatorResult.Success(endOfPaginationReached = cards.isEmpty())
-            } ?: MediatorResult.Success(endOfPaginationReached = false)
 
-        } catch (e: Exception) {
-            MediatorResult.Error(e)
-        } catch (e: HttpException) {
-            MediatorResult.Error(e)
-        }
+            } catch (e: Exception) {
+                MediatorResult.Error(e)
+            } catch (e: HttpException) {
+                MediatorResult.Error(e)
+            }
+
+        } ?: return MediatorResult.Success(endOfPaginationReached = false)
     }
 
-    private fun getKey(loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>): Int? {
+    private suspend fun getKey(loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>)
+            : Int? {
         when (loadType) {
             LoadType.REFRESH -> {
-                with(state) {
-                    return anchorPosition?.let {
-                        closestPageToPosition(it)?.nextKey?.minus(PAGE_SIZE)
-                            ?: closestPageToPosition(it)?.prevKey?.plus(PAGE_SIZE) ?: 0
-                    } ?: 0
+                return with(state) {
+                    anchorPosition?.let { position ->
+                        closestItemToPosition(position)?.let { card ->
+                            db.remoteKeysDao.get(card.id)
+                        }?.let { remoteKey ->
+                            remoteKey.nextKey?.minus(1) ?: remoteKey.prevKey?.plus(1)
+                        } ?: 0
+                    }
                 }
             }
 
             LoadType.APPEND -> {
-                return offset?.plus(PAGE_SIZE) ?: 0
+                return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
+                    ?.let { card ->
+                        db.remoteKeysDao.get(card.id)?.nextKey
+                    }
             }
 
             LoadType.PREPEND -> {
-                val count = offset?.minus(PAGE_SIZE)
-                return count?.let {
-                    if (it < 0) null
-                    else it
-                }
+                return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
+                    ?.let { card ->
+                        db.remoteKeysDao.get(card.id)?.prevKey
+                    }
             }
         }
     }

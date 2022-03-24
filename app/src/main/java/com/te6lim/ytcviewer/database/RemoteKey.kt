@@ -13,11 +13,11 @@ data class RemoteKey(
 
 interface RemoteKeysDao {
 
-    suspend fun insertMany(vararg remoteKeys: RemoteKey)
+    suspend fun insertMany(keys: List<RemoteKey>)
 
     @Query("SELECT * FROM remote_keys WHERE id = :remoteKeyId LIMIT 1")
     suspend fun get(remoteKeyId: Long): RemoteKey?
 
     @Query("DELETE FROM remote_keys")
-    suspend fun deleteAll()
+    suspend fun clear()
 }
