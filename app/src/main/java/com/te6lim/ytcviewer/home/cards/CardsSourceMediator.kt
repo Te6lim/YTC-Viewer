@@ -1,12 +1,10 @@
 package com.te6lim.ytcviewer.home.cards
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadType
-import androidx.paging.PagingState
-import androidx.paging.RemoteMediator
+import androidx.paging.*
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.DatabaseMonsterCard
 import com.te6lim.ytcviewer.database.RemoteKey
+import com.te6lim.ytcviewer.network.NetworkCard
 import com.te6lim.ytcviewer.network.toDatabaseMonsterCards
 import com.te6lim.ytcviewer.network.toDatabaseNonMonsterCards
 import com.te6lim.ytcviewer.repository.CardRepository
@@ -34,29 +32,15 @@ class CardsSourceMediator(
         key?.let { key ->
 
             return try {
-                val response = callback.getNetworkCards(key)
-                val cards = response.data
+                val cards = callback.getNetworkCards(key).data
 
                 if (loadType == LoadType.REFRESH) {
-                    db.monsterDao.clear()
-                    db.remoteKeysDao.clear()
+                    clearCardsAndTheirRemoteKeys()
                 }
 
-                val prevKey = if (key == 0) null else key - 1
-                val nextKey = if (cards.isEmpty()) null else key + 1
+                val keys = generateListOfRemoteKeysFromCardList(key, cards)
 
-                val keys = cards.map {
-                    RemoteKey(id = it.id, nextKey = nextKey, prevKey = prevKey)
-                }
-
-                withContext(Dispatchers.IO) {
-                    if (callback.getCardListType() == CardType.MONSTER) {
-                        db.monsterDao.insertMany(*cards.toDatabaseMonsterCards().toTypedArray())
-                        db.remoteKeysDao.insertMany(keys)
-                    } else db.nonMonsterDao.insertMany(
-                        *cards.toDatabaseNonMonsterCards().toTypedArray()
-                    )
-                }
+                insertCardsAndTheirRemoteKeysToDatabase(cards, keys)
 
                 MediatorResult.Success(endOfPaginationReached = cards.isEmpty())
 
@@ -69,34 +53,75 @@ class CardsSourceMediator(
         } ?: return MediatorResult.Success(endOfPaginationReached = false)
     }
 
+    private suspend fun clearCardsAndTheirRemoteKeys() {
+        db.monsterDao.clear()
+        db.remoteKeysDao.clear()
+    }
+
+    private suspend fun insertCardsAndTheirRemoteKeysToDatabase(
+        cards: List<NetworkCard>, keys: List<RemoteKey>
+    ) {
+        withContext(Dispatchers.IO) {
+            if (callback.getCardListType() == CardType.MONSTER) {
+                db.monsterDao.insertMany(*cards.toDatabaseMonsterCards().toTypedArray())
+                db.remoteKeysDao.insertMany(keys)
+            } else db.nonMonsterDao.insertMany(
+                *cards.toDatabaseNonMonsterCards().toTypedArray()
+            )
+        }
+    }
+
+    private fun generateListOfRemoteKeysFromCardList(
+        key: Int, cards: List<NetworkCard>
+    ): List<RemoteKey> {
+        val prevKey = if (key == 0) null else key - 1
+        val nextKey = if (cards.isEmpty()) null else key + 1
+
+        val keys = cards.map {
+            RemoteKey(id = it.id, nextKey = nextKey, prevKey = prevKey)
+        }
+        return keys
+    }
+
     private suspend fun getKey(loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>)
             : Int? {
-        when (loadType) {
+        return when (loadType) {
             LoadType.REFRESH -> {
-                return with(state) {
-                    anchorPosition?.let { position ->
-                        closestItemToPosition(position)?.let { card ->
-                            db.remoteKeysDao.get(card.id)
-                        }?.let { remoteKey ->
-                            remoteKey.nextKey?.minus(1) ?: remoteKey.prevKey?.plus(1)
-                        } ?: 0
-                    }
-                }
+                state.getKeyByAnchorPosition()
             }
 
             LoadType.APPEND -> {
-                return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
-                    ?.let { card ->
-                        db.remoteKeysDao.get(card.id)?.nextKey
-                    }
+                return state.pages.lastOrNull { it.data.isNotEmpty() }?.getNextKey()
             }
 
             LoadType.PREPEND -> {
-                return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
-                    ?.let { card ->
-                        db.remoteKeysDao.get(card.id)?.prevKey
-                    }
+                return state.pages.firstOrNull { it.data.isNotEmpty() }?.getPreviousKey()
             }
         }
+    }
+
+    private suspend fun PagingState<Int, DatabaseMonsterCard>.getKeyByAnchorPosition(): Int? {
+        return anchorPosition?.let { position ->
+            closestItemToPosition(position)?.let { card ->
+                db.remoteKeysDao.get(card.id)
+            }?.let { remoteKey ->
+                remoteKey.nextKey?.minus(1) ?: remoteKey.prevKey?.plus(1)
+            } ?: 0
+        }
+    }
+
+    private suspend fun PagingSource.LoadResult.Page<Int, DatabaseMonsterCard>.getNextKey(): Int? {
+        return this.data.lastOrNull()
+            ?.let { card ->
+                db.remoteKeysDao.get(card.id)?.nextKey
+            }
+    }
+
+    private suspend fun PagingSource.LoadResult.Page<Int, DatabaseMonsterCard>.getPreviousKey()
+            : Int? {
+        return data.firstOrNull()
+            ?.let { card ->
+                db.remoteKeysDao.get(card.id)?.prevKey
+            }
     }
 }
