@@ -5,7 +5,7 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.te6lim.ytcviewer.database.CardDatabase
-import com.te6lim.ytcviewer.domain.DomainCard
+import com.te6lim.ytcviewer.database.DatabaseMonsterCard
 import com.te6lim.ytcviewer.network.toDatabaseMonsterCards
 import com.te6lim.ytcviewer.network.toDatabaseNonMonsterCards
 import com.te6lim.ytcviewer.repository.CardRepository
@@ -19,16 +19,17 @@ import retrofit2.HttpException
 class CardsSourceMediator(
     private val cardDb: CardDatabase,
     private val callback: CardRepository.Callback
-) :
-    RemoteMediator<Int, DomainCard>() {
+) : RemoteMediator<Int, DatabaseMonsterCard>() {
+
+    private var offset: Int? = 0
 
     override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
 
     override suspend fun load(
-        loadType: LoadType, state: PagingState<Int, DomainCard>
+        loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>
     ): MediatorResult {
 
-        val offset = getKey(loadType, state)
+        offset = getKey(loadType, state)
         return try {
             offset?.let {
                 val response = callback.getNetworkCards(it)
@@ -52,7 +53,7 @@ class CardsSourceMediator(
         }
     }
 
-    private fun getKey(loadType: LoadType, state: PagingState<Int, DomainCard>): Int? {
+    private fun getKey(loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>): Int? {
         when (loadType) {
             LoadType.REFRESH -> {
                 with(state) {
@@ -64,14 +65,14 @@ class CardsSourceMediator(
             }
 
             LoadType.APPEND -> {
-                return state.pages.last().nextKey
+                return offset?.plus(PAGE_SIZE) ?: 0
             }
 
             LoadType.PREPEND -> {
-                with(state) {
-                    return anchorPosition?.let {
-                        closestPageToPosition(it)?.prevKey
-                    }
+                val count = offset?.minus(PAGE_SIZE)
+                return count?.let {
+                    if (it < 0) null
+                    else it
                 }
             }
         }

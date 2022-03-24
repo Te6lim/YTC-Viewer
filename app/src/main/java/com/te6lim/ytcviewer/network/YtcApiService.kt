@@ -37,16 +37,25 @@ private val retrofit = Retrofit.Builder()
 interface YtcApiService {
 
     @GET("cardinfo.php")
-    fun getCardsAsync(
+    fun getMonsterCardsAsync(
         @QueryMap query: Map<String, String>,
         @Query("num") pageSize: Int = 100,
         @Query("offset") offset: Int = 0
     ): Deferred<Response.MonsterCardResponse>
 
     @GET("cardinfo.php")
-    fun getCardsAsync(
+    fun getMonsterCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
+        @Query("num") pageSize: Int = 100,
+        @Query("offset") offset: Int = 0
+    ): Deferred<Response.MonsterCardResponse>
+
+    @GET("cardinfo.php")
+    fun getMonsterCardsAsync(
+        @QueryMap query1: Map<String, String>,
+        @QueryMap query2: Map<String, String>,
+        @QueryMap query3: Map<String, String>,
         @Query("num") pageSize: Int = 100,
         @Query("offset") offset: Int = 0
     ): Deferred<Response.MonsterCardResponse>
@@ -60,49 +69,11 @@ interface YtcApiService {
     ): Deferred<Response.NonMonsterCardResponse>
 
     @GET("cardinfo.php")
-    fun getCardsAsync(
-        @QueryMap query1: Map<String, String>,
-        @QueryMap query2: Map<String, String>,
-        @QueryMap query3: Map<String, String>,
-        @Query("num") pageSize: Int = 100,
-        @Query("offset") offset: Int = 0
-    ): Deferred<Response.MonsterCardResponse>
-
-    @GET("cardinfo.php")
     fun getCardsBySearchAsync(
         @Query("fname") searchString: String,
         @Query("num") pageSize: Int = 100,
         @Query("offset") offset: Int = 0
     ): Deferred<Response>
-
-    /*// Get cards with search
-    @GET("cardinfo.php")
-    fun getCardsWithSearchAsync(
-        @QueryMap query: Map<String, String>,
-        @Query("fname") searchWord: String
-    ): Deferred<Response.MonsterCardResponse>
-
-    @GET("cardinfo.php")
-    fun getCardsWithSearchAsync(
-        @QueryMap query1: Map<String, String>,
-        @QueryMap query2: Map<String, String>,
-        @Query("fname") searchWord: String
-    ): Deferred<Response.MonsterCardResponse>
-
-    @GET("cardinfo.php")
-    fun getNonMonsterCardsWithSearchAsync(
-        @QueryMap query1: Map<String, String>,
-        @QueryMap query2: Map<String, String>,
-        @Query("fname") searchWord: String
-    ): Deferred<Response.NonMonsterCardResponse>
-
-    @GET("cardinfo.php")
-    fun getCardsWithSearchAsync(
-        @QueryMap query1: Map<String, String>,
-        @QueryMap query2: Map<String, String>,
-        @QueryMap query3: Map<String, String>,
-        @Query("fname") searchWord: String
-    ): Deferred<Response.MonsterCardResponse>*/
 }
 
 object YtcApi {

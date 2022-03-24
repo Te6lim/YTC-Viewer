@@ -2,7 +2,9 @@ package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.map
 import com.te6lim.ytcviewer.database.CardDatabase
+import com.te6lim.ytcviewer.database.toDomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
@@ -20,7 +22,11 @@ class CardsViewModel(cardDb: CardDatabase, type: String?) : ViewModel() {
         if (it.isNotEmpty()) {
             lastSearchQuery = null
         }
-        repository.getCardStream(it, lastChecked!!).asLiveData()
+        repository.getCardStream(it, lastChecked!!).asLiveData().map { pagingData ->
+            pagingData.map { databaseCard ->
+                databaseCard.toDomainCard()
+            }
+        }
     }
 
     private val _selectedCategories =

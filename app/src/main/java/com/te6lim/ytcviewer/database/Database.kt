@@ -1,97 +1,114 @@
 package com.te6lim.ytcviewer.database
 
 import android.content.Context
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet
 
+@Entity()
+open class DatabaseCard(
+    open val id: Long,
+    open val position: Long,
+    open val name: String,
+    open val type: String,
+    open val desc: String,
+    open val race: String,
+    open val cardSets: List<CardSet?>? = null,
+    open val cardImages: List<CardImage?>? = null,
+    open val cardPrices: List<CardPrice?>? = null
+)
+
 @Entity(tableName = "monsterDatabaseCard")
 data class DatabaseMonsterCard(
-    @PrimaryKey(autoGenerate = false) val id: Long,
-    @ColumnInfo val position: Long,
-    @ColumnInfo val name: String,
-    @ColumnInfo val type: String,
-    @ColumnInfo val desc: String,
-    @ColumnInfo val race: String,
+    @PrimaryKey(autoGenerate = false) override val id: Long,
+    @ColumnInfo override val position: Long,
+    @ColumnInfo override val name: String,
+    @ColumnInfo override val type: String,
+    @ColumnInfo override val desc: String,
+    @ColumnInfo override val race: String,
     @ColumnInfo val atk: Int? = null,
     @ColumnInfo val def: Int? = null,
     @ColumnInfo val level: Int? = null,
     @ColumnInfo val attribute: String,
-    @ColumnInfo val cardSets: List<CardSet?>? = null,
-    @ColumnInfo val cardImages: List<CardImage?>? = null,
-    @ColumnInfo val cardPrices: List<CardPrice?>? = null
-)
+    @ColumnInfo override val cardSets: List<CardSet?>? = null,
+    @ColumnInfo override val cardImages: List<CardImage?>? = null,
+    @ColumnInfo override val cardPrices: List<CardPrice?>? = null
+) : DatabaseCard(id, position, name, type, desc, race, cardSets, cardImages, cardPrices)
 
 @Entity(tableName = "nonMonsterDatabaseCard")
 data class DatabaseNonMonsterCard(
-    @PrimaryKey(autoGenerate = false) val id: Long,
-    @ColumnInfo val position: Long,
-    @ColumnInfo val name: String,
-    @ColumnInfo val type: String,
-    @ColumnInfo val desc: String,
-    @ColumnInfo val race: String,
+    @PrimaryKey(autoGenerate = false) override val id: Long,
+    @ColumnInfo override val position: Long,
+    @ColumnInfo override val name: String,
+    @ColumnInfo override val type: String,
+    @ColumnInfo override val desc: String,
+    @ColumnInfo override val race: String,
     @ColumnInfo val archetype: String? = null,
-    @ColumnInfo val cardSets: List<CardSet?>? = null,
-    @ColumnInfo val cardImages: List<CardImage?>? = null,
-    @ColumnInfo val cardPrices: List<CardPrice?>? = null
-)
+    @ColumnInfo override val cardSets: List<CardSet?>? = null,
+    @ColumnInfo override val cardImages: List<CardImage?>? = null,
+    @ColumnInfo override val cardPrices: List<CardPrice?>? = null
+) : DatabaseCard(id, position, name, type, desc, race, cardSets, cardImages, cardPrices)
+
+@Dao
+interface CardDao {
+    @Query("SELECT * FROM monsterDatabaseCard, nonMonsterDatabaseCard")
+    fun getSource(): PagingSource<Int, DatabaseCard>
+}
 
 @Dao
 interface MonsterDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(card: DatabaseMonsterCard): Long
+    suspend fun insert(card: DatabaseMonsterCard): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMany(vararg card: DatabaseMonsterCard)
+    suspend fun insertMany(vararg card: DatabaseMonsterCard)
 
     @Update
-    fun update(card: DatabaseMonsterCard)
+    suspend fun update(card: DatabaseMonsterCard)
 
     @Query("SELECT * FROM monsterDatabaseCard WHERE id = :key")
-    fun get(key: Long): DatabaseMonsterCard?
+    suspend fun get(key: Long): DatabaseMonsterCard?
 
     @Query("SELECT * FROM monsterDatabaseCard ORDER BY name ASC")
-    fun getAll(): List<DatabaseMonsterCard>?
+    suspend fun getAll(): List<DatabaseMonsterCard>?
 
     @Query("SELECT * FROM monsterDatabaseCard WHERE position BETWEEN :top AND :bottom")
-    fun getAllInRange(top: Int, bottom: Int): List<DatabaseMonsterCard>?
+    suspend fun getAllInRange(top: Int, bottom: Int): List<DatabaseMonsterCard>?
 
-    @Query("SELECT * FROM monsterDatabaseCard LIMIT 1")
-    fun getOne(): DatabaseMonsterCard?
+    @Query("SELECT * FROM monsterDatabaseCard")
+    fun getSource(): PagingSource<Int, DatabaseMonsterCard>
 
     @Query("DELETE FROM monsterDatabaseCard")
-    fun clear()
+    suspend fun clear()
 }
 
 @Dao
 interface NonMonsterDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(card: DatabaseNonMonsterCard): Long
+    suspend fun insert(card: DatabaseNonMonsterCard): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMany(vararg card: DatabaseNonMonsterCard)
+    suspend fun insertMany(vararg card: DatabaseNonMonsterCard)
 
     @Update
-    fun update(card: DatabaseNonMonsterCard)
+    suspend fun update(card: DatabaseNonMonsterCard)
 
     @Query("SELECT * FROM nonMonsterDatabaseCard WHERE id = :key")
-    fun get(key: Long): DatabaseNonMonsterCard?
+    suspend fun get(key: Long): DatabaseNonMonsterCard?
 
     @Query("SELECT * FROM nonMonsterDatabaseCard ORDER BY name ASC")
-    fun getAll(): List<DatabaseNonMonsterCard>?
+    suspend fun getAll(): List<DatabaseNonMonsterCard>?
 
     @Query("SELECT * FROM nonMonsterDatabaseCard WHERE position BETWEEN :top AND :bottom")
-    fun getAllInRange(top: Int, bottom: Int): List<DatabaseNonMonsterCard>?
-
-    @Query("SELECT * FROM nonMonsterDatabaseCard LIMIT 1")
-    fun getOne(): DatabaseNonMonsterCard?
+    suspend fun getAllInRange(top: Int, bottom: Int): List<DatabaseNonMonsterCard>?
 
     @Query("DELETE FROM nonMonsterDatabaseCard")
-    fun clear()
+    suspend fun clear()
 }
 
 @Database(
@@ -142,4 +159,14 @@ fun List<DatabaseNonMonsterCard>.toDomainNonMonsterCards(): List<DomainCard.Doma
             cardPrices = it.cardPrices
         )
     }
+}
+
+fun List<DatabaseMonsterCard>.toDatabaseCard(): List<DatabaseCard> {
+    return map {
+        it as DatabaseCard
+    }
+}
+
+fun DatabaseCard.toDomainCard(): DomainCard {
+    return DomainCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
 }
