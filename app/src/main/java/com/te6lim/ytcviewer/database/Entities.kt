@@ -1,6 +1,5 @@
 package com.te6lim.ytcviewer.database
 
-import android.content.Context
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.te6lim.ytcviewer.domain.DomainCard
@@ -53,12 +52,6 @@ data class DatabaseNonMonsterCard(
 ) : DatabaseCard(id, position, name, type, desc, race, cardSets, cardImages, cardPrices)
 
 @Dao
-interface CardDao {
-    @Query("SELECT * FROM monsterDatabaseCard, nonMonsterDatabaseCard")
-    fun getSource(): PagingSource<Int, DatabaseCard>
-}
-
-@Dao
 interface MonsterDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -109,36 +102,6 @@ interface NonMonsterDao {
 
     @Query("DELETE FROM nonMonsterDatabaseCard")
     suspend fun clear()
-}
-
-@Database(
-    entities = [DatabaseMonsterCard::class, DatabaseNonMonsterCard::class],
-    version = 1, exportSchema = false
-)
-@TypeConverters(Converter::class)
-abstract class CardDatabase : RoomDatabase() {
-
-    abstract val monsterDao: MonsterDao
-    abstract val nonMonsterDao: NonMonsterDao
-
-    companion object {
-
-        @Volatile
-        private var INSTANCE: CardDatabase? = null
-
-        fun getInstance(context: Context): CardDatabase {
-            synchronized(this) {
-                var instance = INSTANCE
-                if (instance == null) {
-                    instance = Room.databaseBuilder(
-                        context, CardDatabase::class.java, "cardDatabase"
-                    ).addTypeConverter(Converter()).build()
-                    INSTANCE = instance
-                }
-                return instance
-            }
-        }
-    }
 }
 
 fun List<DatabaseMonsterCard>.toDomainMonsterCards(): List<DomainCard.DomainMonsterCard> {

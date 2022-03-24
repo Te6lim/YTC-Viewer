@@ -15,7 +15,7 @@ enum class CardType {
 }
 
 class CardRepository(
-    private val cardDb: CardDatabase, private val lastTypeCached: MutableLiveData<CardType?>
+    private val db: CardDatabase, private val lastTypeCached: MutableLiveData<CardType?>
 ) {
 
     companion object {
@@ -94,7 +94,7 @@ class CardRepository(
             : Flow<PagingData<DatabaseMonsterCard>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = CardsSourceMediator(cardDb, object : Callback {
+            remoteMediator = CardsSourceMediator(db, object : Callback {
                 override suspend fun getNetworkCards(offset: Int): Response {
                     return getCards(selectedFilters, lastChecked, offset)
                 }
@@ -102,7 +102,7 @@ class CardRepository(
                 override fun getCardListType() = lastTypeCached.value
             })
         ) {
-            cardDb.monsterDao.getSource()
+            db.monsterDao.getSource()
         }.flow
     }
 

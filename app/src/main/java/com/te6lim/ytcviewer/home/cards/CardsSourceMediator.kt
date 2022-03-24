@@ -17,7 +17,7 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalPagingApi::class)
 class CardsSourceMediator(
-    private val cardDb: CardDatabase,
+    private val db: CardDatabase,
     private val callback: CardRepository.Callback
 ) : RemoteMediator<Int, DatabaseMonsterCard>() {
 
@@ -37,8 +37,8 @@ class CardsSourceMediator(
 
                 withContext(Dispatchers.IO) {
                     if (callback.getCardListType() == CardType.MONSTER)
-                        cardDb.monsterDao.insertMany(*cards.toDatabaseMonsterCards().toTypedArray())
-                    else cardDb.nonMonsterDao.insertMany(
+                        db.monsterDao.insertMany(*cards.toDatabaseMonsterCards().toTypedArray())
+                    else db.nonMonsterDao.insertMany(
                         *cards.toDatabaseNonMonsterCards().toTypedArray()
                     )
                 }

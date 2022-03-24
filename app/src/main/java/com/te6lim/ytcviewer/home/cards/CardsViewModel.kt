@@ -11,7 +11,7 @@ import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardType
 import kotlin.collections.set
 
-class CardsViewModel(cardDb: CardDatabase, type: String?) : ViewModel() {
+class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
 
     private val selectedFilters = MutableLiveData<MutableMap<String, Array<String>>>()
 
@@ -56,7 +56,7 @@ class CardsViewModel(cardDb: CardDatabase, type: String?) : ViewModel() {
         _lastTypeCached.value = type?.let { CardType.valueOf(it) }
     }
 
-    private val repository = CardRepository(cardDb, _lastTypeCached)
+    private val repository = CardRepository(db, _lastTypeCached)
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCards() {
@@ -151,12 +151,12 @@ class CardsViewModel(cardDb: CardDatabase, type: String?) : ViewModel() {
     }
 }
 
-class CardsViewModelFactory(private val cardDb: CardDatabase, private val lastTypeCached: String?) :
+class CardsViewModelFactory(private val db: CardDatabase, private val lastTypeCached: String?) :
     ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CardsViewModel::class.java))
-            return CardsViewModel(cardDb, lastTypeCached) as T
+            return CardsViewModel(db, lastTypeCached) as T
         else throw java.lang.IllegalArgumentException("unknown viewModel class")
     }
 }
