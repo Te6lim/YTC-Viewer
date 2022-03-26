@@ -1,14 +1,18 @@
 package com.te6lim.ytcviewer.repository
 
-import androidx.lifecycle.*
-import androidx.paging.*
-import com.te6lim.ytcviewer.database.*
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.te6lim.ytcviewer.database.CardDatabase
+import com.te6lim.ytcviewer.database.DatabaseMonsterCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.cards.CardsSourceMediator
-import com.te6lim.ytcviewer.network.*
-import kotlinx.coroutines.*
+import com.te6lim.ytcviewer.network.Response
+import com.te6lim.ytcviewer.network.YtcApi
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 enum class CardType {
     MONSTER, NON_MONSTER
@@ -22,12 +26,11 @@ class CardRepository(
         const val PAGE_SIZE = 100
     }
 
-    private fun Array<String>.formattedString(): String {
-        val arguments = StringBuilder().apply {
-            for ((i, string) in this@formattedString.withIndex()) {
-                append(string)
-                if (i != size - 1) append(",")
-            }
+    private fun Array<String>.convertParameterListToFormattedString(): String {
+        val arguments = StringBuilder()
+        for ((i, string) in withIndex()) {
+            arguments.append(string)
+            if (i != size - 1) arguments.append(",")
         }
         return arguments.toString()
     }
@@ -46,7 +49,12 @@ class CardRepository(
                     lastTypeCached.value = CardType.NON_MONSTER
                     cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                         mapOf(Pair("type", "spell card")),
-                        mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                        mapOf(
+                            Pair(
+                                keys[0], selectedFilters[keys[0]]!!
+                                    .convertParameterListToFormattedString()
+                            )
+                        ),
                         offset = offset
                     )
                 } else {
@@ -54,13 +62,23 @@ class CardRepository(
                         lastTypeCached.value = CardType.NON_MONSTER
                         cardsDeferred = YtcApi.retrofitService.getNonMonsterCardsAsync(
                             mapOf(Pair("type", "trap card")),
-                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                            mapOf(
+                                Pair(
+                                    keys[0], selectedFilters[keys[0]]!!
+                                        .convertParameterListToFormattedString()
+                                )
+                            ),
                             offset = offset
                         )
                     } else {
                         lastTypeCached.value = CardType.MONSTER
                         cardsDeferred = YtcApi.retrofitService.getMonsterCardsAsync(
-                            mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
+                            mapOf(
+                                Pair(
+                                    keys[0], selectedFilters[keys[0]]!!
+                                        .convertParameterListToFormattedString()
+                                )
+                            ),
                             offset = offset
                         )
                     }
@@ -70,8 +88,19 @@ class CardRepository(
             2 -> {
                 lastTypeCached.value = CardType.MONSTER
                 cardsDeferred = YtcApi.retrofitService.getMonsterCardsAsync(
-                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
-                    mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
+                    mapOf(
+                        Pair(
+                            keys[0],
+                            selectedFilters[keys[0]]!!
+                                .convertParameterListToFormattedString()
+                        )
+                    ),
+                    mapOf(
+                        Pair(
+                            keys[1], selectedFilters[keys[1]]!!
+                                .convertParameterListToFormattedString()
+                        )
+                    ),
                     offset = offset
                 )
             }
@@ -79,9 +108,24 @@ class CardRepository(
             3 -> {
                 lastTypeCached.value = CardType.MONSTER
                 cardsDeferred = YtcApi.retrofitService.getMonsterCardsAsync(
-                    mapOf(Pair(keys[0], selectedFilters[keys[0]]!!.formattedString())),
-                    mapOf(Pair(keys[1], selectedFilters[keys[1]]!!.formattedString())),
-                    mapOf(Pair(keys[2], selectedFilters[keys[2]]!!.formattedString())),
+                    mapOf(
+                        Pair(
+                            keys[0], selectedFilters[keys[0]]!!
+                                .convertParameterListToFormattedString()
+                        )
+                    ),
+                    mapOf(
+                        Pair(
+                            keys[1], selectedFilters[keys[1]]!!
+                                .convertParameterListToFormattedString()
+                        )
+                    ),
+                    mapOf(
+                        Pair(
+                            keys[2], selectedFilters[keys[2]]!!
+                                .convertParameterListToFormattedString()
+                        )
+                    ),
                     offset = offset
                 )
             }
@@ -92,18 +136,19 @@ class CardRepository(
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(selectedFilters: Map<String, Array<String>>, lastChecked: String)
             : Flow<PagingData<DatabaseMonsterCard>> {
+        val databasePagingSource = { db.monsterDao.getSource() }
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             remoteMediator = CardsSourceMediator(db, object : Callback {
-                override suspend fun getNetworkCards(offset: Int): Response {
-                    return getCards(selectedFilters, lastChecked, offset)
-                }
+
+                override suspend fun getNetworkCards(offset: Int) =
+                    getCards(selectedFilters, lastChecked, offset)
+
 
                 override fun getCardListType() = lastTypeCached.value
-            })
-        ) {
-            db.monsterDao.getSource()
-        }.flow
+
+            }), pagingSourceFactory = databasePagingSource
+        ).flow
     }
 
     interface Callback {

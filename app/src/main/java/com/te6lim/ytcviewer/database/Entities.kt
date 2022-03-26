@@ -22,8 +22,8 @@ open class DatabaseCard(
 
 @Entity(tableName = "monsterDatabaseCard")
 data class DatabaseMonsterCard(
-    @PrimaryKey(autoGenerate = false) override val id: Long,
-    @ColumnInfo override val position: Long,
+    @PrimaryKey(autoGenerate = true) override val id: Long = 0L,
+    @ColumnInfo override val position: Long = 0L,
     @ColumnInfo override val name: String,
     @ColumnInfo override val type: String,
     @ColumnInfo override val desc: String,
@@ -39,7 +39,7 @@ data class DatabaseMonsterCard(
 
 @Entity(tableName = "nonMonsterDatabaseCard")
 data class DatabaseNonMonsterCard(
-    @PrimaryKey(autoGenerate = false) override val id: Long,
+    @PrimaryKey(autoGenerate = true) override val id: Long = 0L,
     @ColumnInfo override val position: Long,
     @ColumnInfo override val name: String,
     @ColumnInfo override val type: String,
@@ -58,7 +58,7 @@ interface MonsterDao {
     suspend fun insert(card: DatabaseMonsterCard): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMany(vararg card: DatabaseMonsterCard)
+    suspend fun insertMany(cards: List<DatabaseMonsterCard>)
 
     @Update
     suspend fun update(card: DatabaseMonsterCard)
@@ -86,7 +86,7 @@ interface NonMonsterDao {
     suspend fun insert(card: DatabaseNonMonsterCard): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMany(vararg card: DatabaseNonMonsterCard)
+    suspend fun insertMany(cards: List<DatabaseNonMonsterCard>)
 
     @Update
     suspend fun update(card: DatabaseNonMonsterCard)

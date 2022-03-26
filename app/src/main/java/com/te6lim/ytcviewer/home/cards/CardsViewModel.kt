@@ -2,6 +2,7 @@ package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toDomainCard
@@ -9,6 +10,7 @@ import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardType
+import kotlinx.coroutines.flow.map
 import kotlin.collections.set
 
 class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
@@ -18,15 +20,13 @@ class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
     private val _networkStatus = MutableLiveData<NetworkStatus>()
     val networkStatus: LiveData<NetworkStatus> get() = _networkStatus
 
-    val cards = Transformations.switchMap(selectedFilters) {
-        if (it.isNotEmpty()) {
-            lastSearchQuery = null
-        }
-        repository.getCardStream(it, lastChecked!!).asLiveData().map { pagingData ->
+    val cards = Transformations.map(selectedFilters) {
+        if (it.isNotEmpty()) lastSearchQuery = null
+        repository.getCardStream(it, lastChecked!!).map { pagingData ->
             pagingData.map { databaseCard ->
                 databaseCard.toDomainCard()
             }
-        }
+        }.cachedIn(viewModelScope)
     }
 
     private val _selectedCategories =

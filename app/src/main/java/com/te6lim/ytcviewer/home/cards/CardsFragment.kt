@@ -18,6 +18,7 @@ import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.HomeViewModel
 import com.te6lim.ytcviewer.network.NetworkStatus
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class CardsFragment : Fragment() {
@@ -133,39 +134,21 @@ class CardsFragment : Fragment() {
 
             lastTypeCached.observe(viewLifecycleOwner) {
                 sharedPref.apply {
-                    if (getString(getString(R.string.type_name), null) != it)
+                    if (getString(getString(R.string.type_name), null) != it) {
                         with(edit()) {
                             putString(getString(R.string.type_name), it)
                             apply()
                         }
+                    }
                 }
             }
 
-            cards.observe(viewLifecycleOwner) {
-                it?.let {
-                    /*with(binding) {
-                        searchDescription.visibility = View.GONE
-                        networkErrorScreen.visibility = View.GONE
-                        unknownQueryScreen.visibility = View.GONE
-                        loadingScreen.visibility = View.GONE
-                        infoScreen.visibility = View.GONE
-                        cards.visibility = View.VISIBLE
-                    }*/
-
+            cards.observe(viewLifecycleOwner) { pagingDataFlow ->
+                pagingDataFlow?.let {
                     lifecycleScope.launch {
-                        adapter.submitData(it)
+                        pagingDataFlow.collectLatest { adapter.submitData(it) }
                     }
-
-                } /*?: run {
-                    with(binding) {
-                        searchDescription.visibility = View.VISIBLE
-                        networkErrorScreen.visibility = View.GONE
-                        unknownQueryScreen.visibility = View.GONE
-                        loadingScreen.visibility = View.GONE
-                        infoScreen.visibility = View.VISIBLE
-                        cards.visibility = View.GONE
-                    }
-                }*/
+                }
             }
         }
 

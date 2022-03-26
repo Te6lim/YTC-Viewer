@@ -1,8 +1,6 @@
 package com.te6lim.ytcviewer.database
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Query
+import androidx.room.*
 
 @Entity(tableName = "remote_keys")
 data class RemoteKey(
@@ -11,8 +9,10 @@ data class RemoteKey(
     val prevKey: Int?
 )
 
+@Dao
 interface RemoteKeysDao {
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMany(keys: List<RemoteKey>)
 
     @Query("SELECT * FROM remote_keys WHERE id = :remoteKeyId LIMIT 1")
