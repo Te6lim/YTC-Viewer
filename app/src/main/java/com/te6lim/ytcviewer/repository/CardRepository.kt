@@ -36,8 +36,8 @@ class CardRepository(private val db: CardDatabase) {
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    private suspend fun getCards(
-        selectedFilters: Map<String, Array<String>>, lastChecked: String, offset: Int = 0
+    private suspend fun getCardsByFilters(
+        selectedFilters: Map<String, Array<String>>, lastChecked: String?, offset: Int = 0
     ): Response {
         var cardsDeferred: Deferred<Response>? = null
 
@@ -134,17 +134,31 @@ class CardRepository(private val db: CardDatabase) {
         return cardsDeferred!!.await()
     }
 
+    private suspend fun getCardsBySearchKey(searchKey: String, offset: Int = 0): Response {
+        return YtcApi.retrofitService.getCardsBySearchAsync(searchKey, offset = offset).await()
+    }
+
     @OptIn(ExperimentalPagingApi::class)
-    fun getCardStream(selectedFilters: Map<String, Array<String>>, lastChecked: String)
-            : Flow<PagingData<DatabaseCard>> {
+    fun getCardStream(
+        selectedFilters: Map<String, Array<String>>? = null, searchKey: String? = null,
+        lastChecked: String? = null
+    ): Flow<PagingData<DatabaseCard>> {
         val databasePagingSource = { db.cardDao.getSource() }
 
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             remoteMediator = CardsSourceMediator(db, object : Callback {
 
-                override suspend fun getNetworkCards(offset: Int) =
-                    getCards(selectedFilters, lastChecked, offset)
+                override suspend fun getNetworkCardsByFilters(offset: Int) =
+                    selectedFilters?.let { getCardsByFilters(it, lastChecked, offset) }
+
+                override suspend fun getNetworkCardsBySearchKey(offset: Int): Response? {
+                    return searchKey?.let { getCardsBySearchKey(it, offset) }
+                }
+
+                override fun searchByFilters(): Boolean {
+                    return searchKey == null
+                }
 
             }), pagingSourceFactory = databasePagingSource
         ).flow
@@ -152,8 +166,10 @@ class CardRepository(private val db: CardDatabase) {
 
     interface Callback {
 
-        suspend fun getNetworkCards(offset: Int): Response {
-            return Response(listOf())
-        }
+        suspend fun getNetworkCardsByFilters(offset: Int): Response?
+
+        suspend fun getNetworkCardsBySearchKey(offset: Int): Response?
+
+        fun searchByFilters(): Boolean
     }
 }

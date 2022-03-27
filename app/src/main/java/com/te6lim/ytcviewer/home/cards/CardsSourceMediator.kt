@@ -30,7 +30,11 @@ class CardsSourceMediator(
     ): MediatorResult {
         return try {
             getKey(loadType, state)?.let { key ->
-                val cards = callback.getNetworkCards(key).data
+
+                val cards: List<NetworkCard> = if (callback.searchByFilters()) {
+                    callback.getNetworkCardsByFilters(key)!!.data
+                } else callback.getNetworkCardsBySearchKey(key)!!.data
+
                 val isListEmpty = cards.isEmpty()
 
                 if (loadType == LoadType.REFRESH)

@@ -2,31 +2,29 @@ package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toDomainCard
+import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.collections.set
 
-class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
+class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     private val selectedFilters = MutableLiveData<MutableMap<String, Array<String>>>()
+
+    private val searchKey = MutableLiveData<String>()
 
     private val _networkStatus = MutableLiveData<NetworkStatus>()
     val networkStatus: LiveData<NetworkStatus> get() = _networkStatus
 
-    val cards = Transformations.map(selectedFilters) {
-        if (it.isNotEmpty()) lastSearchQuery = null
-        repository.getCardStream(it, lastChecked!!).map { pagingData ->
-            pagingData.map { card ->
-                card.toDomainCard(db, repository.cardListType)
-            }
-        }.cachedIn(viewModelScope)
-    }
+    val cards = resolveCardSearchMethod()
 
     private val _selectedCategories =
         MutableLiveData<Map<String, CardFilterCategory>>(mutableMapOf())
@@ -51,7 +49,34 @@ class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
     @OptIn(ExperimentalPagingApi::class)
     fun getCards() {
         lastSearchQuery = null
-        //_cards = repository.getCardStream(selectedFilters.value!!, lastChecked!!)
+    }
+
+    private fun resolveCardSearchMethod(): LiveData<Flow<PagingData<DomainCard>>> {
+        val result = MediatorLiveData<Flow<PagingData<DomainCard>>>()
+
+        val filterObserver = Observer<Map<String, Array<String>>> {
+            if (it.isNotEmpty()) lastSearchQuery = null
+            result.value = repository.getCardStream(it, lastChecked = lastChecked!!)
+                .map { pagingData ->
+                    pagingData.map { card ->
+                        card.toDomainCard()
+                    }
+                }.cachedIn(viewModelScope)
+        }
+
+        val searchKeyObserver = Observer<String> {
+            lastSearchQuery = it
+            result.value = repository.getCardStream(searchKey = it)
+                .map { pagingData ->
+                    pagingData.map { card ->
+                        card.toDomainCard()
+                    }
+                }.cachedIn(viewModelScope)
+        }
+
+        result.addSource(selectedFilters, filterObserver)
+        result.addSource(searchKey, searchKeyObserver)
+        return result
     }
 
     fun addToSelectedCategories(category: String) {
@@ -90,7 +115,6 @@ class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
             removeFilter(CardFilterCategory.valueOf(it.key).query)
         }
         _selectedCategories.value = mutableMapOf()
-        //_cards = null
 
     }
 
@@ -137,14 +161,18 @@ class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
             if (it.isNotEmpty()) selectedFilters.value = it.apply { remove(key) }
         }
     }
+
+    fun setSearchKey(key: String) {
+        searchKey.value = key
+    }
 }
 
-class CardsViewModelFactory(private val db: CardDatabase, private val lastTypeCached: String?) :
+class CardsViewModelFactory(private val db: CardDatabase) :
     ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CardsViewModel::class.java))
-            return CardsViewModel(db, lastTypeCached) as T
+            return CardsViewModel(db) as T
         else throw java.lang.IllegalArgumentException("unknown viewModel class")
     }
 }

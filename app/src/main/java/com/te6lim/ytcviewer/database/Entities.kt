@@ -6,9 +6,6 @@ import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet
-import com.te6lim.ytcviewer.repository.CardType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Entity(tableName = "card")
 data class DatabaseCard(
@@ -157,8 +154,6 @@ fun List<DatabaseMonsterCard>.toDatabaseCard(): List<DatabaseCard> {
     }
 }*/
 
-suspend fun DatabaseCard.toDomainCard(db: CardDatabase, cardType: CardType): DomainCard {
-    return withContext(Dispatchers.IO) {
-        DomainCard(id = id, networkId = networkId, name, cardImages)
-    }
+fun DatabaseCard.toDomainCard(): DomainCard {
+    return DomainCard(id = id, networkId = networkId, name, cardImages)
 }

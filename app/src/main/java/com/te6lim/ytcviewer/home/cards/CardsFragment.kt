@@ -43,8 +43,7 @@ class CardsFragment : Fragment() {
 
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(
-                CardDatabase.getInstance(requireContext()),
-                sharedPref.getString(getString(R.string.type_name), null)
+                CardDatabase.getInstance(requireContext())
             )
         )[CardsViewModel::class.java]
 
@@ -158,9 +157,9 @@ class CardsFragment : Fragment() {
             }
 
             searchKey.observe(viewLifecycleOwner) {
-                it?.let { searchKey ->
+                it?.let { key ->
                     unMarkAllChips()
-                    //cardsViewModel.getCardsWithSearch(searchKey)
+                    cardsViewModel.setSearchKey(key)
                     setSearchKey(null)
                 }
             }
