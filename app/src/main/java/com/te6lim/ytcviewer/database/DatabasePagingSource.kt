@@ -28,7 +28,8 @@ class DatabasePagingSource(
                     /*if (it == CardType.MONSTER)
                         cardDb.monsterDao.getAllInRange(top, bottom)
                     else cardDb.nonMonsterDao.getAllInRange(top, bottom)*/
-                    cardDb.monsterDao.getAllInRange(top, bottom)
+                    //cardDb.monsterDao.getAllInRange(top, bottom)
+                    listOf<DatabaseMonsterCard>()
                 }
             }
 

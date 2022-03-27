@@ -5,14 +5,13 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.DatabaseMonsterCard
 import com.te6lim.ytcviewer.database.RemoteKey
 import com.te6lim.ytcviewer.network.NetworkCard
-import com.te6lim.ytcviewer.network.toDatabaseMonsterCards
+import com.te6lim.ytcviewer.network.toDatabaseMonsterCard
 import com.te6lim.ytcviewer.network.toDatabaseNonMonsterCards
 import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
 import com.te6lim.ytcviewer.repository.CardType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.HttpException
 
 @OptIn(ExperimentalPagingApi::class)
 class CardsSourceMediator(
@@ -25,7 +24,6 @@ class CardsSourceMediator(
     override suspend fun load(
         loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>
     ): MediatorResult {
-
         return getNetworkAndDatabaseMediatorResult(loadType, state)
     }
 
@@ -35,20 +33,22 @@ class CardsSourceMediator(
         return try {
             getKey(loadType, state)?.let { key ->
                 val cards = callback.getNetworkCards(key).data
+                val isListEmpty = cards.isEmpty()
 
                 if (loadType == LoadType.REFRESH)
                     clearCardsAndTheirRemoteKeys()
 
-                val keys = generateListOfRemoteKeysFromCardList(key, cards)
+                val cardIds = insertCardsToDatabase(cards)
 
-                insertCardsAndTheirRemoteKeysToDatabase(cards, keys)
+                val remoteKeys = generateRemoteKeysFromCardIds(key, cardIds)
 
-                MediatorResult.Success(endOfPaginationReached = cards.isEmpty())
-            } ?: return MediatorResult.Success(endOfPaginationReached = false)
+                insertRemoteKeysToDatabase(remoteKeys)
+
+
+                MediatorResult.Success(endOfPaginationReached = isListEmpty)
+            } ?: MediatorResult.Success(endOfPaginationReached = false)
 
         } catch (e: Exception) {
-            MediatorResult.Error(e)
-        } catch (e: HttpException) {
             MediatorResult.Error(e)
         }
     }
@@ -58,31 +58,35 @@ class CardsSourceMediator(
         db.remoteKeysDao.clear()
     }
 
-    private suspend fun insertCardsAndTheirRemoteKeysToDatabase(
-        cards: List<NetworkCard>, keys: List<RemoteKey>
-    ) {
-        withContext(Dispatchers.IO) {
+    private suspend fun insertCardsToDatabase(cards: List<NetworkCard>): List<Long> {
+        return withContext(Dispatchers.IO) {
+            val ids = mutableListOf<Long>()
             if (callback.getCardListType() == CardType.MONSTER) {
-                db.monsterDao.insertMany(cards.toDatabaseMonsterCards())
-                db.remoteKeysDao.insertMany(keys)
+                for (card in cards) ids.add(db.monsterDao.insert(card.toDatabaseMonsterCard()))
             } else db.nonMonsterDao.insertMany(cards.toDatabaseNonMonsterCards())
+            ids
         }
     }
 
-    private fun generateListOfRemoteKeysFromCardList(
-        key: Int, cards: List<NetworkCard>
+    private suspend fun insertRemoteKeysToDatabase(remoteKeys: List<RemoteKey>) {
+        withContext(Dispatchers.IO) {
+            db.remoteKeysDao.insertMany(remoteKeys)
+        }
+    }
+
+    private fun generateRemoteKeysFromCardIds(
+        key: Int, cardIds: List<Long>
     ): List<RemoteKey> {
         val prevKey = if (key <= 0) null else key - PAGE_SIZE
-        val nextKey = if (cards.isEmpty()) null else key + PAGE_SIZE
+        val nextKey = if (cardIds.isEmpty()) null else key + PAGE_SIZE
 
-        return cards.map {
-            RemoteKey(id = it.id, nextKey = nextKey, prevKey = prevKey)
+        return cardIds.map {
+            RemoteKey(id = it, nextKey = nextKey, prevKey = prevKey)
         }
     }
 
     private suspend fun getKey(
-        loadType: LoadType,
-        state: PagingState<Int, DatabaseMonsterCard>
+        loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>
     ): Int? {
         return when (loadType) {
             LoadType.REFRESH -> {

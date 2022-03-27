@@ -10,7 +10,6 @@ import com.te6lim.ytcviewer.network.CardSet
 @Entity()
 open class DatabaseCard(
     open val id: Long,
-    open val position: Long,
     open val name: String,
     open val type: String,
     open val desc: String,
@@ -23,7 +22,6 @@ open class DatabaseCard(
 @Entity(tableName = "monsterDatabaseCard")
 data class DatabaseMonsterCard(
     @PrimaryKey(autoGenerate = true) override val id: Long = 0L,
-    @ColumnInfo override val position: Long = 0L,
     @ColumnInfo override val name: String,
     @ColumnInfo override val type: String,
     @ColumnInfo override val desc: String,
@@ -35,12 +33,11 @@ data class DatabaseMonsterCard(
     @ColumnInfo override val cardSets: List<CardSet?>? = null,
     @ColumnInfo override val cardImages: List<CardImage?>? = null,
     @ColumnInfo override val cardPrices: List<CardPrice?>? = null
-) : DatabaseCard(id, position, name, type, desc, race, cardSets, cardImages, cardPrices)
+) : DatabaseCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
 
 @Entity(tableName = "nonMonsterDatabaseCard")
 data class DatabaseNonMonsterCard(
     @PrimaryKey(autoGenerate = true) override val id: Long = 0L,
-    @ColumnInfo override val position: Long,
     @ColumnInfo override val name: String,
     @ColumnInfo override val type: String,
     @ColumnInfo override val desc: String,
@@ -49,7 +46,7 @@ data class DatabaseNonMonsterCard(
     @ColumnInfo override val cardSets: List<CardSet?>? = null,
     @ColumnInfo override val cardImages: List<CardImage?>? = null,
     @ColumnInfo override val cardPrices: List<CardPrice?>? = null
-) : DatabaseCard(id, position, name, type, desc, race, cardSets, cardImages, cardPrices)
+) : DatabaseCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
 
 @Dao
 interface MonsterDao {
@@ -68,9 +65,6 @@ interface MonsterDao {
 
     @Query("SELECT * FROM monsterDatabaseCard ORDER BY name ASC")
     suspend fun getAll(): List<DatabaseMonsterCard>?
-
-    @Query("SELECT * FROM monsterDatabaseCard WHERE position BETWEEN :top AND :bottom")
-    suspend fun getAllInRange(top: Int, bottom: Int): List<DatabaseMonsterCard>?
 
     @Query("SELECT * FROM monsterDatabaseCard")
     fun getSource(): PagingSource<Int, DatabaseMonsterCard>
@@ -97,14 +91,31 @@ interface NonMonsterDao {
     @Query("SELECT * FROM nonMonsterDatabaseCard ORDER BY name ASC")
     suspend fun getAll(): List<DatabaseNonMonsterCard>?
 
-    @Query("SELECT * FROM nonMonsterDatabaseCard WHERE position BETWEEN :top AND :bottom")
-    suspend fun getAllInRange(top: Int, bottom: Int): List<DatabaseNonMonsterCard>?
-
     @Query("DELETE FROM nonMonsterDatabaseCard")
     suspend fun clear()
 }
 
-fun List<DatabaseMonsterCard>.toDomainMonsterCards(): List<DomainCard.DomainMonsterCard> {
+@Entity(tableName = "remote_keys")
+data class RemoteKey(
+    @PrimaryKey val id: Long,
+    val nextKey: Int?,
+    val prevKey: Int?
+)
+
+@Dao
+interface RemoteKeysDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMany(keys: List<RemoteKey>)
+
+    @Query("SELECT * FROM remote_keys WHERE id = :remoteKeyId LIMIT 1")
+    suspend fun get(remoteKeyId: Long): RemoteKey?
+
+    @Query("DELETE FROM remote_keys")
+    suspend fun clear()
+}
+
+/*fun List<DatabaseMonsterCard>.toDomainMonsterCards(): List<DomainCard.DomainMonsterCard> {
     return map {
         DomainCard.DomainMonsterCard(
             id = it.id, name = it.name, type = it.type, desc = it.desc, race = it.race,
@@ -128,7 +139,7 @@ fun List<DatabaseMonsterCard>.toDatabaseCard(): List<DatabaseCard> {
     return map {
         it as DatabaseCard
     }
-}
+}*/
 
 fun DatabaseCard.toDomainCard(): DomainCard {
     return DomainCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)

@@ -72,7 +72,6 @@ fun List<NetworkCard>.toDatabaseMonsterCards(): List<DatabaseMonsterCard> {
     return map {
         it as NetworkCard.NetworkMonsterCard
         DatabaseMonsterCard(
-            position = p++,
             name = it.name, type = it.type, desc = it.desc, race = it.race,
             atk = it.atk, def = it.def, level = it.level, attribute = it.attribute,
             cardSets = it.cardSets, cardImages = it.cardImages, cardPrices = it.cardPrices
@@ -80,12 +79,21 @@ fun List<NetworkCard>.toDatabaseMonsterCards(): List<DatabaseMonsterCard> {
     }
 }
 
+fun NetworkCard.toDatabaseMonsterCard(): DatabaseMonsterCard {
+    this as NetworkCard.NetworkMonsterCard
+    return DatabaseMonsterCard(
+        name = this.name, type = this.type, desc = this.desc, race = this.race,
+        atk = this.atk, def = this.def, level = this.level, attribute = this.attribute,
+        cardSets = this.cardSets, cardImages = this.cardImages, cardPrices = this.cardPrices
+    )
+}
+
 fun List<NetworkCard>.toDatabaseNonMonsterCards(): List<DatabaseNonMonsterCard> {
     var p = 0L
     return map {
         it as NetworkCard.NetworkNonMonsterCard
         DatabaseNonMonsterCard(
-            position = p++, name = it.name, desc = it.desc, type = it.type, race = it.race,
+            name = it.name, desc = it.desc, type = it.type, race = it.race,
             archetype = it.archetype, cardSets = it.cardSets, cardImages = it.cardImages,
             cardPrices = it.cardPrices
         )

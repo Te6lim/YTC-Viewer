@@ -1,23 +1,2 @@
 package com.te6lim.ytcviewer.database
 
-import androidx.room.*
-
-@Entity(tableName = "remote_keys")
-data class RemoteKey(
-    @PrimaryKey val id: Long,
-    val nextKey: Int?,
-    val prevKey: Int?
-)
-
-@Dao
-interface RemoteKeysDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMany(keys: List<RemoteKey>)
-
-    @Query("SELECT * FROM remote_keys WHERE id = :remoteKeyId LIMIT 1")
-    suspend fun get(remoteKeyId: Long): RemoteKey?
-
-    @Query("DELETE FROM remote_keys")
-    suspend fun clear()
-}
