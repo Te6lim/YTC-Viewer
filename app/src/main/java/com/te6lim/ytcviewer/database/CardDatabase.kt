@@ -13,6 +13,7 @@ import androidx.room.TypeConverters
 @TypeConverters(Converter::class)
 abstract class CardDatabase : RoomDatabase() {
 
+    abstract val cardDao: CardDao
     abstract val monsterDao: MonsterDao
     abstract val nonMonsterDao: NonMonsterDao
     abstract val remoteKeysDao: RemoteKeysDao

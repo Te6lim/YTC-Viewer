@@ -9,7 +9,6 @@ import com.te6lim.ytcviewer.database.toDomainCard
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.repository.CardRepository
-import com.te6lim.ytcviewer.repository.CardType
 import kotlinx.coroutines.flow.map
 import kotlin.collections.set
 
@@ -23,8 +22,8 @@ class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
     val cards = Transformations.map(selectedFilters) {
         if (it.isNotEmpty()) lastSearchQuery = null
         repository.getCardStream(it, lastChecked!!).map { pagingData ->
-            pagingData.map { databaseCard ->
-                databaseCard.toDomainCard()
+            pagingData.map { card ->
+                card.toDomainCard(db, repository.cardListType)
             }
         }.cachedIn(viewModelScope)
     }
@@ -47,16 +46,7 @@ class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
     var lastSearchQuery: String? = null
         private set
 
-    private val _lastTypeCached = MutableLiveData<CardType?>()
-    val lastTypeCached = Transformations.map(_lastTypeCached) {
-        it?.name
-    }
-
-    init {
-        _lastTypeCached.value = type?.let { CardType.valueOf(it) }
-    }
-
-    private val repository = CardRepository(db, _lastTypeCached)
+    private val repository = CardRepository(db)
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCards() {
@@ -88,8 +78,6 @@ class CardsViewModel(db: CardDatabase, type: String?) : ViewModel() {
         }
 
         _selectedCategories.value = map
-
-        //if (map.isEmpty()) _cards = null
 
         removeFilter(CardFilterCategory.valueOf(category).query)
     }

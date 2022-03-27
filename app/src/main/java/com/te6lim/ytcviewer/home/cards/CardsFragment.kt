@@ -132,17 +132,6 @@ class CardsFragment : Fragment() {
                 }
             }
 
-            lastTypeCached.observe(viewLifecycleOwner) {
-                sharedPref.apply {
-                    if (getString(getString(R.string.type_name), null) != it) {
-                        with(edit()) {
-                            putString(getString(R.string.type_name), it)
-                            apply()
-                        }
-                    }
-                }
-            }
-
             cards.observe(viewLifecycleOwner) { pagingDataFlow ->
                 pagingDataFlow?.let {
                     lifecycleScope.launch {

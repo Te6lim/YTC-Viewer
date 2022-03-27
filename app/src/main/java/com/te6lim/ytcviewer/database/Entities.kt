@@ -6,47 +6,63 @@ import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet
+import com.te6lim.ytcviewer.repository.CardType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-@Entity()
-open class DatabaseCard(
-    open val id: Long,
-    open val name: String,
-    open val type: String,
-    open val desc: String,
-    open val race: String,
-    open val cardSets: List<CardSet?>? = null,
-    open val cardImages: List<CardImage?>? = null,
-    open val cardPrices: List<CardPrice?>? = null
+@Entity(tableName = "card")
+data class DatabaseCard(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    @ColumnInfo val networkId: Long,
+    @ColumnInfo val name: String,
+    @ColumnInfo val cardImages: List<CardImage?>? = null
 )
+
+@Dao
+interface CardDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(card: DatabaseCard): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMany(cards: List<DatabaseCard>): List<Long>
+
+    @Query("SELECT * FROM card")
+    fun getSource(): PagingSource<Int, DatabaseCard>
+
+    @Query("DELETE FROM card")
+    suspend fun clear()
+}
 
 @Entity(tableName = "monsterDatabaseCard")
 data class DatabaseMonsterCard(
-    @PrimaryKey(autoGenerate = true) override val id: Long = 0L,
-    @ColumnInfo override val name: String,
-    @ColumnInfo override val type: String,
-    @ColumnInfo override val desc: String,
-    @ColumnInfo override val race: String,
+    @PrimaryKey val id: Long,
+    @ColumnInfo val networkId: Long,
+    @ColumnInfo val name: String,
+    @ColumnInfo val type: String,
+    @ColumnInfo val desc: String,
+    @ColumnInfo val race: String,
     @ColumnInfo val atk: Int? = null,
     @ColumnInfo val def: Int? = null,
     @ColumnInfo val level: Int? = null,
     @ColumnInfo val attribute: String,
-    @ColumnInfo override val cardSets: List<CardSet?>? = null,
-    @ColumnInfo override val cardImages: List<CardImage?>? = null,
-    @ColumnInfo override val cardPrices: List<CardPrice?>? = null
-) : DatabaseCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
+    @ColumnInfo val cardSets: List<CardSet?>? = null,
+    @ColumnInfo val cardImages: List<CardImage?>? = null,
+    @ColumnInfo val cardPrices: List<CardPrice?>? = null
+)
 
 @Entity(tableName = "nonMonsterDatabaseCard")
 data class DatabaseNonMonsterCard(
-    @PrimaryKey(autoGenerate = true) override val id: Long = 0L,
-    @ColumnInfo override val name: String,
-    @ColumnInfo override val type: String,
-    @ColumnInfo override val desc: String,
-    @ColumnInfo override val race: String,
+    @PrimaryKey val id: Long,
+    @ColumnInfo val networkId: Long,
+    @ColumnInfo val name: String,
+    @ColumnInfo val type: String,
+    @ColumnInfo val desc: String,
+    @ColumnInfo val race: String,
     @ColumnInfo val archetype: String? = null,
-    @ColumnInfo override val cardSets: List<CardSet?>? = null,
-    @ColumnInfo override val cardImages: List<CardImage?>? = null,
-    @ColumnInfo override val cardPrices: List<CardPrice?>? = null
-) : DatabaseCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
+    @ColumnInfo val cardSets: List<CardSet?>? = null,
+    @ColumnInfo val cardImages: List<CardImage?>? = null,
+    @ColumnInfo val cardPrices: List<CardPrice?>? = null
+)
 
 @Dao
 interface MonsterDao {
@@ -55,7 +71,7 @@ interface MonsterDao {
     suspend fun insert(card: DatabaseMonsterCard): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMany(cards: List<DatabaseMonsterCard>)
+    suspend fun insertMany(cards: List<DatabaseMonsterCard>): List<Long>
 
     @Update
     suspend fun update(card: DatabaseMonsterCard)
@@ -80,7 +96,7 @@ interface NonMonsterDao {
     suspend fun insert(card: DatabaseNonMonsterCard): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMany(cards: List<DatabaseNonMonsterCard>)
+    suspend fun insertMany(cards: List<DatabaseNonMonsterCard>): List<Long>
 
     @Update
     suspend fun update(card: DatabaseNonMonsterCard)
@@ -141,6 +157,8 @@ fun List<DatabaseMonsterCard>.toDatabaseCard(): List<DatabaseCard> {
     }
 }*/
 
-fun DatabaseCard.toDomainCard(): DomainCard {
-    return DomainCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
+suspend fun DatabaseCard.toDomainCard(db: CardDatabase, cardType: CardType): DomainCard {
+    return withContext(Dispatchers.IO) {
+        DomainCard(id = id, networkId = networkId, name, cardImages)
+    }
 }

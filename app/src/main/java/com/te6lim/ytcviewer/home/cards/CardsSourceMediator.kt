@@ -2,14 +2,12 @@ package com.te6lim.ytcviewer.home.cards
 
 import androidx.paging.*
 import com.te6lim.ytcviewer.database.CardDatabase
-import com.te6lim.ytcviewer.database.DatabaseMonsterCard
+import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.database.RemoteKey
 import com.te6lim.ytcviewer.network.NetworkCard
-import com.te6lim.ytcviewer.network.toDatabaseMonsterCard
-import com.te6lim.ytcviewer.network.toDatabaseNonMonsterCards
+import com.te6lim.ytcviewer.network.toDatabaseCard
 import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
-import com.te6lim.ytcviewer.repository.CardType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -17,18 +15,18 @@ import kotlinx.coroutines.withContext
 class CardsSourceMediator(
     private val db: CardDatabase,
     private val callback: CardRepository.Callback
-) : RemoteMediator<Int, DatabaseMonsterCard>() {
+) : RemoteMediator<Int, DatabaseCard>() {
 
     override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
 
     override suspend fun load(
-        loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>
+        loadType: LoadType, state: PagingState<Int, DatabaseCard>
     ): MediatorResult {
         return getNetworkAndDatabaseMediatorResult(loadType, state)
     }
 
     private suspend fun getNetworkAndDatabaseMediatorResult(
-        loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>
+        loadType: LoadType, state: PagingState<Int, DatabaseCard>
     ): MediatorResult {
         return try {
             getKey(loadType, state)?.let { key ->
@@ -54,17 +52,13 @@ class CardsSourceMediator(
     }
 
     private suspend fun clearCardsAndTheirRemoteKeys() {
-        db.monsterDao.clear()
+        db.cardDao.clear()
         db.remoteKeysDao.clear()
     }
 
     private suspend fun insertCardsToDatabase(cards: List<NetworkCard>): List<Long> {
         return withContext(Dispatchers.IO) {
-            val ids = mutableListOf<Long>()
-            if (callback.getCardListType() == CardType.MONSTER) {
-                for (card in cards) ids.add(db.monsterDao.insert(card.toDatabaseMonsterCard()))
-            } else db.nonMonsterDao.insertMany(cards.toDatabaseNonMonsterCards())
-            ids
+            db.cardDao.insertMany(cards.toDatabaseCard())
         }
     }
 
@@ -86,7 +80,7 @@ class CardsSourceMediator(
     }
 
     private suspend fun getKey(
-        loadType: LoadType, state: PagingState<Int, DatabaseMonsterCard>
+        loadType: LoadType, state: PagingState<Int, DatabaseCard>
     ): Int? {
         return when (loadType) {
             LoadType.REFRESH -> {
@@ -103,13 +97,13 @@ class CardsSourceMediator(
         }
     }
 
-    private fun PagingState<Int, DatabaseMonsterCard>.getNonEmptyLastPage() =
+    private fun PagingState<Int, DatabaseCard>.getNonEmptyLastPage() =
         pages.lastOrNull { it.data.isNotEmpty() }
 
-    private fun PagingState<Int, DatabaseMonsterCard>.getNonEmptyFirstPage() =
+    private fun PagingState<Int, DatabaseCard>.getNonEmptyFirstPage() =
         pages.firstOrNull { it.data.isNotEmpty() }
 
-    private suspend fun PagingState<Int, DatabaseMonsterCard>.getKeyByAnchorPosition() =
+    private suspend fun PagingState<Int, DatabaseCard>.getKeyByAnchorPosition() =
         anchorPosition?.let { position ->
             closestItemToPosition(position)?.let { card ->
                 db.remoteKeysDao.get(card.id)
@@ -118,9 +112,9 @@ class CardsSourceMediator(
             } ?: 0
         } ?: 0
 
-    private suspend fun PagingSource.LoadResult.Page<Int, DatabaseMonsterCard>.getNextKey() =
+    private suspend fun PagingSource.LoadResult.Page<Int, DatabaseCard>.getNextKey() =
         data.lastOrNull()?.let { card -> db.remoteKeysDao.get(card.id)?.nextKey }
 
-    private suspend fun PagingSource.LoadResult.Page<Int, DatabaseMonsterCard>.getPreviousKey() =
+    private suspend fun PagingSource.LoadResult.Page<Int, DatabaseCard>.getPreviousKey() =
         data.firstOrNull()?.let { card -> db.remoteKeysDao.get(card.id)?.prevKey }
 }

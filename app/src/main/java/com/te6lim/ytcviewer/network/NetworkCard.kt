@@ -1,49 +1,43 @@
 package com.te6lim.ytcviewer.network
 
 import com.squareup.moshi.Json
-import com.te6lim.ytcviewer.database.DatabaseMonsterCard
-import com.te6lim.ytcviewer.database.DatabaseNonMonsterCard
+import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.domain.DomainCard
 
 open class NetworkCard(
     open val id: Long,
     open val name: String,
-    open val type: String,
-    open val desc: String,
-    open val race: String,
-    @Json(name = "card_sets") open val cardSets: List<CardSet?>?,
-    @Json(name = "card_images") open val cardImages: List<CardImage?>?,
-    @Json(name = "card_prices") open val cardPrices: List<CardPrice?>?
+    @Json(name = "card_images") open val cardImages: List<CardImage?>?
 ) {
 
     data class NetworkMonsterCard(
         override val id: Long,
         override val name: String,
-        override val type: String,
-        override val desc: String,
-        override val race: String,
+        val type: String,
+        val desc: String,
+        val race: String,
         val atk: Int? = null,
         val def: Int? = null,
         val level: Int? = null,
         val attribute: String,
-        @Json(name = "card_sets") override val cardSets: List<CardSet?>?,
+        @Json(name = "card_sets") val cardSets: List<CardSet?>?,
         @Json(name = "card_images") override val cardImages: List<CardImage?>?,
-        @Json(name = "card_prices") override val cardPrices: List<CardPrice?>?
+        @Json(name = "card_prices") val cardPrices: List<CardPrice?>?
 
-    ) : NetworkCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
+    ) : NetworkCard(id, name, cardImages)
 
     data class NetworkNonMonsterCard(
         override val id: Long,
         override val name: String,
-        override val type: String,
-        override val desc: String,
-        override val race: String,
+        val type: String,
+        val desc: String,
+        val race: String,
         val archetype: String? = null,
-        @Json(name = "card_sets") override val cardSets: List<CardSet?>?,
+        @Json(name = "card_sets") val cardSets: List<CardSet?>?,
         @Json(name = "card_images") override val cardImages: List<CardImage?>?,
-        @Json(name = "card_prices") override val cardPrices: List<CardPrice?>?
+        @Json(name = "card_prices") val cardPrices: List<CardPrice?>?
 
-    ) : NetworkCard(id, name, type, desc, race, cardSets, cardImages, cardPrices)
+    ) : NetworkCard(id, name, cardImages)
 }
 
 class CardSet(
@@ -67,44 +61,14 @@ class CardPrice(
     val coolStuffIncPrice: String? = null
 )
 
-fun List<NetworkCard>.toDatabaseMonsterCards(): List<DatabaseMonsterCard> {
-    var p = 0L
-    return map {
-        it as NetworkCard.NetworkMonsterCard
-        DatabaseMonsterCard(
-            name = it.name, type = it.type, desc = it.desc, race = it.race,
-            atk = it.atk, def = it.def, level = it.level, attribute = it.attribute,
-            cardSets = it.cardSets, cardImages = it.cardImages, cardPrices = it.cardPrices
-        )
-    }
-}
-
-fun NetworkCard.toDatabaseMonsterCard(): DatabaseMonsterCard {
-    this as NetworkCard.NetworkMonsterCard
-    return DatabaseMonsterCard(
-        name = this.name, type = this.type, desc = this.desc, race = this.race,
-        atk = this.atk, def = this.def, level = this.level, attribute = this.attribute,
-        cardSets = this.cardSets, cardImages = this.cardImages, cardPrices = this.cardPrices
-    )
-}
-
-fun List<NetworkCard>.toDatabaseNonMonsterCards(): List<DatabaseNonMonsterCard> {
-    var p = 0L
-    return map {
-        it as NetworkCard.NetworkNonMonsterCard
-        DatabaseNonMonsterCard(
-            name = it.name, desc = it.desc, type = it.type, race = it.race,
-            archetype = it.archetype, cardSets = it.cardSets, cardImages = it.cardImages,
-            cardPrices = it.cardPrices
-        )
-    }
-}
-
 fun List<NetworkCard>.toDomainCards(): List<DomainCard> {
     return map {
-        DomainCard(
-            id = it.id, name = it.name, type = it.type, desc = it.desc, race = it.race,
-            cardSets = it.cardSets, cardImages = it.cardImages, cardPrices = it.cardPrices
-        )
+        DomainCard(id = it.id, networkId = it.id, name = it.name, cardImages = it.cardImages)
+    }
+}
+
+fun List<NetworkCard>.toDatabaseCard(): List<DatabaseCard> {
+    return map {
+        DatabaseCard(networkId = it.id, name = it.name, cardImages = it.cardImages)
     }
 }
