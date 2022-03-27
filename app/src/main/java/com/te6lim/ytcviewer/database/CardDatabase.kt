@@ -7,7 +7,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [DatabaseMonsterCard::class, DatabaseNonMonsterCard::class, RemoteKey::class],
+    entities = [DatabaseCard::class, DatabaseMonsterCard::class, DatabaseNonMonsterCard::class,
+        RemoteKey::class],
     version = 1, exportSchema = false
 )
 @TypeConverters(Converter::class)
