@@ -31,9 +31,9 @@ class FilterSelectionFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        val category = FilterSelectionFragmentArgs.fromBundle(
+        val category = ""/*FilterSelectionFragmentArgs.fromBundle(
             requireArguments()
-        ).categoryName
+        ).categoryName*/
 
         viewModel = ViewModelProvider(
             this, FilterSelectionViewModelFactory(category)

@@ -169,7 +169,7 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
     val selectedFilters = mutableListOf<String>()
 
     init {
-        _filterList.value = getFilters(CardFilterCategory.valueOf(category))
+        /*_filterList.value = getFilters(CardFilterCategory.valueOf(category))*/
     }
 
     fun getBackgroundsForFilters(): HashMap<String, Int> {

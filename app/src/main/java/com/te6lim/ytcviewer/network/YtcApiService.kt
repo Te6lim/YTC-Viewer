@@ -3,7 +3,6 @@ package com.te6lim.ytcviewer.network
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.te6lim.ytcviewer.repository.CardRepository.Companion.PAGE_SIZE
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -39,7 +38,7 @@ interface YtcApiService {
     @GET("cardinfo.php")
     fun getMonsterCardsAsync(
         @QueryMap query: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("num") pageSize: Int = 100,
         @Query("offset") offset: Int
     ): Deferred<Response.MonsterCardResponse>
 
@@ -47,7 +46,7 @@ interface YtcApiService {
     fun getMonsterCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("num") pageSize: Int = 100,
         @Query("offset") offset: Int
     ): Deferred<Response.MonsterCardResponse>
 
@@ -56,7 +55,7 @@ interface YtcApiService {
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
         @QueryMap query3: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("num") pageSize: Int = 100,
         @Query("offset") offset: Int
     ): Deferred<Response.MonsterCardResponse>
 
@@ -64,14 +63,14 @@ interface YtcApiService {
     fun getNonMonsterCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("num") pageSize: Int = 100,
         @Query("offset") offset: Int
     ): Deferred<Response.NonMonsterCardResponse>
 
     @GET("cardinfo.php")
     fun getCardsBySearchAsync(
         @Query("fname") searchString: String,
-        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("num") pageSize: Int = 100,
         @Query("offset") offset: Int
     ): Deferred<Response>
 }

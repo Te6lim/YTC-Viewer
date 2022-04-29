@@ -3,18 +3,22 @@ package com.te6lim.ytcviewer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
+import com.te6lim.ytcviewer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        NavigationUI.setupActionBarWithNavController(
-            this, findNavController(R.id.home_host), null
-        )
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        binding.bottomNavigation.setupWithNavController(findNavController(R.id.home_host))
 
         val mainActivityVieModel = ViewModelProvider(
             this
@@ -27,9 +31,5 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
         }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(findNavController(R.id.home_host), null)
     }
 }

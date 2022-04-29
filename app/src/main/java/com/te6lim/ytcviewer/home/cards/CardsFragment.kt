@@ -1,4 +1,4 @@
-package com.te6lim.ytcviewer.cards
+package com.te6lim.ytcviewer.home.cards
 
 import android.os.Bundle
 import android.view.LayoutInflater

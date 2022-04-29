@@ -1,4 +1,4 @@
-package com.te6lim.ytcviewer.cards
+package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
