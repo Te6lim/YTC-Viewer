@@ -1,4 +1,4 @@
-package com.te6lim.ytcviewer.home.cards
+package com.te6lim.ytcviewer.cards
 
 import android.widget.ImageView
 import androidx.core.net.toUri

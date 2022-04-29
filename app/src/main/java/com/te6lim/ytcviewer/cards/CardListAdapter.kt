@@ -1,4 +1,4 @@
-package com.te6lim.ytcviewer.home.cards
+package com.te6lim.ytcviewer.cards
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -47,11 +47,13 @@ class CardViewHolder(
 
 object DiffCallback : DiffUtil.ItemCallback<DomainCard>() {
     override fun areItemsTheSame(oldItem: DomainCard, newItem: DomainCard): Boolean {
-        return oldItem == newItem
+        val areTheSame = oldItem == newItem
+        return areTheSame
     }
 
     override fun areContentsTheSame(oldItem: DomainCard, newItem: DomainCard): Boolean {
-        return oldItem.name == newItem.name
+        val areTheSame = oldItem.id == newItem.id
+        return areTheSame
     }
 
 }

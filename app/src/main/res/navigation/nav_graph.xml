@@ -4,27 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     android:label="@string/app_name_alt"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/cardsFragment">
 
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.te6lim.ytcviewer.home.HomeFragment"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_homeFragment_to_cardDetailsFragment"
-            app:destination="@id/cardDetailsFragment"
-            app:enterAnim="@anim/slide_right_to_center"
-            app:exitAnim="@anim/slide_center_to_left"
-            app:popEnterAnim="@anim/slide_left_to_center"
-            app:popExitAnim="@anim/slide_center_to_right" />
-        <action
-            android:id="@+id/action_homeFragment_to_filterSelectionFragment"
-            app:destination="@id/filterSelectionFragment"
-            app:enterAnim="@anim/rise_in"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fall_down" />
-    </fragment>
     <fragment
         android:id="@+id/cardDetailsFragment"
         android:name="com.te6lim.ytcviewer.details.CardDetailsFragment"
@@ -38,4 +19,20 @@
             android:name="categoryName"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/cardsFragment"
+        android:name="com.te6lim.ytcviewer.cards.CardsFragment"
+        android:label="CardsFragment">
+        <action
+            android:id="@+id/action_cardsFragment3_to_cardDetailsFragment"
+            app:destination="@id/cardDetailsFragment" />
+        <action
+            android:id="@+id/action_cardsFragment3_to_filterSelectionFragment"
+            app:destination="@id/filterSelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectionsFragment"
+        android:name="com.te6lim.ytcviewer.collections.CollectionsFragment"
+        android:label="fragment_collection"
+        tools:layout="@layout/fragment_collection" />
 </navigation>

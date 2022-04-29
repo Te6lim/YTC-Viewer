@@ -15,33 +15,6 @@
         app:layoutDescription="@xml/fragment_home_xml_constraintlayout2_scene"
         tools:context="com.te6lim.ytcviewer.home.HomeFragment">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="@dimen/small_spacing"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/home_menu">
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/search_view_background"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:queryHint="@string/search"
-                app:searchIcon="@drawable/ic_search" />
-
-        </com.google.android.material.appbar.MaterialToolbar>
-
         <FrameLayout
             android:id="@+id/chipGroupDivider"
             android:layout_width="match_parent"
