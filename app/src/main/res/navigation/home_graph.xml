@@ -9,27 +9,10 @@
         android:id="@+id/cardsFragment"
         android:name="com.te6lim.ytcviewer.home.cards.CardsFragment"
         android:label="fragment_cards"
-        tools:layout="@layout/fragment_cards">
-        <action
-            android:id="@+id/action_cardsFragment_to_filterSelectionFragment"
-            app:destination="@id/filterSelectionFragment" />
-        <action
-            android:id="@+id/action_cardsFragment_to_cardDetailsFragment2"
-            app:destination="@id/cardDetailsFragment2" />
-    </fragment>
+        tools:layout="@layout/fragment_cards" />
     <fragment
         android:id="@+id/collectionFragment"
-        android:name="com.te6lim.ytcviewer.home.collections.CollectionsFragment"
+        android:name="com.te6lim.ytcviewer.home.collections.CollectionFragment"
         android:label="fragment_collection"
         tools:layout="@layout/fragment_collection" />
-    <fragment
-        android:id="@+id/filterSelectionFragment"
-        android:name="com.te6lim.ytcviewer.filters.FilterSelectionFragment"
-        android:label="fragment_filter_options"
-        tools:layout="@layout/fragment_filter_options" />
-    <fragment
-        android:id="@+id/cardDetailsFragment2"
-        android:name="com.te6lim.ytcviewer.details.CardDetailsFragment"
-        android:label="fragment_details_card"
-        tools:layout="@layout/fragment_details_card" />
 </navigation>

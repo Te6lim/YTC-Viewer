@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.chip.Chip
+import com.te6lim.ytcviewer.MainActivity
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
@@ -26,6 +29,10 @@ class CardsFragment : Fragment() {
         setHasOptionsMenu(true)
         binding = DataBindingUtil
             .inflate(inflater, R.layout.fragment_cards, container, false)
+
+        (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
+
+        binding.toolbar.setupWithNavController(findNavController())
 
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(
