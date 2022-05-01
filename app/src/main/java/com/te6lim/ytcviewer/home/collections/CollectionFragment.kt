@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.te6lim.ytcviewer.MainActivity
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentCollectionBinding
+import com.te6lim.ytcviewer.home.MainActivity
 
 class CollectionFragment : Fragment() {
 

@@ -2,17 +2,19 @@ package com.te6lim.ytcviewer.home.cards
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.chip.Chip
-import com.te6lim.ytcviewer.MainActivity
 import com.te6lim.ytcviewer.R
+import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.filters.CardFilterCategory
+import com.te6lim.ytcviewer.home.MainActivity
 
 class CardsFragment : Fragment() {
 
@@ -90,6 +92,23 @@ class CardsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.theme_selection -> {
+                switchTheme()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun switchTheme() {
+        val app = (requireActivity().application as YTCApplication)
+        if (app.toDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            app.toDarkMode = false
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            app.toDarkMode = true
+        }
     }
 }
