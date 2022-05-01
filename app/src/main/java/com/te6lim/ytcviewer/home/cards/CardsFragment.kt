@@ -1,15 +1,11 @@
 package com.te6lim.ytcviewer.home.cards
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.MainActivity
@@ -32,8 +28,6 @@ class CardsFragment : Fragment() {
             .inflate(inflater, R.layout.fragment_cards, container, false)
 
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
-
-        binding.toolbar.setupWithNavController(findNavController())
 
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(
@@ -89,5 +83,13 @@ class CardsFragment : Fragment() {
 
             binding.cardFilter.addView(chip)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.home_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
     }
 }

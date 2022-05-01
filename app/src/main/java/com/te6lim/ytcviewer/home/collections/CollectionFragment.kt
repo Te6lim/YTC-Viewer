@@ -6,12 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupWithNavController
 import com.te6lim.ytcviewer.MainActivity
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentCollectionBinding
-import com.te6lim.ytcviewer.home.HomeFragmentDirections
 
 class CollectionFragment : Fragment() {
 
@@ -30,12 +27,9 @@ class CollectionFragment : Fragment() {
         binding.lifecycleOwner = this
 
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
-        binding.toolbar.setupWithNavController(findNavController())
 
         binding.button.setOnClickListener {
-            findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToFilterSelectionFragment()
-            )
+
         }
 
         return binding.root
