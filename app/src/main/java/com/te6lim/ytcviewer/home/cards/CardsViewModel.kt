@@ -22,7 +22,25 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     fun toggleChip(chipName: String) {
-        _selectedChips.value = _selectedChips.value!!.apply { this[chipName] = !this[chipName]!! }
+        with(_selectedChips.value!!) {
+            when (chipName) {
+                CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
+                    for (s in this.keys) {
+                        this[s] = s == chipName
+                    }
+                }
+                else -> {
+                    if (this[CardFilterCategory.Spell.name]!!) this[CardFilterCategory.Spell
+                        .name] = false
+
+                    if (this[CardFilterCategory.Trap.name]!!) this[CardFilterCategory.Trap
+                        .name] = false
+
+                    this[chipName] = !this[chipName]!!
+                }
+            }
+            _selectedChips.value = this
+        }
     }
 }
 
