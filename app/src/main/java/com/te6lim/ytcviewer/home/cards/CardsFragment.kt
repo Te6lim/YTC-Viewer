@@ -32,42 +32,40 @@ class CardsFragment : Fragment() {
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
 
         cardsViewModel = ViewModelProvider(
-            this, CardsViewModelFactory(
-                CardDatabase.getInstance(requireContext())
-            )
+            this, CardsViewModelFactory(CardDatabase.getInstance(requireContext()))
         )[CardsViewModel::class.java]
 
-        binding.viewModel = cardsViewModel
-        binding.lifecycleOwner = this
+        with(binding) {
+            viewModel = cardsViewModel
+            lifecycleOwner = this@CardsFragment
 
-        val adapter = CardListAdapter()
-        binding.cards.adapter = adapter
+            val adapter = CardListAdapter()
+            cards.adapter = adapter
 
-        val chipInflater = LayoutInflater.from(binding.cardFilter.context)
-        buildChipsIntoChipGroup(chipInflater)
+            val chipInflater = LayoutInflater.from(cardFilter.context)
+            buildChipsIntoChipGroup(chipInflater)
 
-        binding.searchBar.setClickListener {
-            binding.cardFilter.visibility = View.VISIBLE
-        }
+            searchBar.setClickListener { cardFilter.visibility = View.VISIBLE }
 
-        cardsViewModel.selectedChips.observe(viewLifecycleOwner) {
-            for (k in it.keys) {
-                binding.cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
+            searchBar.setOnCloseListener {
+                binding.cardFilter.visibility = View.GONE
+                false
             }
-        }
 
-        return binding.root
+            cardsViewModel.selectedChips.observe(viewLifecycleOwner) {
+                for (k in it.keys) {
+                    cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
+                }
+            }
+
+            return root
+        }
     }
 
     private fun SearchView.setClickListener(action: () -> Unit) {
         setOnClickListener { (it as SearchView).isIconified = false }
 
         setOnSearchClickListener { action() }
-
-        setOnCloseListener {
-            binding.cardFilter.visibility = View.GONE
-            false
-        }
     }
 
     private fun buildChipsIntoChipGroup(chipInflater: LayoutInflater) {
@@ -97,7 +95,7 @@ class CardsFragment : Fragment() {
                 switchTheme()
                 true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

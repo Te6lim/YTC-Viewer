@@ -8,7 +8,8 @@ import com.te6lim.ytcviewer.R
 
 enum class CardFilterCategory(val query: String) {
     Type("type"), Race("race"),
-    Attribute("attribute"), Spell("spell card"), Trap("trap card");
+    Attribute("attribute"), Level("level"),
+    Spell("spell card"), Trap("trap card");
 }
 
 class FilterSelectionViewModel(private val category: String) : ViewModel() {
@@ -72,6 +73,8 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
                     Pair("wind", R.color.wind),
                     Pair("divine", R.color.divine)
                 )
+
+                CardFilterCategory.Level -> hashMapOf()
 
                 CardFilterCategory.Spell -> hashMapOf(
                     Pair("Normal", R.color.normalSpell),
@@ -146,6 +149,22 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
             CardFilter("divine")
         )
 
+        private val levels = listOf(
+            CardFilter("one"),
+            CardFilter("two"),
+            CardFilter("three"),
+            CardFilter("four"),
+            CardFilter("five"),
+            CardFilter("six"),
+            CardFilter("seven"),
+            CardFilter("eight"),
+            CardFilter("nine"),
+            CardFilter("ten"),
+            CardFilter("eleven"),
+            CardFilter("twelve"),
+            CardFilter("?")
+        )
+
         private val spells = listOf(
             CardFilter("Normal"),
             CardFilter("Field"),
@@ -183,6 +202,8 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
             CardFilterCategory.Race -> races
 
             CardFilterCategory.Attribute -> attributes
+
+            CardFilterCategory.Level -> levels
 
             CardFilterCategory.Spell -> spells
 

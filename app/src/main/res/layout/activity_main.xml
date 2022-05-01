@@ -18,11 +18,20 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+            app:layout_constraintBottom_toTopOf="@id/divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/main_navigation" />
+
+        <FrameLayout
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/fade"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
