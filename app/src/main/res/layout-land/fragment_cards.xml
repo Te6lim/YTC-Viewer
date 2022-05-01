@@ -57,7 +57,7 @@
             app:singleSelection="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
             tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -71,8 +71,10 @@
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardFilter"
+            app:layout_constraintVertical_bias="1.0"
             app:spanCount="6"
             tools:itemCount="20"
             tools:listitem="@layout/item_card" />
@@ -103,11 +105,7 @@
                         android:id="@+id/searchDescription"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/textView20"
@@ -141,11 +139,7 @@
                         android:id="@+id/unknown_query_screen"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:visibility="gone">
 
 
                         <ImageView
@@ -153,7 +147,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"
-                            android:contentDescription="@string/dissatisfied"
+                            android:contentDescription="@string/could_not_find_search_query"
                             app:layout_constraintBottom_toTopOf="@+id/textView22"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

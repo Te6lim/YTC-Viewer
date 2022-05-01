@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -47,6 +48,33 @@ class CardsFragment : Fragment() {
         binding.cards.adapter = adapter
 
         val chipInflater = LayoutInflater.from(binding.cardFilter.context)
+        buildChipsIntoChipGroup(chipInflater)
+
+        binding.searchBar.setClickListener {
+            binding.cardFilter.visibility = View.VISIBLE
+        }
+
+        cardsViewModel.selectedChips.observe(viewLifecycleOwner) {
+            for (k in it.keys) {
+                binding.cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
+            }
+        }
+
+        return binding.root
+    }
+
+    private fun SearchView.setClickListener(action: () -> Unit) {
+        setOnClickListener { (it as SearchView).isIconified = false }
+
+        setOnSearchClickListener { action() }
+
+        setOnCloseListener {
+            binding.cardFilter.visibility = View.GONE
+            false
+        }
+    }
+
+    private fun buildChipsIntoChipGroup(chipInflater: LayoutInflater) {
         CardFilterCategory.values().forEach { category ->
             val chip = chipInflater
                 .inflate(R.layout.filter_selection, binding.cardFilter, false)
@@ -54,11 +82,12 @@ class CardsFragment : Fragment() {
                     this as Chip
                     tag = category.name
                     text = category.name
+                    setOnClickListener {
+                        cardsViewModel.toggleChip(category.name)
+                    }
                 }
 
             binding.cardFilter.addView(chip)
         }
-
-        return binding.root
     }
 }

@@ -27,12 +27,14 @@ class CollectionFragment : Fragment() {
             inflater, R.layout.fragment_collection, container, false
         )
 
+        binding.lifecycleOwner = this
+
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
         binding.toolbar.setupWithNavController(findNavController())
 
         binding.button.setOnClickListener {
             findNavController().navigate(
-                HomeFragmentDirections.actionHomeFragmentToCardDetailsFragment()
+                HomeFragmentDirections.actionHomeFragmentToFilterSelectionFragment()
             )
         }
 
