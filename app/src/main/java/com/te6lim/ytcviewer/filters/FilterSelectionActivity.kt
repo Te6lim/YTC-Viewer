@@ -16,8 +16,8 @@ import com.te6lim.ytcviewer.home.cards.CardsFragment.Companion.FILTER_CATEGORY
 class FilterSelectionActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySelectionFilterBinding
-
     private lateinit var viewModel: FilterSelectionViewModel
+    private lateinit var menu: Menu
 
     companion object {
         const val RESULT_KEY = "result_key"
@@ -49,10 +49,15 @@ class FilterSelectionActivity : AppCompatActivity() {
 
             override fun setSelectedCardFilter(filter: CardFilter) {
                 viewModel.addFilterToSelected(filter)
+                if (viewModel.selectedFilters().size == 1) {
+                    setMenuVisibility(R.id.done, true)
+                    menu.findItem(R.id.done).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                }
             }
 
             override fun unSelectCardFilter(filter: CardFilter) {
                 viewModel.removeFilterFromSelected(filter)
+                if (viewModel.selectedFilters().isEmpty()) setMenuVisibility(R.id.done, false)
             }
 
         })
@@ -67,6 +72,10 @@ class FilterSelectionActivity : AppCompatActivity() {
 
     }
 
+    private fun setMenuVisibility(itemId: Int, makeVisible: Boolean) {
+        menu.findItem(itemId).isVisible = makeVisible
+    }
+
     private fun getFilterColorResource(filter: CardFilter) = ContextCompat.getColor(
         this@FilterSelectionActivity,
         viewModel.getBackgroundsForFilters()[filter.name]!!
@@ -74,20 +83,27 @@ class FilterSelectionActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         MenuInflater(this).inflate(R.menu.filter_selection_menu, menu)
+        menu?.let { this.menu = it }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val intent = Intent()
         return when (item.itemId) {
             android.R.id.home -> {
-                if (viewModel.selectedFilters().isNotEmpty()) {
-                    with(viewModel.selectedFilters()) {
-                        if (size > 0) {
-                            val intent = Intent().apply {
-                                putExtra(RESULT_KEY, viewModel.selectedFilters().toTypedArray())
-                            }
-                            setResult(RESULT_OK, intent)
-                        }
+                intent.putExtra(RESULT_KEY, viewModel.filterCategory.value)
+                setResult(RESULT_CANCELED, intent)
+                onBackPressed()
+                true
+            }
+            R.id.done -> {
+                with(viewModel.selectedFilters()) {
+                    if (size > 0) {
+                        intent.putExtra(RESULT_KEY, viewModel.selectedFilters().toTypedArray())
+                        setResult(RESULT_OK, intent)
+                    } else {
+                        intent.putExtra(RESULT_KEY, viewModel.filterCategory.value)
+                        setResult(RESULT_CANCELED, intent)
                     }
                 }
                 onBackPressed()

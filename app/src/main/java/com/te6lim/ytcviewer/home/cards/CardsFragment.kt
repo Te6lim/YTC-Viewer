@@ -20,6 +20,7 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity
+import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.RESULT_KEY
 import com.te6lim.ytcviewer.home.MainActivity
 
 class CardsFragment : Fragment() {
@@ -82,9 +83,11 @@ class CardsFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             Toast.makeText(
                 requireContext(),
-                "RESULT OK: ${result.data?.getStringArrayExtra(FilterSelectionActivity.RESULT_KEY)?.size}",
+                "RESULT OK: ${result.data?.getStringArrayExtra(RESULT_KEY)?.size}",
                 Toast.LENGTH_SHORT
             ).show()
+        } else {
+            cardsViewModel.toggleChip(result.data?.getStringExtra(RESULT_KEY)!!)
         }
     }
 
