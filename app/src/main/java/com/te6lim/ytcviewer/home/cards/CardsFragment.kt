@@ -24,6 +24,10 @@ class CardsFragment : Fragment() {
     private lateinit var cardsViewModel: CardsViewModel
     private lateinit var binding: FragmentCardsBinding
 
+    companion object {
+        const val FILTER_CATEGORY = "filter_category"
+    }
+
     @OptIn(ExperimentalPagingApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -81,7 +85,7 @@ class CardsFragment : Fragment() {
                     text = category.name
                     setOnClickListener {
                         cardsViewModel.toggleChip(category.name)
-                        navigateToActivity(FilterSelectionActivity::class.java)
+                        navigateToActivity(FilterSelectionActivity::class.java, category.name)
                     }
                 }
 
@@ -89,8 +93,9 @@ class CardsFragment : Fragment() {
         }
     }
 
-    private fun navigateToActivity(activity: Class<out Activity>) {
-        val intent = Intent(this.context, activity)
+    private fun navigateToActivity(activityClass: Class<out Activity>, filterCategory: String) {
+        val intent = Intent(this.context, activityClass)
+        intent.putExtra(FILTER_CATEGORY, filterCategory)
         startActivity(intent)
     }
 

@@ -16,7 +16,7 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
 
     companion object {
 
-        fun getFilterBackgrounds(category: CardFilterCategory): HashMap<String, Int> {
+        private fun getFilterBackgrounds(category: CardFilterCategory): HashMap<String, Int> {
             return when (category) {
                 CardFilterCategory.Type -> hashMapOf(
                     Pair("Effect Monster", R.color.effectMonster),
@@ -181,14 +181,19 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
         )
     }
 
-    private val _filterList = MutableLiveData<List<CardFilter>>(listOf())
-    val filterList: LiveData<List<CardFilter>>
-        get() = _filterList
+    private val _filterCategory = MutableLiveData<String>()
+    val filterCategory: LiveData<String>
+        get() = _filterCategory
+
+    private val _filters = MutableLiveData<List<CardFilter>>(listOf())
+    val filters: LiveData<List<CardFilter>>
+        get() = _filters
 
     val selectedFilters = mutableListOf<String>()
 
     init {
-        /*_filterList.value = getFilters(CardFilterCategory.valueOf(category))*/
+        _filterCategory.value = category
+        _filters.value = getFilters(CardFilterCategory.valueOf(category))
     }
 
     fun getBackgroundsForFilters(): HashMap<String, Int> {
