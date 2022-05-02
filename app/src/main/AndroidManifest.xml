@@ -13,9 +13,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YTCViewer">
         <activity
+            android:name=".details.CardDetailsActivity"
+            android:exported="true"
+            android:parentActivityName=".home.MainActivity" />
+        <activity
+            android:name=".filters.FilterSelectionActivity"
+            android:exported="true"
+            android:parentActivityName=".home.MainActivity" />
+        <activity
             android:name=".home.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

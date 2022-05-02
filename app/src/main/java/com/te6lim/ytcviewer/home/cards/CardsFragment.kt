@@ -1,5 +1,7 @@
 package com.te6lim.ytcviewer.home.cards
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatDelegate
@@ -14,6 +16,7 @@ import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.filters.CardFilterCategory
+import com.te6lim.ytcviewer.filters.FilterSelectionActivity
 import com.te6lim.ytcviewer.home.MainActivity
 
 class CardsFragment : Fragment() {
@@ -78,11 +81,17 @@ class CardsFragment : Fragment() {
                     text = category.name
                     setOnClickListener {
                         cardsViewModel.toggleChip(category.name)
+                        navigateToActivity(FilterSelectionActivity::class.java)
                     }
                 }
 
             binding.cardFilter.addView(chip)
         }
+    }
+
+    private fun navigateToActivity(activity: Class<out Activity>) {
+        val intent = Intent(this.context, activity)
+        startActivity(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

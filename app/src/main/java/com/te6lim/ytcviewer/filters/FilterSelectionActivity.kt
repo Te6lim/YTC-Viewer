@@ -17,5 +17,7 @@ class FilterSelectionActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
     }
 }
