@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
@@ -24,6 +27,8 @@ class CardsFragment : Fragment() {
     private lateinit var cardsViewModel: CardsViewModel
     private lateinit var binding: FragmentCardsBinding
 
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
     companion object {
         const val FILTER_CATEGORY = "filter_category"
     }
@@ -37,6 +42,8 @@ class CardsFragment : Fragment() {
             .inflate(inflater, R.layout.fragment_cards, container, false)
 
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
+
+        resultLauncher = getActivityResultLauncher()
 
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(CardDatabase.getInstance(requireContext()))
@@ -69,9 +76,20 @@ class CardsFragment : Fragment() {
         }
     }
 
+    private fun getActivityResultLauncher() = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            Toast.makeText(
+                requireContext(),
+                "RESULT OK: ${result.data?.getStringArrayExtra(FilterSelectionActivity.RESULT_KEY)?.size}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     private fun SearchView.setClickListener(action: () -> Unit) {
         setOnClickListener { (it as SearchView).isIconified = false }
-
         setOnSearchClickListener { action() }
     }
 
@@ -96,7 +114,7 @@ class CardsFragment : Fragment() {
     private fun navigateToActivity(activityClass: Class<out Activity>, filterCategory: String) {
         val intent = Intent(this.context, activityClass)
         intent.putExtra(FILTER_CATEGORY, filterCategory)
-        startActivity(intent)
+        resultLauncher.launch(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

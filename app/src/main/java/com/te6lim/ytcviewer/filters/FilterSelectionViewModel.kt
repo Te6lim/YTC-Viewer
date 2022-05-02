@@ -189,7 +189,7 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
     val filters: LiveData<List<CardFilter>>
         get() = _filters
 
-    val selectedFilters = mutableListOf<String>()
+    private val selectedFilters = mutableListOf<String>()
 
     init {
         _filterCategory.value = category
@@ -214,6 +214,18 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
 
             CardFilterCategory.Trap -> traps
         }
+    }
+
+    fun addFilterToSelected(filter: CardFilter) {
+        selectedFilters.add(filter.name)
+    }
+
+    fun removeFilterFromSelected(filter: CardFilter) {
+        selectedFilters.remove(filter.name)
+    }
+
+    fun selectedFilters(): List<String> {
+        return selectedFilters.toList()
     }
 
 }

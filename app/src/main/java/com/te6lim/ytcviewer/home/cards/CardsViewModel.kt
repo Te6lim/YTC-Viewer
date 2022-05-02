@@ -52,6 +52,4 @@ class CardsViewModelFactory(private val db: CardDatabase) : ViewModelProvider.Fa
             return CardsViewModel(db) as T
         } else throw IllegalArgumentException()
     }
-
-
 }

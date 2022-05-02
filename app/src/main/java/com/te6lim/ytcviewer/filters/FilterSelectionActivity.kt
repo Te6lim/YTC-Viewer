@@ -1,5 +1,6 @@
 package com.te6lim.ytcviewer.filters
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,6 +17,12 @@ class FilterSelectionActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySelectionFilterBinding
 
+    private lateinit var viewModel: FilterSelectionViewModel
+
+    companion object {
+        const val RESULT_KEY = "result_key"
+    }
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,7 +34,7 @@ class FilterSelectionActivity : AppCompatActivity() {
 
         binding.toolbar.setNavigationIcon(R.drawable.ic_close)
 
-        val viewModel = ViewModelProvider(
+        viewModel = ViewModelProvider(
             this, FilterSelectionViewModelFactory(
                 intent.getStringExtra(FILTER_CATEGORY) ?: ""
             )
@@ -37,18 +44,15 @@ class FilterSelectionActivity : AppCompatActivity() {
 
         val adapter = FilterSelectionAdapter(object : CardFilterCallback() {
             override fun getColor(filter: CardFilter): Int {
-                return ContextCompat.getColor(
-                    this@FilterSelectionActivity,
-                    viewModel.getBackgroundsForFilters()[filter.name]!!
-                )
+                return getFilterColorResource(filter)
             }
 
             override fun setSelectedCardFilter(filter: CardFilter) {
-
+                viewModel.addFilterToSelected(filter)
             }
 
             override fun unSelectCardFilter(filter: CardFilter) {
-
+                viewModel.removeFilterFromSelected(filter)
             }
 
         })
@@ -63,12 +67,33 @@ class FilterSelectionActivity : AppCompatActivity() {
 
     }
 
+    private fun getFilterColorResource(filter: CardFilter) = ContextCompat.getColor(
+        this@FilterSelectionActivity,
+        viewModel.getBackgroundsForFilters()[filter.name]!!
+    )
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         MenuInflater(this).inflate(R.menu.filter_selection_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            android.R.id.home -> {
+                if (viewModel.selectedFilters().isNotEmpty()) {
+                    with(viewModel.selectedFilters()) {
+                        if (size > 0) {
+                            val intent = Intent().apply {
+                                putExtra(RESULT_KEY, viewModel.selectedFilters().toTypedArray())
+                            }
+                            setResult(RESULT_OK, intent)
+                        }
+                    }
+                }
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
