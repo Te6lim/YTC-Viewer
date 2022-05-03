@@ -33,63 +33,93 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         _selectedFilters.value = map
     }
 
-    fun removeFiltersFromSelected(category: CardFilterCategory) {
-        val map = _selectedFilters.value?.toMutableMap()
-        map?.let {
-            it.remove(category)
-            _selectedFilters.value = it
+    fun toggleChip(chipName: String): Boolean {
+        val map = when (chipName) {
+            CardFilterCategory.Spell.name -> {
+                toggleSpellOrTrap(chipName)
+            }
+
+            CardFilterCategory.Trap.name -> {
+                toggleSpellOrTrap(chipName)
+            }
+
+            else -> {
+                toggleNonSpellAndTrap(chipName)
+            }
         }
+        _selectedChips.value = map
+        filteredFilters()?.let { _selectedFilters.value = it }
+        return map[chipName]!!
     }
 
-    fun toggleChip(chipName: String): Boolean {
-        with(_selectedChips.value!!.toMutableMap()) {
-            when (chipName) {
-                CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
-                    if (!this[chipName]!!) {
-                        for (s in this.keys) {
-                            this[s] = s == chipName
-                        }
-                        this[chipName] = true
-                    } else this[chipName] = false
-                }
-                else -> {
-                    if (this[CardFilterCategory.Spell.name]!!)
-                        this[CardFilterCategory.Spell.name] = false
-
-                    if (this[CardFilterCategory.Trap.name]!!)
-                        this[CardFilterCategory.Trap.name] = false
-
-                    this[chipName] = !this[chipName]!!
-                }
+    private fun filteredFilters(): Map<CardFilterCategory, List<CardFilter>>? {
+        val selected = _selectedFilters.value?.toMutableMap()
+        selected?.let {
+            for (k in selectedChips.value!!.keys) {
+                if (!selectedChips.value!![k]!!) it.remove(CardFilterCategory.get(k))
             }
-            _selectedChips.value = this
-            return this[chipName]!!
         }
+        return selected
+    }
+
+    private fun toggleNonSpellAndTrap(chipName: String): Map<String, Boolean> {
+        val categories = _selectedChips.value!!.toMutableMap()
+
+        if (categories[CardFilterCategory.Spell.name]!!) {
+            categories[CardFilterCategory.Spell.name] = false
+        }
+
+        if (categories[CardFilterCategory.Trap.name]!!) {
+            categories[CardFilterCategory.Trap.name] = false
+        }
+
+        categories[chipName] = !categories[chipName]!!
+
+        return categories
+
+    }
+
+    private fun toggleSpellOrTrap(chipName: String): Map<String, Boolean> {
+        val categories = _selectedChips.value!!.toMutableMap()
+        if (!categories[chipName]!!) {
+            for (s in categories.keys) {
+                categories[s] = s == chipName
+            }
+            categories[chipName] = true
+        } else {
+            categories[chipName] = false
+        }
+
+        return categories
     }
 
     fun switchChip(chipName: String, switch: Boolean) {
-        with(_selectedChips.value!!.toMutableMap()) {
-            when (chipName) {
-                CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
-                    if (switch) {
-                        for (s in this.keys) {
-                            this[s] = s == chipName
-                        }
+        val categories = _selectedChips.value!!.toMutableMap()
+
+        when (chipName) {
+            CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
+                if (switch) {
+                    for (s in categories.keys) {
+                        categories[s] = s == chipName
                     }
-                    this[chipName] = switch
                 }
-                else -> {
-                    if (this[CardFilterCategory.Spell.name]!!) this[CardFilterCategory.Spell
-                        .name] = false
-
-                    if (this[CardFilterCategory.Trap.name]!!) this[CardFilterCategory.Trap
-                        .name] = false
-
-                    this[chipName] = switch
-                }
+                categories[chipName] = switch
             }
-            _selectedChips.value = this
+
+            else -> {
+                if (categories[CardFilterCategory.Spell.name]!!) {
+                    categories[CardFilterCategory.Spell.name] = false
+                }
+
+                if (categories[CardFilterCategory.Trap.name]!!) {
+                    categories[CardFilterCategory.Trap.name] = false
+                }
+
+                categories[chipName] = switch
+            }
         }
+        _selectedChips.value = categories
+        filteredFilters()?.let { _selectedFilters.value = it }
     }
 }
 

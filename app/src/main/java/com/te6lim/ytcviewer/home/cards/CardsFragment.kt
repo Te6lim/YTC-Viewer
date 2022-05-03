@@ -21,7 +21,6 @@ import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity
-import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.CATEGORY_RESULT_KEY
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.FILTER_LIST_RESULT_KEY
 import com.te6lim.ytcviewer.home.MainActivity
 
@@ -52,9 +51,17 @@ class CardsFragment : Fragment() {
             binding.cardFilter.visibility = it
         }
 
-        resultLauncher = getActivityResultLauncher { category, list ->
-            cardsViewModel.addFiltersToSelected(category, list)
-        }
+        resultLauncher = getActivityResultLauncher(object : Callback {
+
+            override fun onResultOK(filterCategory: CardFilterCategory, list: List<CardFilter>) {
+                cardsViewModel.addFiltersToSelected(filterCategory, list)
+            }
+
+            override fun onResultCancelled(filterCategory: CardFilterCategory) {
+
+            }
+
+        })
 
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(CardDatabase.getInstance(requireContext()))
@@ -95,21 +102,19 @@ class CardsFragment : Fragment() {
         }
     }
 
-    private fun getActivityResultLauncher(
-        func: (category: CardFilterCategory, list: List<CardFilter>) -> Unit
-    ) =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                func(
-                    CardFilterCategory.get(result.data?.getStringExtra(CATEGORY_RESULT_KEY)!!),
-                    result.data?.getParcelableArrayExtra(FILTER_LIST_RESULT_KEY)!!.toList().map {
-                        it as CardFilter
-                    }
-                )
-            } else {
-                val data = result.data!!.getStringExtra(FILTER_LIST_RESULT_KEY)!!
+    private fun getActivityResultLauncher(callback: Callback) = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            callback.onResultOK(
+                CardFilterCategory.get(
+                    result.data?.getStringExtra(FilterSelectionActivity.CATEGORY_RESULT_KEY)!!
+                ), result.data?.getParcelableArrayExtra(FILTER_LIST_RESULT_KEY)!!.toList().map {
+                    it as CardFilter
+                }
+            )
+        } else {
+            val data = result.data!!.getStringExtra(FILTER_LIST_RESULT_KEY)!!
             cardsViewModel.switchChip(data, false)
         }
     }
@@ -134,7 +139,7 @@ class CardsFragment : Fragment() {
                     setOnClickListener {
                         if (cardsViewModel.toggleChip(category.name))
                             navigateToActivityForResult(FilterSelectionActivity::class.java, category.name)
-                        else cardsViewModel.removeFiltersFromSelected(CardFilterCategory.get(category.name))
+                        else cardsViewModel.switchChip(category.name, false)
                     }
                 }
 
@@ -176,5 +181,10 @@ class CardsFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(CHIP_GROUP_VISIBILITY, binding.cardFilter.visibility)
+    }
+
+    private interface Callback {
+        fun onResultOK(filterCategory: CardFilterCategory, list: List<CardFilter>)
+        fun onResultCancelled(filterCategory: CardFilterCategory)
     }
 }
