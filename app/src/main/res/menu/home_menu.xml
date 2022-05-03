@@ -9,5 +9,6 @@
 
     <item
         android:title="@string/filter"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_sort"
+        app:showAsAction="always" />
 </menu>
