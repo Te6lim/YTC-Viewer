@@ -32,6 +32,7 @@ class CardsFragment : Fragment() {
 
     companion object {
         const val FILTER_CATEGORY = "filter_category"
+        private const val CHIP_GROUP_VISIBILITY = "chip group visibility"
     }
 
     @OptIn(ExperimentalPagingApi::class)
@@ -44,6 +45,10 @@ class CardsFragment : Fragment() {
         )
 
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
+
+        savedInstanceState?.getInt(CHIP_GROUP_VISIBILITY)?.let {
+            binding.cardFilter.visibility = it
+        }
 
         resultLauncher = getActivityResultLauncher()
 
@@ -149,5 +154,10 @@ class CardsFragment : Fragment() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             app.toDarkMode = true
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(CHIP_GROUP_VISIBILITY, binding.cardFilter.visibility)
     }
 }
