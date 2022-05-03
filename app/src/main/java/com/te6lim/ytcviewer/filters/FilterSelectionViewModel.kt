@@ -1,5 +1,7 @@
 package com.te6lim.ytcviewer.filters
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -189,7 +191,7 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
     val filters: LiveData<List<CardFilter>>
         get() = _filters
 
-    private val selectedFilters = mutableListOf<String>()
+    private val selectedFilters = mutableListOf<CardFilter>()
 
     init {
         _filterCategory.value = category
@@ -217,24 +219,46 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
     }
 
     fun addFilterToSelected(filter: CardFilter) {
-        selectedFilters.add(filter.name)
+        selectedFilters.add(filter)
     }
 
     fun removeFilterFromSelected(filter: CardFilter) {
-        selectedFilters.remove(filter.name)
+        selectedFilters.remove(filter)
     }
 
-    fun selectedFilters(): List<String> {
+    fun selectedFilters(): List<CardFilter> {
         return selectedFilters.toList()
     }
 
 }
 
-data class CardFilter(val name: String, var isSelected: Boolean = false) {
-    companion object {
-        fun isEffectMonster(value: String): Boolean {
-            return value != "Normal Monster" && value != "Normal Tuner Monster"
-                    && value != "Pendulum Normal Monster"
+data class CardFilter(val name: String, var isSelected: Boolean = false) :
+    Parcelable {
+    val isEffectMonster = name != "Normal Monster" && name != "Normal Tuner Monster"
+            && name != "Pendulum Normal Monster"
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readByte() != 0.toByte()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeByte(if (isSelected) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CardFilter> {
+        override fun createFromParcel(parcel: Parcel): CardFilter {
+            return CardFilter(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CardFilter?> {
+            return arrayOfNulls(size)
         }
     }
 }

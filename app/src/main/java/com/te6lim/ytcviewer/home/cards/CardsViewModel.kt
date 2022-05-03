@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.database.CardDatabase
+import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 
 class CardsViewModel(db: CardDatabase) : ViewModel() {
@@ -13,12 +14,23 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     val selectedChips: LiveData<Map<String, Boolean>>
         get() = _selectedChips
 
+    private val _selectedFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
+    val selectedCardFilters: LiveData<Map<CardFilterCategory, List<CardFilter>>>
+        get() = _selectedFilters
+
     init {
         val map = mutableMapOf<String, Boolean>()
         for (category in CardFilterCategory.values()) {
             map[category.name] = false
         }
         _selectedChips.value = map
+    }
+
+    fun addFiltersToSelected(category: CardFilterCategory, list: List<CardFilter>) {
+        val map = _selectedFilters.value?.toMutableMap() ?: mutableMapOf()
+        if (!map.contains(category)) map[category] = list
+        else map.replace(category, list)
+        _selectedFilters.value = map
     }
 
     fun toggleChip(chipName: String): Boolean {

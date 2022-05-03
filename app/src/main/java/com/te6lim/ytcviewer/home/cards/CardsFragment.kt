@@ -18,9 +18,11 @@ import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
+import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity
-import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.RESULT_KEY
+import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.CATEGORY_RESULT_KEY
+import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.FILTER_LIST_RESULT_KEY
 import com.te6lim.ytcviewer.home.MainActivity
 
 class CardsFragment : Fragment() {
@@ -50,7 +52,9 @@ class CardsFragment : Fragment() {
             binding.cardFilter.visibility = it
         }
 
-        resultLauncher = getActivityResultLauncher()
+        resultLauncher = getActivityResultLauncher { category, list ->
+            cardsViewModel.addFiltersToSelected(category, list)
+        }
 
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(CardDatabase.getInstance(requireContext()))
@@ -79,21 +83,33 @@ class CardsFragment : Fragment() {
                 }
             }
 
+            cardsViewModel.selectedCardFilters.observe(viewLifecycleOwner) {
+                for (k in it.keys) {
+                    Toast.makeText(
+                        requireContext(), "${k.name}, has ${it[k]!!.size} filters", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
             return root
         }
     }
 
-    private fun getActivityResultLauncher() = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            Toast.makeText(
-                requireContext(),
-                "RESULT OK: ${result.data?.getStringArrayExtra(RESULT_KEY)?.size}",
-                Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            val data = result.data!!.getStringExtra(RESULT_KEY)!!
+    private fun getActivityResultLauncher(
+        func: (category: CardFilterCategory, list: List<CardFilter>) -> Unit
+    ) =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                func(
+                    CardFilterCategory.valueOf(result.data?.getStringExtra(CATEGORY_RESULT_KEY)!!),
+                    result.data?.getParcelableArrayExtra(FILTER_LIST_RESULT_KEY)!!.toList().map {
+                        it as CardFilter
+                    }
+                )
+            } else {
+                val data = result.data!!.getStringExtra(FILTER_LIST_RESULT_KEY)!!
             cardsViewModel.switchChip(data, false)
         }
     }

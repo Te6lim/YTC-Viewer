@@ -20,7 +20,8 @@ class FilterSelectionActivity : AppCompatActivity() {
     private var menu: Menu? = null
 
     companion object {
-        const val RESULT_KEY = "result_key"
+        const val FILTER_LIST_RESULT_KEY = "result key"
+        const val CATEGORY_RESULT_KEY = "category result key"
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +49,7 @@ class FilterSelectionActivity : AppCompatActivity() {
             }
 
             override fun setSelectedCardFilter(filter: CardFilter) {
-                if (!viewModel.selectedFilters().contains(filter.name)) {
+                if (!viewModel.selectedFilters().contains(filter)) {
                     viewModel.addFilterToSelected(filter)
                 }
                 if (viewModel.selectedFilters().size == 1) {
@@ -93,7 +94,7 @@ class FilterSelectionActivity : AppCompatActivity() {
         val intent = Intent()
         return when (item.itemId) {
             android.R.id.home -> {
-                intent.putExtra(RESULT_KEY, viewModel.filterCategory.value)
+                intent.putExtra(FILTER_LIST_RESULT_KEY, viewModel.filterCategory.value)
                 setResult(RESULT_CANCELED, intent)
                 onBackPressed()
                 true
@@ -101,10 +102,13 @@ class FilterSelectionActivity : AppCompatActivity() {
             R.id.done -> {
                 with(viewModel.selectedFilters()) {
                     if (size > 0) {
-                        intent.putExtra(RESULT_KEY, viewModel.selectedFilters().toTypedArray())
+                        intent.apply {
+                            putExtra(FILTER_LIST_RESULT_KEY, viewModel.selectedFilters().toTypedArray())
+                            putExtra(CATEGORY_RESULT_KEY, viewModel.filterCategory.value)
+                        }
                         setResult(RESULT_OK, intent)
                     } else {
-                        intent.putExtra(RESULT_KEY, viewModel.filterCategory.value)
+                        intent.putExtra(FILTER_LIST_RESULT_KEY, viewModel.filterCategory.value)
                         setResult(RESULT_CANCELED, intent)
                     }
                 }
