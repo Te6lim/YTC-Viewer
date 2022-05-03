@@ -86,6 +86,13 @@ class FilterSelectionActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         MenuInflater(this).inflate(R.menu.filter_selection_menu, menu)
+        if (viewModel.selectedFilters().isNotEmpty()) {
+            menu?.findItem(R.id.done)?.apply {
+                isVisible = true
+                setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+            }
+
+        }
         this.menu = menu!!
         return true
     }
