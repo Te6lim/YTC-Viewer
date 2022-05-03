@@ -9,8 +9,8 @@ import com.te6lim.ytcviewer.filters.CardFilterCategory
 
 class CardsViewModel(db: CardDatabase) : ViewModel() {
 
-    private val _selectedChips = MutableLiveData<MutableMap<String, Boolean>>()
-    val selectedChips: LiveData<MutableMap<String, Boolean>>
+    private val _selectedChips = MutableLiveData<Map<String, Boolean>>()
+    val selectedChips: LiveData<Map<String, Boolean>>
         get() = _selectedChips
 
     init {
@@ -22,12 +22,40 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     fun toggleChip(chipName: String) {
-        with(_selectedChips.value!!) {
+        with(_selectedChips.value!!.toMutableMap()) {
             when (chipName) {
                 CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
-                    for (s in this.keys) {
-                        this[s] = s == chipName
+                    if (!this[chipName]!!) {
+                        for (s in this.keys) {
+                            this[s] = s == chipName
+                        }
                     }
+                    this[chipName] = !this[chipName]!!
+                }
+                else -> {
+                    if (this[CardFilterCategory.Spell.name]!!)
+                        this[CardFilterCategory.Spell.name] = false
+
+                    if (this[CardFilterCategory.Trap.name]!!)
+                        this[CardFilterCategory.Trap.name] = false
+
+                    this[chipName] = !this[chipName]!!
+                }
+            }
+            _selectedChips.value = this
+        }
+    }
+
+    fun switchChip(chipName: String, switch: Boolean) {
+        with(_selectedChips.value!!.toMutableMap()) {
+            when (chipName) {
+                CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
+                    if (switch) {
+                        for (s in this.keys) {
+                            this[s] = s == chipName
+                        }
+                    }
+                    this[chipName] = switch
                 }
                 else -> {
                     if (this[CardFilterCategory.Spell.name]!!) this[CardFilterCategory.Spell
@@ -36,7 +64,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
                     if (this[CardFilterCategory.Trap.name]!!) this[CardFilterCategory.Trap
                         .name] = false
 
-                    this[chipName] = !this[chipName]!!
+                    this[chipName] = switch
                 }
             }
             _selectedChips.value = this

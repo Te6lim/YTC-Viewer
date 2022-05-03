@@ -39,8 +39,9 @@ class CardsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
-        binding = DataBindingUtil
-            .inflate(inflater, R.layout.fragment_cards, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_cards, container, false
+        )
 
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
 
@@ -87,13 +88,18 @@ class CardsFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         } else {
-            cardsViewModel.toggleChip(result.data?.getStringExtra(RESULT_KEY)!!)
+            val data = result.data!!.getStringExtra(RESULT_KEY)!!
+            if (cardsViewModel.selectedChips.value!![data]!!) cardsViewModel.switchChip(data, false)
         }
     }
 
     private fun SearchView.setClickListener(action: () -> Unit) {
-        setOnClickListener { (it as SearchView).isIconified = false }
-        setOnSearchClickListener { action() }
+        setOnClickListener {
+            isIconified = false
+        }
+        setOnSearchClickListener {
+            action()
+        }
     }
 
     private fun buildChipsIntoChipGroup(chipInflater: LayoutInflater) {
@@ -106,7 +112,8 @@ class CardsFragment : Fragment() {
                     text = category.name
                     setOnClickListener {
                         cardsViewModel.toggleChip(category.name)
-                        navigateToActivity(FilterSelectionActivity::class.java, category.name)
+                        if (cardsViewModel.selectedChips.value!![category.name]!!)
+                            navigateToActivityForResult(FilterSelectionActivity::class.java, category.name)
                     }
                 }
 
@@ -114,7 +121,7 @@ class CardsFragment : Fragment() {
         }
     }
 
-    private fun navigateToActivity(activityClass: Class<out Activity>, filterCategory: String) {
+    private fun navigateToActivityForResult(activityClass: Class<out Activity>, filterCategory: String) {
         val intent = Intent(this.context, activityClass)
         intent.putExtra(FILTER_CATEGORY, filterCategory)
         resultLauncher.launch(intent)

@@ -17,7 +17,7 @@ class FilterSelectionActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySelectionFilterBinding
     private lateinit var viewModel: FilterSelectionViewModel
-    private lateinit var menu: Menu
+    private var menu: Menu? = null
 
     companion object {
         const val RESULT_KEY = "result_key"
@@ -48,10 +48,12 @@ class FilterSelectionActivity : AppCompatActivity() {
             }
 
             override fun setSelectedCardFilter(filter: CardFilter) {
-                viewModel.addFilterToSelected(filter)
+                if (!viewModel.selectedFilters().contains(filter.name)) {
+                    viewModel.addFilterToSelected(filter)
+                }
                 if (viewModel.selectedFilters().size == 1) {
                     setMenuVisibility(R.id.done, true)
-                    menu.findItem(R.id.done).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                    menu?.findItem(R.id.done)?.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 }
             }
 
@@ -73,7 +75,7 @@ class FilterSelectionActivity : AppCompatActivity() {
     }
 
     private fun setMenuVisibility(itemId: Int, makeVisible: Boolean) {
-        menu.findItem(itemId).isVisible = makeVisible
+        menu?.findItem(itemId)?.isVisible = makeVisible
     }
 
     private fun getFilterColorResource(filter: CardFilter) = ContextCompat.getColor(
@@ -83,7 +85,7 @@ class FilterSelectionActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         MenuInflater(this).inflate(R.menu.filter_selection_menu, menu)
-        menu?.let { this.menu = it }
+        this.menu = menu!!
         return true
     }
 
