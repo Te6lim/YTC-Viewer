@@ -21,7 +21,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         _selectedChips.value = map
     }
 
-    fun toggleChip(chipName: String) {
+    fun toggleChip(chipName: String): Boolean {
         with(_selectedChips.value!!.toMutableMap()) {
             when (chipName) {
                 CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
@@ -29,8 +29,8 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
                         for (s in this.keys) {
                             this[s] = s == chipName
                         }
-                    }
-                    this[chipName] = !this[chipName]!!
+                        this[chipName] = true
+                    } else this[chipName] = false
                 }
                 else -> {
                     if (this[CardFilterCategory.Spell.name]!!)
@@ -43,6 +43,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
                 }
             }
             _selectedChips.value = this
+            return this[chipName]!!
         }
     }
 

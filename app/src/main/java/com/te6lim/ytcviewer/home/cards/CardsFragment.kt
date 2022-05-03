@@ -89,7 +89,7 @@ class CardsFragment : Fragment() {
             ).show()
         } else {
             val data = result.data!!.getStringExtra(RESULT_KEY)!!
-            if (cardsViewModel.selectedChips.value!![data]!!) cardsViewModel.switchChip(data, false)
+            cardsViewModel.switchChip(data, false)
         }
     }
 
@@ -111,8 +111,7 @@ class CardsFragment : Fragment() {
                     tag = category.name
                     text = category.name
                     setOnClickListener {
-                        cardsViewModel.toggleChip(category.name)
-                        if (cardsViewModel.selectedChips.value!![category.name]!!)
+                        if (cardsViewModel.toggleChip(category.name))
                             navigateToActivityForResult(FilterSelectionActivity::class.java, category.name)
                     }
                 }
