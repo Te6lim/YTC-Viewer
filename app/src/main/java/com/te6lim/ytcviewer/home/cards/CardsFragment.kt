@@ -103,7 +103,7 @@ class CardsFragment : Fragment() {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 func(
-                    CardFilterCategory.valueOf(result.data?.getStringExtra(CATEGORY_RESULT_KEY)!!),
+                    CardFilterCategory.get(result.data?.getStringExtra(CATEGORY_RESULT_KEY)!!),
                     result.data?.getParcelableArrayExtra(FILTER_LIST_RESULT_KEY)!!.toList().map {
                         it as CardFilter
                     }
@@ -134,6 +134,7 @@ class CardsFragment : Fragment() {
                     setOnClickListener {
                         if (cardsViewModel.toggleChip(category.name))
                             navigateToActivityForResult(FilterSelectionActivity::class.java, category.name)
+                        else cardsViewModel.removeFiltersFromSelected(CardFilterCategory.get(category.name))
                     }
                 }
 

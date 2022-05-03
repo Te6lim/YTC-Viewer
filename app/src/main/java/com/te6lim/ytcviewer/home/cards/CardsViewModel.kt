@@ -33,6 +33,14 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         _selectedFilters.value = map
     }
 
+    fun removeFiltersFromSelected(category: CardFilterCategory) {
+        val map = _selectedFilters.value?.toMutableMap()
+        map?.let {
+            it.remove(category)
+            _selectedFilters.value = it
+        }
+    }
+
     fun toggleChip(chipName: String): Boolean {
         with(_selectedChips.value!!.toMutableMap()) {
             when (chipName) {

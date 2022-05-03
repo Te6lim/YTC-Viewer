@@ -12,6 +12,10 @@ enum class CardFilterCategory(val query: String) {
     Type("type"), Race("race"),
     Attribute("attribute"), Level("level"),
     Spell("spell card"), Trap("trap card");
+
+    companion object {
+        fun get(name: String) = valueOf(name)
+    }
 }
 
 class FilterSelectionViewModel(private val category: String) : ViewModel() {
