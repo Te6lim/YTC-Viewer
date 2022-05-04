@@ -8,7 +8,6 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/item_sort"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -17,19 +16,19 @@
         android:layout_marginBottom="16dp">
 
         <TextView
-            android:id="@+id/textView25"
+            android:id="@+id/sortType_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/varela_round"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView5"
+            app:layout_constraintEnd_toStartOf="@+id/selected_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Name" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/selected_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -1,5 +1,4 @@
 package com.te6lim.ytcviewer.home
 
-class SortItem {
-
+class SortItem(val name: String, var isSelected: Boolean = false) {
 }
