@@ -22,9 +22,11 @@ import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.FILTER_LIST_RESULT_KEY
+import com.te6lim.ytcviewer.home.HomeBottomSheetFragment
 import com.te6lim.ytcviewer.home.MainActivity
+import com.te6lim.ytcviewer.home.SortItem
 
-class CardsFragment : Fragment() {
+class CardsFragment : Fragment(), HomeBottomSheetFragment.Communicator {
 
     private lateinit var cardsViewModel: CardsViewModel
     private lateinit var binding: FragmentCardsBinding
@@ -55,10 +57,6 @@ class CardsFragment : Fragment() {
 
             override fun onResultOK(filterCategory: CardFilterCategory, list: List<CardFilter>) {
                 cardsViewModel.addFiltersToSelected(filterCategory, list)
-            }
-
-            override fun onResultCancelled(filterCategory: CardFilterCategory) {
-
             }
 
         })
@@ -163,6 +161,12 @@ class CardsFragment : Fragment() {
                 switchTheme()
                 true
             }
+
+            R.id.sort -> {
+                val bottomSheet = HomeBottomSheetFragment(this)
+                bottomSheet.show(requireActivity().supportFragmentManager, HomeBottomSheetFragment.TAG)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -185,6 +189,7 @@ class CardsFragment : Fragment() {
 
     private interface Callback {
         fun onResultOK(filterCategory: CardFilterCategory, list: List<CardFilter>)
-        fun onResultCancelled(filterCategory: CardFilterCategory)
     }
+
+    override fun getList(): List<SortItem> = cardsViewModel.sortItems
 }

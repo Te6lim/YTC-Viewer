@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
+import com.te6lim.ytcviewer.home.SortItem
 
 class CardsViewModel(db: CardDatabase) : ViewModel() {
 
@@ -17,6 +18,13 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     private val _selectedFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
     val selectedCardFilters: LiveData<Map<CardFilterCategory, List<CardFilter>>>
         get() = _selectedFilters
+
+    val sortItems = listOf(
+        SortItem("Name(ASC)"), SortItem("Name(DESC)"),
+        SortItem("Level/Rank(ASC)"), SortItem("Level/Rank(DESC)"),
+        SortItem("ATK(ASC)"), SortItem("ATK(DESC)"),
+        SortItem("DEF(ASC)"), SortItem("DEF(DESC)")
+    )
 
     init {
         val map = mutableMapOf<String, Boolean>()

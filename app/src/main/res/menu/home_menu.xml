@@ -8,6 +8,7 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/sort"
         android:title="@string/sort"
         android:icon="@drawable/ic_sort"
         app:showAsAction="always" />

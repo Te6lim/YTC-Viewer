@@ -83,4 +83,12 @@
         <item name="elevation">@dimen/no_spacing</item>
         <item name="android:elevation">@dimen/no_spacing</item>
     </style>
+
+    <style name="BottomSheetTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/modalStyle</item>
+    </style>
+
+    <style name="modalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/modal_bottom_sheet_background</item>
+    </style>
 </resources>

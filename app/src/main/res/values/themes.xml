@@ -19,5 +19,7 @@
         <item name="iconTint">@color/menuItemColor</item>
         <item name="android:actionOverflowButtonStyle">@style/overflowStyle</item>
         <item name="colorControlNormal">@color/menuItemColor</item>
+
+        <item name="bottomSheetDialogTheme">@style/BottomSheetTheme</item>
     </style>
 </resources>
