@@ -37,7 +37,7 @@ class FilterSelectionActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(
             this, FilterSelectionViewModelFactory(
-                intent.getStringExtra(FILTER_CATEGORY) ?: ""
+                intent.getStringExtra(FILTER_CATEGORY)!!
             )
         )[FilterSelectionViewModel::class.java]
 
@@ -106,6 +106,7 @@ class FilterSelectionActivity : AppCompatActivity() {
                 onBackPressed()
                 true
             }
+
             R.id.done -> {
                 with(viewModel.selectedFilters()) {
                     if (size > 0) {

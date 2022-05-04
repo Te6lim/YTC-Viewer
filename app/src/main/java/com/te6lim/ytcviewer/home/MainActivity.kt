@@ -21,12 +21,4 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setupWithNavController(findNavController(R.id.navigation_host))
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return super.onSupportNavigateUp()
-    }
 }
