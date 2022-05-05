@@ -14,6 +14,7 @@
     <color name="grey">#7A7A7A</color>
     <color name="bottomSheetBackground">@color/white</color>
     <color name="bottomSheetTitleColor">@color/primaryLightColor</color>
+    <color name="bottomSheetItemTextColor">@color/secondaryTextColor</color>
 
     <color name="iconColor">#5c6bc0</color>
     <color name="background">#FFFFFF</color>

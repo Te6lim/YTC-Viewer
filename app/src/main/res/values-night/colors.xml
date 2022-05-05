@@ -10,7 +10,8 @@
     <color name="secondaryTextColor">#ffffff</color>
 
     <color name="bottomSheetBackground">#202020</color>
-    <color name="bottomSheetTitleColor">@color/primaryLightColor</color>
+    <color name="bottomSheetTitleColor">#6E6E6E</color>
+    <color name="bottomSheetItemTextColor">@color/white</color>
 
     <color name="iconColor">@color/primaryDarkColor</color>
     <color name="background">@color/primaryDarkColor</color>
