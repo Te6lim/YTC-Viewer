@@ -42,29 +42,40 @@ class SortItemViewHolder(private val binding: ItemSortBinding, val callback: Cal
             return SortItemViewHolder(binding, callback)
         }
 
-        private var lastSelectedPosition: Int? = null
-        private var lastSelectedSortItem: SortItem? = null
+        private var lastSelection = Pair<Int?, SortItem?>(null, null)
     }
 
     fun bind(itemSort: SortItem, position: Int) {
         binding.sortTypeText.text = itemSort.name
-        binding.selectedImage.visibility = if (itemSort.isSelected) View.VISIBLE else View.GONE
-        binding.sortTypeText.setTextColor(callback.getSelectedColor(itemSort.isSelected))
+        changeAppearanceOfSelection(itemSort)
         binding.root.setOnClickListener {
             itemSort.isSelected = !itemSort.isSelected
-            if (itemSort.isSelected) {
-                lastSelectedPosition?.let {
-                    lastSelectedSortItem?.isSelected = false
-                    bindingAdapter?.notifyItemChanged(it)
-                }
-                lastSelectedSortItem = itemSort
-                lastSelectedPosition = position
-            }
+            changeAppearanceOfPreviouslySelectedRelativeToCurrentlySelected(itemSort, position)
             callback.onClick(itemSort.isSelected)
 
-            binding.selectedImage.visibility = if (itemSort.isSelected) View.VISIBLE else View.GONE
-            binding.sortTypeText.setTextColor(callback.getSelectedColor(itemSort.isSelected))
+            changeAppearanceOfSelection(itemSort)
         }
+    }
+
+    private fun changeAppearanceOfPreviouslySelectedRelativeToCurrentlySelected(
+        itemSort: SortItem,
+        position: Int
+    ) {
+        if (itemSort.isSelected) {
+
+            with(lastSelection) {
+                first?.let {
+                    second?.isSelected = false
+                    bindingAdapter?.notifyItemChanged(it)
+                }
+            }
+            lastSelection = Pair(position, itemSort)
+        }
+    }
+
+    private fun changeAppearanceOfSelection(itemSort: SortItem) {
+        binding.selectedImage.visibility = if (itemSort.isSelected) View.VISIBLE else View.GONE
+        binding.sortTypeText.setTextColor(callback.getSelectedColor(itemSort.isSelected))
     }
 
     interface Callback {
