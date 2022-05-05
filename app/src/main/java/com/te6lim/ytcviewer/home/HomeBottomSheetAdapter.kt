@@ -1,6 +1,5 @@
 package com.te6lim.ytcviewer.home
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,22 +11,26 @@ import com.te6lim.ytcviewer.databinding.ItemSortBinding
 class HomeBottomSheetAdapter(val callback: SortItemViewHolder.Callback) :
     RecyclerView.Adapter<SortItemViewHolder>() {
 
-    var list = listOf<SortItem>()
-        @SuppressLint("NotifyDataSetChanged")
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+    private val sortItems = listOf(
+        SortItem("Name(ASC)", query = "name", isAsc = true),
+        SortItem("Name(DESC)", query = "name", isAsc = false),
+        SortItem("Level/Rank(ASC)", query = "level", isAsc = true),
+        SortItem("Level/Rank(DESC)", query = "level", isAsc = false),
+        SortItem("ATK(ASC)", query = "atk", isAsc = true),
+        SortItem("ATK(DESC)", query = "atk", isAsc = false),
+        SortItem("DEF(ASC)", query = "def", isAsc = true),
+        SortItem("DEF(DESC)", query = "def", isAsc = false)
+    )
 
     override fun onCreateViewHolder(container: ViewGroup, viewType: Int): SortItemViewHolder {
         return SortItemViewHolder.create(container, callback)
     }
 
     override fun onBindViewHolder(holder: SortItemViewHolder, position: Int) {
-        holder.bind(list[position], position)
+        holder.bind(sortItems[position], position)
     }
 
-    override fun getItemCount() = list.size
+    override fun getItemCount() = sortItems.size
 
 }
 
@@ -51,7 +54,12 @@ class SortItemViewHolder(private val binding: ItemSortBinding, val callback: Cal
         binding.root.setOnClickListener {
             itemSort.isSelected = !itemSort.isSelected
             changeAppearanceOfPreviouslySelectedRelativeToCurrentlySelected(itemSort, position)
-            callback.onClick(itemSort.isSelected)
+            callback.onClick(
+                SortItem(
+                    name = itemSort.name, query = itemSort.query, isSelected = itemSort.isSelected,
+                    isAsc = itemSort.isAsc
+                )
+            )
 
             changeAppearanceOfSelection(itemSort)
         }
@@ -75,12 +83,19 @@ class SortItemViewHolder(private val binding: ItemSortBinding, val callback: Cal
 
     private fun changeAppearanceOfSelection(itemSort: SortItem) {
         binding.selectedImage.visibility = if (itemSort.isSelected) View.VISIBLE else View.GONE
-        binding.sortTypeText.setTextColor(callback.getSelectedColor(itemSort.isSelected))
+        binding.sortTypeText.setTextColor(
+            callback.getSelectedColor(
+                SortItem(
+                    name = itemSort.name, query = itemSort.query, isSelected = itemSort.isSelected,
+                    isAsc = itemSort.isAsc
+                )
+            )
+        )
     }
 
     interface Callback {
-        fun getSelectedColor(isSelected: Boolean): Int
+        fun getSelectedColor(sortItem: SortItem): Int
 
-        fun onClick(isSelected: Boolean)
+        fun onClick(sortItem: SortItem)
     }
 }

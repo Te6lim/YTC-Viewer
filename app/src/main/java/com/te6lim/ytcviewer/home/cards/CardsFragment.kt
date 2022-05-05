@@ -12,7 +12,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
@@ -38,7 +37,6 @@ class CardsFragment : Fragment(), HomeBottomSheetFragment.Communicator {
         private const val CHIP_GROUP_VISIBILITY = "chip group visibility"
     }
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -191,5 +189,7 @@ class CardsFragment : Fragment(), HomeBottomSheetFragment.Communicator {
         fun onResultOK(filterCategory: CardFilterCategory, list: List<CardFilter>)
     }
 
-    override fun getList(): List<SortItem> = cardsViewModel.sortItems
+    override fun setSortMethod(sort: SortItem) {
+        cardsViewModel.sortMethod = sort
+    }
 }

@@ -31,21 +31,24 @@ class HomeBottomSheetFragment(private val fragmentActivity: Communicator) : Bott
         )
 
         binding.recyclerView.adapter = HomeBottomSheetAdapter(object : SortItemViewHolder.Callback {
-            override fun getSelectedColor(isSelected: Boolean): Int {
-                return if (isSelected) ContextCompat.getColor(requireContext(), R.color.bottomSheetTitleColor)
+            override fun getSelectedColor(sortItem: SortItem): Int {
+                return if (sortItem.isSelected) ContextCompat.getColor(
+                    requireContext(), R.color
+                        .bottomSheetTitleColor
+                )
                 else ContextCompat.getColor(requireContext(), R.color.highlight)
             }
 
-            override fun onClick(isSelected: Boolean) {
-
+            override fun onClick(sortItem: SortItem) {
+                fragmentActivity.setSortMethod(sortItem)
             }
 
-        }).apply { list = fragmentActivity.getList() }
+        })
 
         return binding.root
     }
 
     interface Communicator {
-        fun getList(): List<SortItem>
+        fun setSortMethod(sort: SortItem)
     }
 }

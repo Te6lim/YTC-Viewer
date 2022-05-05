@@ -19,12 +19,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     val selectedCardFilters: LiveData<Map<CardFilterCategory, List<CardFilter>>>
         get() = _selectedFilters
 
-    val sortItems = listOf(
-        SortItem("Name(ASC)"), SortItem("Name(DESC)"),
-        SortItem("Level/Rank(ASC)"), SortItem("Level/Rank(DESC)"),
-        SortItem("ATK(ASC)"), SortItem("ATK(DESC)"),
-        SortItem("DEF(ASC)"), SortItem("DEF(DESC)")
-    )
+    var sortMethod: SortItem? = null
 
     init {
         val map = mutableMapOf<String, Boolean>()
