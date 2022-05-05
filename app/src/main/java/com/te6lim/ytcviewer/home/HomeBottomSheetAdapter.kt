@@ -22,6 +22,12 @@ class HomeBottomSheetAdapter(val callback: SortItemViewHolder.Callback) :
         SortItem("DEF(DESC)", query = "def", isAsc = false)
     )
 
+    init {
+        callback.currentlySelected()?.let {
+            sortItems.find { item -> item.name == it.name }?.isSelected = true
+        }
+    }
+
     override fun onCreateViewHolder(container: ViewGroup, viewType: Int): SortItemViewHolder {
         return SortItemViewHolder.create(container, callback)
     }
@@ -45,12 +51,13 @@ class SortItemViewHolder(private val binding: ItemSortBinding, val callback: Cal
             return SortItemViewHolder(binding, callback)
         }
 
-        private var lastSelection = Pair<Int?, SortItem?>(null, null)
+        var lastSelection = Pair<Int?, SortItem?>(null, null)
     }
 
     fun bind(itemSort: SortItem, position: Int) {
         binding.sortTypeText.text = itemSort.name
         changeAppearanceOfSelection(itemSort)
+        if (itemSort.isSelected) lastSelection = Pair(position, itemSort)
         binding.root.setOnClickListener {
             itemSort.isSelected = !itemSort.isSelected
             changeAppearanceOfPreviouslySelectedRelativeToCurrentlySelected(itemSort, position)
@@ -97,5 +104,7 @@ class SortItemViewHolder(private val binding: ItemSortBinding, val callback: Cal
         fun getSelectedColor(sortItem: SortItem): Int
 
         fun onClick(sortItem: SortItem)
+
+        fun currentlySelected(): SortItem?
     }
 }

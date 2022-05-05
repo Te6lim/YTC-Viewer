@@ -43,6 +43,10 @@ class HomeBottomSheetFragment(private val fragmentActivity: Communicator) : Bott
                 fragmentActivity.setSortMethod(sortItem)
             }
 
+            override fun currentlySelected(): SortItem? {
+                return fragmentActivity.getSortMethod()
+            }
+
         })
 
         return binding.root
@@ -50,5 +54,6 @@ class HomeBottomSheetFragment(private val fragmentActivity: Communicator) : Bott
 
     interface Communicator {
         fun setSortMethod(sort: SortItem)
+        fun getSortMethod(): SortItem?
     }
 }

@@ -192,4 +192,8 @@ class CardsFragment : Fragment(), HomeBottomSheetFragment.Communicator {
     override fun setSortMethod(sort: SortItem) {
         cardsViewModel.sortMethod = sort
     }
+
+    override fun getSortMethod(): SortItem? {
+        return cardsViewModel.sortMethod
+    }
 }
