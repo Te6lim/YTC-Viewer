@@ -80,13 +80,9 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     private fun toggleNonSpellAndTrap(chipName: String): Map<String, Boolean> {
         val categories = _selectedChips.value!!.toMutableMap()
 
-        if (categories[CardFilterCategory.Spell.name]!!) {
-            categories[CardFilterCategory.Spell.name] = false
-        }
+        if (categories[CardFilterCategory.Spell.name]!!) categories[CardFilterCategory.Spell.name] = false
 
-        if (categories[CardFilterCategory.Trap.name]!!) {
-            categories[CardFilterCategory.Trap.name] = false
-        }
+        if (categories[CardFilterCategory.Trap.name]!!) categories[CardFilterCategory.Trap.name] = false
 
         categories[chipName] = !categories[chipName]!!
 
@@ -195,12 +191,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         val queries = mutableListOf<Map<String, String>>()
         for (key in selectedCardFilters.value!!.keys) {
             queries.add(
-                mapOf(
-                    Pair(
-                        key.query, selectedCardFilters.value!![key]!!
-                            .stringFormatForNetworkQuery()
-                    )
-                )
+                mapOf(Pair(key.query, selectedCardFilters.value!![key]!!.stringFormatForNetworkQuery()))
             )
         }
         return queries
