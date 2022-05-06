@@ -29,7 +29,6 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     var sortMethod: SortItem? = null
 
     private var cardListType = CardType.MonsterCard
-        private set
 
     init {
         val map = mutableMapOf<String, Boolean>()
@@ -156,48 +155,49 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     private fun getCards(offset: Int): Deferred<Response> {
+        val mapQueries = getMapQueries()
         if (cardListType == CardType.MonsterCard) {
             return when (selectedCardFilters.value!!.size) {
                 1 -> {
-                    val mapQueries = getMapQueries(1)
                     YtcApi.retrofitService.getMonsterCardsAsync(mapQueries[0], offset = offset)
                 }
 
                 2 -> {
-                    val mapQueries = getMapQueries(2)
                     YtcApi.retrofitService.getMonsterCardsAsync(mapQueries[0], mapQueries[1], offset = offset)
                 }
 
                 3 -> {
-                    val mapQueries = getMapQueries(3)
                     YtcApi.retrofitService.getMonsterCardsAsync(
                         mapQueries[0], mapQueries[1], mapQueries[2], offset = offset
                     )
                 }
 
                 else -> {
-                    val mapQueries = getMapQueries(4)
                     YtcApi.retrofitService.getMonsterCardsAsync(
                         mapQueries[0], mapQueries[1], mapQueries[2], mapQueries[3], offset = offset
                     )
                 }
             }
         } else {
-            val mapQueries = getMapQueries(2)
-            return YtcApi.retrofitService.getNonMonsterCardsAsync(
-                mapQueries[0], mapQueries[1], offset = offset
-            )
+            return if (selectedChips.value!!.get(CardFilterCategory.Spell.name) == true) {
+                YtcApi.retrofitService.getNonMonsterCardsAsync(
+                    mapOf(Pair("type", CardFilterCategory.Spell.name)), mapQueries[0], offset = offset
+                )
+            } else {
+                YtcApi.retrofitService.getNonMonsterCardsAsync(
+                    mapOf(Pair("type", CardFilterCategory.Trap.name)), mapQueries[0], offset = offset
+                )
+            }
         }
     }
 
-    fun getMapQueries(size: Int): List<Map<String, String>> {
+    private fun getMapQueries(): List<Map<String, String>> {
         val queries = mutableListOf<Map<String, String>>()
-        val keys = selectedCardFilters.value!!.keys.toList()
-        for (i in 1..size) {
+        for (key in selectedCardFilters.value!!.keys) {
             queries.add(
                 mapOf(
                     Pair(
-                        keys[i].query, selectedCardFilters.value!![keys[i]]!!
+                        key.query, selectedCardFilters.value!![key]!!
                             .stringFormatForNetworkQuery()
                     )
                 )
