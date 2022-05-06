@@ -60,6 +60,16 @@ interface YtcApiService {
     ): Deferred<Response.MonsterCardResponse>
 
     @GET("cardinfo.php")
+    fun getMonsterCardsAsync(
+        @QueryMap query1: Map<String, String>,
+        @QueryMap query2: Map<String, String>,
+        @QueryMap query3: Map<String, String>,
+        @QueryMap query4: Map<String, String>,
+        @Query("num") pageSize: Int = 100,
+        @Query("offset") offset: Int
+    ): Deferred<Response.MonsterCardResponse>
+
+    @GET("cardinfo.php")
     fun getNonMonsterCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,

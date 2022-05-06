@@ -8,18 +8,28 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.SortItem
+import com.te6lim.ytcviewer.network.Response
+import com.te6lim.ytcviewer.network.YtcApi
+import kotlinx.coroutines.Deferred
 
 class CardsViewModel(db: CardDatabase) : ViewModel() {
+
+    enum class CardType {
+        MonsterCard, NonMonsterCard
+    }
 
     private val _selectedChips = MutableLiveData<Map<String, Boolean>>()
     val selectedChips: LiveData<Map<String, Boolean>>
         get() = _selectedChips
 
-    private val _selectedFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
+    private val _selectedCardFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
     val selectedCardFilters: LiveData<Map<CardFilterCategory, List<CardFilter>>>
-        get() = _selectedFilters
+        get() = _selectedCardFilters
 
     var sortMethod: SortItem? = null
+
+    private var cardListType = CardType.MonsterCard
+        private set
 
     init {
         val map = mutableMapOf<String, Boolean>()
@@ -30,33 +40,36 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     fun addFiltersToSelected(category: CardFilterCategory, list: List<CardFilter>) {
-        val map = _selectedFilters.value?.toMutableMap() ?: mutableMapOf()
+        val map = _selectedCardFilters.value?.toMutableMap() ?: mutableMapOf()
         if (!map.contains(category)) map[category] = list
         else map.replace(category, list)
-        _selectedFilters.value = map
+        _selectedCardFilters.value = map
     }
 
     fun toggleChip(chipName: String): Boolean {
         val map = when (chipName) {
             CardFilterCategory.Spell.name -> {
+                cardListType = CardType.NonMonsterCard
                 toggleSpellOrTrap(chipName)
             }
 
             CardFilterCategory.Trap.name -> {
+                cardListType = CardType.NonMonsterCard
                 toggleSpellOrTrap(chipName)
             }
 
             else -> {
+                cardListType = CardType.MonsterCard
                 toggleNonSpellAndTrap(chipName)
             }
         }
         _selectedChips.value = map
-        filteredFilters()?.let { _selectedFilters.value = it }
+        updateFilters()?.let { _selectedCardFilters.value = it }
         return map[chipName]!!
     }
 
-    private fun filteredFilters(): Map<CardFilterCategory, List<CardFilter>>? {
-        val selected = _selectedFilters.value?.toMutableMap()
+    private fun updateFilters(): Map<CardFilterCategory, List<CardFilter>>? {
+        val selected = _selectedCardFilters.value?.toMutableMap()
         selected?.let {
             for (k in selectedChips.value!!.keys) {
                 if (!selectedChips.value!![k]!!) it.remove(CardFilterCategory.get(k))
@@ -107,6 +120,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
                     }
                 }
                 categories[chipName] = switch
+                cardListType = CardType.NonMonsterCard
             }
 
             else -> {
@@ -119,10 +133,77 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
                 }
 
                 categories[chipName] = switch
+                cardListType = CardType.MonsterCard
             }
         }
         _selectedChips.value = categories
-        filteredFilters()?.let { _selectedFilters.value = it }
+        updateFilters()?.let { _selectedCardFilters.value = it }
+    }
+
+    private fun List<CardFilter>.stringFormatForNetworkQuery(): String {
+        val formattedStringBuilder = StringBuilder()
+        with(formattedStringBuilder) {
+            for (filter in this@stringFormatForNetworkQuery) {
+                apply {
+                    append(filter.name)
+                    append(",")
+                }
+
+            }
+            deleteCharAt(length - 1)
+            return this.toString()
+        }
+    }
+
+    private fun getCards(offset: Int): Deferred<Response> {
+        if (cardListType == CardType.MonsterCard) {
+            return when (selectedCardFilters.value!!.size) {
+                1 -> {
+                    val mapQueries = getMapQueries(1)
+                    YtcApi.retrofitService.getMonsterCardsAsync(mapQueries[0], offset = offset)
+                }
+
+                2 -> {
+                    val mapQueries = getMapQueries(2)
+                    YtcApi.retrofitService.getMonsterCardsAsync(mapQueries[0], mapQueries[1], offset = offset)
+                }
+
+                3 -> {
+                    val mapQueries = getMapQueries(3)
+                    YtcApi.retrofitService.getMonsterCardsAsync(
+                        mapQueries[0], mapQueries[1], mapQueries[2], offset = offset
+                    )
+                }
+
+                else -> {
+                    val mapQueries = getMapQueries(4)
+                    YtcApi.retrofitService.getMonsterCardsAsync(
+                        mapQueries[0], mapQueries[1], mapQueries[2], mapQueries[3], offset = offset
+                    )
+                }
+            }
+        } else {
+            val mapQueries = getMapQueries(2)
+            return YtcApi.retrofitService.getNonMonsterCardsAsync(
+                mapQueries[0], mapQueries[1], offset = offset
+            )
+        }
+    }
+
+    fun getMapQueries(size: Int): List<Map<String, String>> {
+        val queries = mutableListOf<Map<String, String>>()
+        val keys = selectedCardFilters.value!!.keys.toList()
+        for (i in 1..size) {
+            queries.add(
+                mapOf(
+                    Pair(
+                        keys[i].query, selectedCardFilters.value!![keys[i]]!!
+                            .stringFormatForNetworkQuery()
+                    )
+                )
+            )
+        }
+        return queries
     }
 }
 
