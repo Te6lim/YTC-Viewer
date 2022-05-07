@@ -16,8 +16,8 @@ class CardRemoteMediator(
     override suspend fun load(loadType: LoadType, state: PagingState<Int, DatabaseCard>): MediatorResult {
 
         val key = getKeyByLoadType(loadType, state)
-        key?.let { offset ->
-            callback.getNetworkCardsAsync(offset)
+        key?.let { newOffset ->
+            callback.getNetworkCardsAsync(newOffset)
         }
         TODO("Not yet implemented")
     }

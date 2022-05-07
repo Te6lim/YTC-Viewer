@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -25,7 +24,7 @@ import com.te6lim.ytcviewer.home.HomeBottomSheetFragment
 import com.te6lim.ytcviewer.home.MainActivity
 import com.te6lim.ytcviewer.home.SortItem
 
-class CardsFragment : Fragment(), HomeBottomSheetFragment.Communicator {
+class CardsFragment : Fragment() {
 
     private lateinit var cardsViewModel: CardsViewModel
     private lateinit var binding: FragmentCardsBinding
@@ -80,17 +79,15 @@ class CardsFragment : Fragment(), HomeBottomSheetFragment.Communicator {
                 false
             }
 
-            cardsViewModel.selectedChips.observe(viewLifecycleOwner) {
-                for (k in it.keys) {
-                    cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
+            with(cardsViewModel) {
+                selectedChips.observe(viewLifecycleOwner) {
+                    for (k in it.keys) {
+                        cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
+                    }
                 }
-            }
 
-            cardsViewModel.selectedCardFilters.observe(viewLifecycleOwner) {
-                for (k in it.keys) {
-                    Toast.makeText(
-                        requireContext(), "${k.name}, has ${it[k]!!.size} filters", Toast.LENGTH_SHORT
-                    ).show()
+                filters.observe(viewLifecycleOwner) {
+
                 }
             }
 
@@ -161,7 +158,15 @@ class CardsFragment : Fragment(), HomeBottomSheetFragment.Communicator {
             }
 
             R.id.sort -> {
-                val bottomSheet = HomeBottomSheetFragment(this)
+                val bottomSheet = HomeBottomSheetFragment(object : HomeBottomSheetFragment.Communicator {
+                    override fun setSortMethod(sort: SortItem) {
+                        cardsViewModel.sortMethod = sort
+                    }
+
+                    override fun getSortMethod(): SortItem? {
+                        return cardsViewModel.sortMethod
+                    }
+                })
                 bottomSheet.show(requireActivity().supportFragmentManager, HomeBottomSheetFragment.TAG)
                 true
             }
@@ -187,13 +192,5 @@ class CardsFragment : Fragment(), HomeBottomSheetFragment.Communicator {
 
     private interface Callback {
         fun onResultOK(filterCategory: CardFilterCategory, list: List<CardFilter>)
-    }
-
-    override fun setSortMethod(sort: SortItem) {
-        cardsViewModel.sortMethod = sort
-    }
-
-    override fun getSortMethod(): SortItem? {
-        return cardsViewModel.sortMethod
     }
 }
