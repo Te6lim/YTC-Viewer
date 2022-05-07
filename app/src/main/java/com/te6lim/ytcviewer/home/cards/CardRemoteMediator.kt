@@ -5,31 +5,39 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.te6lim.ytcviewer.database.CardDatabase
-import com.te6lim.ytcviewer.domain.DomainCard
+import com.te6lim.ytcviewer.database.DatabaseCard
+import com.te6lim.ytcviewer.network.Response
+import kotlinx.coroutines.Deferred
 
 @OptIn(androidx.paging.ExperimentalPagingApi::class)
-class CardRemoteMediator(private val db: CardDatabase) : RemoteMediator<Int, DomainCard>() {
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, DomainCard>): MediatorResult {
+class CardRemoteMediator(
+    private val db: CardDatabase, val callback: Callback
+) : RemoteMediator<Int, DatabaseCard>() {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, DatabaseCard>): MediatorResult {
 
-        var key: Int? = null
-
-        when (loadType) {
-            LoadType.REFRESH -> {
-                key = state.getKeyByAnchorPosition()
-            }
-
-            LoadType.APPEND -> {
-                key = state.getNextKey()
-            }
-
-            LoadType.PREPEND -> {
-                key = state.getPrevKey()
-            }
+        val key = getKeyByLoadType(loadType, state)
+        key?.let { offset ->
+            callback.getNetworkCardsAsync(offset)
         }
         TODO("Not yet implemented")
     }
 
-    private suspend fun PagingState<Int, DomainCard>.getKeyByAnchorPosition(): Int {
+    private suspend fun getKeyByLoadType(loadType: LoadType, state: PagingState<Int, DatabaseCard>) =
+        when (loadType) {
+            LoadType.REFRESH -> {
+                state.getKeyByAnchorPosition()
+            }
+
+            LoadType.APPEND -> {
+                state.getNextKey()
+            }
+
+            LoadType.PREPEND -> {
+                state.getPrevKey()
+            }
+        }
+
+    private suspend fun PagingState<Int, DatabaseCard>.getKeyByAnchorPosition(): Int {
         return anchorPosition?.let { position ->
             closestItemToPosition(position)?.let { card ->
                 db.remoteKeysDao.get(card.id)
@@ -39,7 +47,7 @@ class CardRemoteMediator(private val db: CardDatabase) : RemoteMediator<Int, Dom
         } ?: 0
     }
 
-    private suspend fun PagingState<Int, DomainCard>.getNextKey(): Int? {
+    private suspend fun PagingState<Int, DatabaseCard>.getNextKey(): Int? {
         return pages.lastOrNull()?.let { page ->
             page.data.lastOrNull()?.let { card ->
                 db.remoteKeysDao.get(card.id)?.nextKey
@@ -47,11 +55,15 @@ class CardRemoteMediator(private val db: CardDatabase) : RemoteMediator<Int, Dom
         }
     }
 
-    private suspend fun PagingState<Int, DomainCard>.getPrevKey(): Int? {
+    private suspend fun PagingState<Int, DatabaseCard>.getPrevKey(): Int? {
         return pages.firstOrNull()?.let { page ->
             page.data.firstOrNull()?.let { card ->
                 db.remoteKeysDao.get(card.id)?.prevKey
             }
         }
+    }
+
+    interface Callback {
+        fun getNetworkCardsAsync(offset: Int): Deferred<Response>
     }
 }

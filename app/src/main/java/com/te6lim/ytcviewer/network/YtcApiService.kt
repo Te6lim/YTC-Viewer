@@ -15,7 +15,6 @@ import retrofit2.http.QueryMap
 enum class NetworkStatus {
     LOADING, ERROR, DONE
 }
-
 private const val BASE_URL = "https://db.ygoprodeck.com/api/v7/"
 
 private val interceptor = HttpLoggingInterceptor().apply {
@@ -33,12 +32,14 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
+const val PAGE_SIZE = 100
+
 interface YtcApiService {
 
     @GET("cardinfo.php")
     fun getMonsterCardsAsync(
         @QueryMap query: Map<String, String>,
-        @Query("num") pageSize: Int = 100,
+        @Query("num") pageSize: Int = PAGE_SIZE,
         @Query("offset") offset: Int
     ): Deferred<Response.MonsterCardResponse>
 
@@ -46,7 +47,7 @@ interface YtcApiService {
     fun getMonsterCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
-        @Query("num") pageSize: Int = 100,
+        @Query("num") pageSize: Int = PAGE_SIZE,
         @Query("offset") offset: Int
     ): Deferred<Response.MonsterCardResponse>
 
@@ -55,7 +56,7 @@ interface YtcApiService {
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
         @QueryMap query3: Map<String, String>,
-        @Query("num") pageSize: Int = 100,
+        @Query("num") pageSize: Int = PAGE_SIZE,
         @Query("offset") offset: Int
     ): Deferred<Response.MonsterCardResponse>
 
@@ -65,7 +66,7 @@ interface YtcApiService {
         @QueryMap query2: Map<String, String>,
         @QueryMap query3: Map<String, String>,
         @QueryMap query4: Map<String, String>,
-        @Query("num") pageSize: Int = 100,
+        @Query("num") pageSize: Int = PAGE_SIZE,
         @Query("offset") offset: Int
     ): Deferred<Response.MonsterCardResponse>
 
@@ -73,14 +74,14 @@ interface YtcApiService {
     fun getNonMonsterCardsAsync(
         @QueryMap query1: Map<String, String>,
         @QueryMap query2: Map<String, String>,
-        @Query("num") pageSize: Int = 100,
+        @Query("num") pageSize: Int = PAGE_SIZE,
         @Query("offset") offset: Int
     ): Deferred<Response.NonMonsterCardResponse>
 
     @GET("cardinfo.php")
     fun getCardsBySearchAsync(
         @Query("fname") searchString: String,
-        @Query("num") pageSize: Int = 100,
+        @Query("num") pageSize: Int = PAGE_SIZE,
         @Query("offset") offset: Int
     ): Deferred<Response>
 }
