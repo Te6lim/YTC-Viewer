@@ -7,7 +7,6 @@ import androidx.paging.RemoteMediator
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.network.Response
-import kotlinx.coroutines.Deferred
 
 @OptIn(androidx.paging.ExperimentalPagingApi::class)
 class CardRemoteMediator(
@@ -17,7 +16,7 @@ class CardRemoteMediator(
 
         val key = getKeyByLoadType(loadType, state)
         key?.let { newOffset ->
-            callback.getNetworkCardsAsync(newOffset)
+            val card = callback.getNetworkCardsAsync(newOffset)
         }
         TODO("Not yet implemented")
     }
@@ -64,6 +63,6 @@ class CardRemoteMediator(
     }
 
     interface Callback {
-        fun getNetworkCardsAsync(offset: Int): Deferred<Response>
+        suspend fun getNetworkCardsAsync(offset: Int): Response
     }
 }

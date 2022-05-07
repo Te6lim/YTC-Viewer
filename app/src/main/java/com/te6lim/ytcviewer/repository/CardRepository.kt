@@ -13,17 +13,16 @@ import com.te6lim.ytcviewer.home.cards.CardsViewModel
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.YtcApi
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 
 class CardRepository(private val db: CardDatabase, private val repoCallback: RepoCallback) {
 
-    private fun getCardsAsync(selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, offset: Int):
-            Deferred<Response> {
+    private suspend fun getCards(selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, offset: Int):
+            Response {
         val mapQueries = getMapQueries(selectedCardFilters)
         val selectedChips = repoCallback.selectedChips()
-        if (repoCallback.getCardResponseType() == CardsViewModel.CardType.MonsterCard) {
-            return when (selectedCardFilters.size) {
+        val deferred = if (repoCallback.getCardResponseType() == CardsViewModel.CardType.MonsterCard) {
+            when (selectedCardFilters.size) {
                 1 -> {
                     YtcApi.retrofitService.getMonsterCardsAsync(mapQueries[0], offset = offset)
                 }
@@ -45,7 +44,7 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
                 }
             }
         } else {
-            return if (selectedChips[CardFilterCategory.Spell.name] == true) {
+            if (selectedChips[CardFilterCategory.Spell.name] == true) {
                 YtcApi.retrofitService.getNonMonsterCardsAsync(
                     mapOf(Pair("type", CardFilterCategory.Spell.name)), mapQueries[0], offset = offset
                 )
@@ -55,6 +54,8 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
                 )
             }
         }
+
+        return deferred.await()
     }
 
     private fun getMapQueries(selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>)
@@ -93,8 +94,8 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
             config = PagingConfig(pageSize = PAGE_SIZE),
             remoteMediator = CardRemoteMediator(
                 db, object : CardRemoteMediator.Callback {
-                    override fun getNetworkCardsAsync(offset: Int): Deferred<Response> {
-                        return getCardsAsync(selectedCardFilters, offset = offset)
+                    override suspend fun getNetworkCardsAsync(offset: Int): Response {
+                        return getCards(selectedCardFilters, offset = offset)
                     }
                 }
             ),

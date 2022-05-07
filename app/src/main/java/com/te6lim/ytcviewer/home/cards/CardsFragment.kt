@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
@@ -23,6 +24,8 @@ import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.FILTER_LIS
 import com.te6lim.ytcviewer.home.HomeBottomSheetFragment
 import com.te6lim.ytcviewer.home.MainActivity
 import com.te6lim.ytcviewer.home.SortItem
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class CardsFragment : Fragment() {
 
@@ -86,8 +89,8 @@ class CardsFragment : Fragment() {
                     }
                 }
 
-                filters.observe(viewLifecycleOwner) {
-
+                filters.observe(viewLifecycleOwner) { pagingDataFlow ->
+                    lifecycleScope.launch { pagingDataFlow.collectLatest { adapter.submitData(it) } }
                 }
             }
 
@@ -107,8 +110,8 @@ class CardsFragment : Fragment() {
                 }
             )
         } else {
-            val data = result.data!!.getStringExtra(FILTER_LIST_RESULT_KEY)!!
-            cardsViewModel.switchChip(data, false)
+            val chipName = result.data!!.getStringExtra(FILTER_LIST_RESULT_KEY)!!
+            cardsViewModel.switchChip(chipName, false)
         }
     }
 
