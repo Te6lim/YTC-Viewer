@@ -17,26 +17,35 @@ class CardRemoteMediator(
     private val db: CardDatabase, val callback: Callback
 ) : RemoteMediator<Int, DatabaseCard>() {
     override suspend fun load(loadType: LoadType, state: PagingState<Int, DatabaseCard>): MediatorResult {
-
         return getKeyByLoadType(loadType, state)?.let { newOffset ->
-            val cards: List<NetworkCard>
-
-            try {
-                cards = callback.getNetworkCardsAsync(newOffset).data
-                if (loadType == LoadType.REFRESH) {
-                    db.cardDao.clear()
-                    db.remoteKeysDao.clear()
-                }
-                val cardIds = db.cardDao.insertMany(cards.toDatabaseCard())
-                db.remoteKeysDao.insertMany(cardIds.map { cardId ->
-                    RemoteKey(cardId, newOffset + PAGE_SIZE, newOffset - PAGE_SIZE)
-                })
-                MediatorResult.Success(cards.isEmpty())
-            } catch (e: HttpException) {
-                MediatorResult.Error(e)
-            }
-
+            getCardsOverHttpAndPerformCache(newOffset, loadType)
         } ?: MediatorResult.Success(false)
+    }
+
+    private suspend fun getCardsOverHttpAndPerformCache(newOffset: Int, loadType: LoadType): MediatorResult {
+        val cards: List<NetworkCard>
+        return try {
+            cards = callback.getNetworkCardsAsync(newOffset).data
+            insertCardsAndRemoteKeysToDb(loadType, cards, newOffset)
+        } catch (e: HttpException) {
+            MediatorResult.Error(e)
+        }
+    }
+
+    private suspend fun insertCardsAndRemoteKeysToDb(
+        loadType: LoadType,
+        cards: List<NetworkCard>,
+        newOffset: Int
+    ): MediatorResult.Success {
+        if (loadType == LoadType.REFRESH) {
+            db.cardDao.clear()
+            db.remoteKeysDao.clear()
+        }
+        val cardIds = db.cardDao.insertMany(cards.toDatabaseCard())
+        db.remoteKeysDao.insertMany(cardIds.map { cardId ->
+            RemoteKey(cardId, newOffset + PAGE_SIZE, newOffset - PAGE_SIZE)
+        })
+        return MediatorResult.Success(cards.isEmpty())
     }
 
     private suspend fun getKeyByLoadType(loadType: LoadType, state: PagingState<Int, DatabaseCard>) =
