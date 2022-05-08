@@ -1,12 +1,16 @@
 package com.te6lim.ytcviewer.home.cards
 
-import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.DatabaseCard
+import com.te6lim.ytcviewer.database.RemoteKey
+import com.te6lim.ytcviewer.network.NetworkCard
+import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
+import com.te6lim.ytcviewer.network.toDatabaseCard
+import retrofit2.HttpException
 
 @OptIn(androidx.paging.ExperimentalPagingApi::class)
 class CardRemoteMediator(
@@ -14,11 +18,25 @@ class CardRemoteMediator(
 ) : RemoteMediator<Int, DatabaseCard>() {
     override suspend fun load(loadType: LoadType, state: PagingState<Int, DatabaseCard>): MediatorResult {
 
-        val key = getKeyByLoadType(loadType, state)
-        key?.let { newOffset ->
-            val card = callback.getNetworkCardsAsync(newOffset)
-        }
-        TODO("Not yet implemented")
+        return getKeyByLoadType(loadType, state)?.let { newOffset ->
+            val cards: List<NetworkCard>
+
+            try {
+                cards = callback.getNetworkCardsAsync(newOffset).data
+                if (loadType == LoadType.REFRESH) {
+                    db.cardDao.clear()
+                    db.remoteKeysDao.clear()
+                }
+                val cardIds = db.cardDao.insertMany(cards.toDatabaseCard())
+                db.remoteKeysDao.insertMany(cardIds.map { cardId ->
+                    RemoteKey(cardId, newOffset + PAGE_SIZE, newOffset - PAGE_SIZE)
+                })
+                MediatorResult.Success(cards.isEmpty())
+            } catch (e: HttpException) {
+                MediatorResult.Error(e)
+            }
+
+        } ?: MediatorResult.Success(false)
     }
 
     private suspend fun getKeyByLoadType(loadType: LoadType, state: PagingState<Int, DatabaseCard>) =
