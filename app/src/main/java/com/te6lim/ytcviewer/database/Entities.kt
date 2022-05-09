@@ -128,32 +128,6 @@ interface RemoteKeysDao {
     suspend fun clear()
 }
 
-/*fun List<DatabaseMonsterCard>.toDomainMonsterCards(): List<DomainCard.DomainMonsterCard> {
-    return map {
-        DomainCard.DomainMonsterCard(
-            id = it.id, name = it.name, type = it.type, desc = it.desc, race = it.race,
-            atk = it.atk, def = it.def, level = it.level, attribute = it.attribute,
-            cardSets = it.cardSets, cardImages = it.cardImages, cardPrices = it.cardPrices
-        )
-    }
-}
-
-fun List<DatabaseNonMonsterCard>.toDomainNonMonsterCards(): List<DomainCard.DomainNonMonsterCard> {
-    return map {
-        DomainCard.DomainNonMonsterCard(
-            id = it.id, name = it.name, desc = it.desc, type = it.type, race = it.race,
-            archetype = it.archetype, cardSets = it.cardSets, cardImages = it.cardImages,
-            cardPrices = it.cardPrices
-        )
-    }
-}
-
-fun List<DatabaseMonsterCard>.toDatabaseCard(): List<DatabaseCard> {
-    return map {
-        it as DatabaseCard
-    }
-}*/
-
 fun DatabaseCard.toDomainCard(): DomainCard {
     return DomainCard(id = id, networkId = networkId, name, cardImages)
 }

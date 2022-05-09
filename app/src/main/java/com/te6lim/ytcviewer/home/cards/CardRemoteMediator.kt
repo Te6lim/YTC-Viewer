@@ -16,6 +16,9 @@ import retrofit2.HttpException
 class CardRemoteMediator(
     private val db: CardDatabase, val callback: Callback
 ) : RemoteMediator<Int, DatabaseCard>() {
+
+    override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
+
     override suspend fun load(loadType: LoadType, state: PagingState<Int, DatabaseCard>): MediatorResult {
         return getKeyByLoadType(loadType, state)?.let { newOffset ->
             getCardsOverHttpAndPerformCache(newOffset, loadType)
@@ -37,18 +40,20 @@ class CardRemoteMediator(
         cards: List<NetworkCard>,
         newOffset: Int
     ): MediatorResult.Success {
-        if (loadType == LoadType.REFRESH) {
-            db.cardDao.clear()
-            db.remoteKeysDao.clear()
-        }
+        if (loadType == LoadType.REFRESH) clearDb()
         val cardIds = db.cardDao.insertMany(cards.toDatabaseCard())
-        db.remoteKeysDao.insertMany(cardIds.map { cardId ->
-            RemoteKey(cardId, newOffset + PAGE_SIZE, newOffset - PAGE_SIZE)
-        })
+        val nextKey = if (cards.isEmpty()) null else newOffset + PAGE_SIZE
+        val prevKey = if (newOffset == 0) null else newOffset - PAGE_SIZE
+        db.remoteKeysDao.insertMany(cardIds.map { cardId -> RemoteKey(cardId, nextKey, prevKey) })
         return MediatorResult.Success(cards.isEmpty())
     }
 
-    private suspend fun getKeyByLoadType(loadType: LoadType, state: PagingState<Int, DatabaseCard>) =
+    private suspend fun clearDb() {
+        db.cardDao.clear()
+        db.remoteKeysDao.clear()
+    }
+
+    private suspend fun getKeyByLoadType(loadType: LoadType, state: PagingState<Int, DatabaseCard>): Int? =
         when (loadType) {
             LoadType.REFRESH -> {
                 state.getKeyByAnchorPosition()
@@ -74,18 +79,14 @@ class CardRemoteMediator(
     }
 
     private suspend fun PagingState<Int, DatabaseCard>.getNextKey(): Int? {
-        return pages.lastOrNull()?.let { page ->
-            page.data.lastOrNull()?.let { card ->
-                db.remoteKeysDao.get(card.id)?.nextKey
-            }
+        return pages.lastOrNull { page -> page.data.isNotEmpty() }?.data?.lastOrNull()?.let { card ->
+            db.remoteKeysDao.get(card.id)?.nextKey
         }
     }
 
     private suspend fun PagingState<Int, DatabaseCard>.getPrevKey(): Int? {
-        return pages.firstOrNull()?.let { page ->
-            page.data.firstOrNull()?.let { card ->
-                db.remoteKeysDao.get(card.id)?.prevKey
-            }
+        return pages.firstOrNull { page -> page.data.isNotEmpty() }?.data?.lastOrNull()?.let { card ->
+            db.remoteKeysDao.get(card.id)?.prevKey
         }
     }
 

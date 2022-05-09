@@ -8,10 +8,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
@@ -31,6 +33,7 @@ class CardsFragment : Fragment() {
 
     private lateinit var cardsViewModel: CardsViewModel
     private lateinit var binding: FragmentCardsBinding
+    private lateinit var adapter: CardListAdapter
 
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
@@ -69,8 +72,13 @@ class CardsFragment : Fragment() {
             viewModel = cardsViewModel
             lifecycleOwner = this@CardsFragment
 
-            val adapter = CardListAdapter()
+            adapter = CardListAdapter()
             cards.adapter = adapter
+
+            adapter.addLoadStateListener { loadState ->
+                val refreshState = loadState.mediator?.refresh
+                cards.isVisible = refreshState is LoadState.NotLoading
+            }
 
             val chipInflater = LayoutInflater.from(cardFilter.context)
             buildChipsIntoChipGroup(chipInflater)
@@ -78,23 +86,27 @@ class CardsFragment : Fragment() {
             searchBar.setClickListener { cardFilter.visibility = View.VISIBLE }
 
             searchBar.setOnCloseListener {
-                binding.cardFilter.visibility = View.GONE
+                cardFilter.visibility = View.GONE
                 false
             }
 
-            with(cardsViewModel) {
-                selectedChips.observe(viewLifecycleOwner) {
-                    for (k in it.keys) {
-                        cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
-                    }
-                }
+            setupViewModelObservers()
 
-                filters.observe(viewLifecycleOwner) { pagingDataFlow ->
-                    lifecycleScope.launch { pagingDataFlow.collectLatest { adapter.submitData(it) } }
+            return root
+        }
+    }
+
+    private fun setupViewModelObservers() {
+        with(cardsViewModel) {
+            selectedChips.observe(viewLifecycleOwner) {
+                for (k in it.keys) {
+                    binding.cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
                 }
             }
 
-            return root
+            filters.observe(viewLifecycleOwner) { pagingDataFlow ->
+                lifecycleScope.launch { pagingDataFlow.collectLatest { adapter.submitData(it) } }
+            }
         }
     }
 

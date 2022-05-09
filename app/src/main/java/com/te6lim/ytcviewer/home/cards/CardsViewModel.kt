@@ -23,9 +23,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     private val selectedCardFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
 
     val filters = Transformations.map(selectedCardFilters) {
-        repo.getCardStream(it).map { pagingData ->
-            pagingData.map { it.toDomainCard() }
-        }
+        repo.getCardStream(it).map { pagingData -> pagingData.map { card -> card.toDomainCard() } }
     }
 
     var sortMethod: SortItem? = null
@@ -123,9 +121,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         when (chipName) {
             CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
                 if (switch) {
-                    for (s in categories.keys) {
-                        categories[s] = s == chipName
-                    }
+                    for (s in categories.keys) categories[s] = s == chipName
                 }
                 categories[chipName] = switch
                 cardListType = CardType.NonMonsterCard

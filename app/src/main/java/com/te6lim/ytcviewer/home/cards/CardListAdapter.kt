@@ -16,10 +16,7 @@ class CardListAdapter : PagingDataAdapter<DomainCard, CardViewHolder>(DiffCallba
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        val item = getItem(position)
-        item?.let {
-            holder.bind(it)
-        }
+        getItem(position)?.let { holder.bind(it) }
     }
 }
 
@@ -38,22 +35,18 @@ class CardViewHolder(
     }
 
     fun bind(card: DomainCard) {
-
         itemCardBinding.card = card
-        itemCardBinding.cardName.text = card.name
     }
 
 }
 
 object DiffCallback : DiffUtil.ItemCallback<DomainCard>() {
     override fun areItemsTheSame(oldItem: DomainCard, newItem: DomainCard): Boolean {
-        val areTheSame = oldItem == newItem
-        return areTheSame
+        return oldItem == newItem
     }
 
     override fun areContentsTheSame(oldItem: DomainCard, newItem: DomainCard): Boolean {
-        val areTheSame = oldItem.id == newItem.id
-        return areTheSame
+        return oldItem.id == newItem.id
     }
 
 }
