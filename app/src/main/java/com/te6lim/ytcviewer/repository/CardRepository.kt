@@ -88,10 +88,11 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     fun getCardStream(
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>
     ): Flow<PagingData<DatabaseCard>> {
+
         val databasePagingSource = { db.cardDao.getSource() }
 
         return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE),
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             remoteMediator = CardRemoteMediator(
                 db, object : CardRemoteMediator.Callback {
                     override suspend fun getNetworkCardsAsync(offset: Int): Response {

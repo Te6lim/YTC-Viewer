@@ -104,8 +104,10 @@ class CardsFragment : Fragment() {
                 }
             }
 
-            filters.observe(viewLifecycleOwner) { pagingDataFlow ->
-                lifecycleScope.launch { pagingDataFlow.collectLatest { adapter.submitData(it) } }
+            selectedCardFilters.observe(viewLifecycleOwner) { pagingDataFlow ->
+                lifecycleScope.launch {
+                    pagingDataFlow.collectLatest { adapter.submitData(it) }
+                }
             }
         }
     }

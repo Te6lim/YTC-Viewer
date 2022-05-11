@@ -26,24 +26,25 @@ class CardRemoteMediator(
     }
 
     private suspend fun getCardsOverHttpAndPerformCache(newOffset: Int, loadType: LoadType): MediatorResult {
-        val cards: List<NetworkCard>
         return try {
-            cards = callback.getNetworkCardsAsync(newOffset).data
-            insertCardsAndRemoteKeysToDb(loadType, cards, newOffset)
+            if (loadType != LoadType.PREPEND) {
+                val cards = callback.getNetworkCardsAsync(newOffset).data
+                insertCardsAndRemoteKeysToDb(loadType, cards, newOffset)
+            } else {
+                MediatorResult.Success(true)
+            }
         } catch (e: HttpException) {
             MediatorResult.Error(e)
         }
     }
 
     private suspend fun insertCardsAndRemoteKeysToDb(
-        loadType: LoadType,
-        cards: List<NetworkCard>,
-        newOffset: Int
+        loadType: LoadType, cards: List<NetworkCard>, newOffset: Int
     ): MediatorResult.Success {
-        if (loadType == LoadType.REFRESH) clearDb()
-        val cardIds = db.cardDao.insertMany(cards.toDatabaseCard())
         val nextKey = if (cards.isEmpty()) null else newOffset + PAGE_SIZE
         val prevKey = if (newOffset == 0) null else newOffset - PAGE_SIZE
+        if (loadType == LoadType.REFRESH) clearDb()
+        val cardIds = db.cardDao.insertMany(cards.toDatabaseCard())
         db.remoteKeysDao.insertMany(cardIds.map { cardId -> RemoteKey(cardId, nextKey, prevKey) })
         return MediatorResult.Success(cards.isEmpty())
     }
