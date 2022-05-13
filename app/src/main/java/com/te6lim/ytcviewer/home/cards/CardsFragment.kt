@@ -106,7 +106,7 @@ class CardsFragment : Fragment() {
 
             sortType.observe(viewLifecycleOwner) { pagingDataFlow ->
                 lifecycleScope.launch {
-                    pagingDataFlow.collectLatest { adapter.submitData(it) }
+                    pagingDataFlow?.collectLatest { adapter.submitData(it) }
                 }
             }
         }

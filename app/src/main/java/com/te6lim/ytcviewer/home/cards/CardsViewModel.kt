@@ -30,8 +30,10 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     private val _sortType = MutableLiveData<SortItem>()
     val sortType = Transformations.map(_sortType) {
-        repo.getCardStream(_selectedCardFilters.value!!, it).map { pagingData ->
-            pagingData.map { card -> card.toDomainCard() }
+        _selectedCardFilters.value?.let { filter ->
+            repo.getCardStream(filter, it).map { pagingData ->
+                pagingData.map { card -> card.toDomainCard() }
+            }
         }
     }
 
