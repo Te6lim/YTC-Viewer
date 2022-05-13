@@ -8,6 +8,7 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
+import com.te6lim.ytcviewer.home.SortItem
 import com.te6lim.ytcviewer.home.cards.CardPagingSource
 import com.te6lim.ytcviewer.home.cards.CardRemoteMediator
 import com.te6lim.ytcviewer.home.cards.CardsViewModel
@@ -19,40 +20,47 @@ import kotlinx.coroutines.flow.Flow
 class CardRepository(private val db: CardDatabase, private val repoCallback: RepoCallback) {
 
     private suspend fun getCards(
-        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, offset: Int
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, sortQuery: String, offset: Int
     ): Response {
         val mapQueries = getMapQueries(selectedCardFilters)
-        val selectedChips = repoCallback.selectedChips()
+        val selectedChips = repoCallback.selectedCategories()
         val deferred = if (repoCallback.getCardResponseType() == CardsViewModel.CardType.MonsterCard) {
             when (selectedCardFilters.size) {
                 1 -> {
-                    YtcApi.retrofitService.getMonsterCardsAsync(mapQueries[0], offset = offset)
+                    YtcApi.retrofitService.getMonsterCardsAsync(
+                        mapQueries[0], offset = offset, sort = sortQuery
+                    )
                 }
 
                 2 -> {
-                    YtcApi.retrofitService.getMonsterCardsAsync(mapQueries[0], mapQueries[1], offset = offset)
+                    YtcApi.retrofitService.getMonsterCardsAsync(
+                        mapQueries[0], mapQueries[1], offset = offset, sort = sortQuery
+                    )
                 }
 
                 3 -> {
                     YtcApi.retrofitService.getMonsterCardsAsync(
-                        mapQueries[0], mapQueries[1], mapQueries[2], offset = offset
+                        mapQueries[0], mapQueries[1], mapQueries[2], offset = offset, sort = sortQuery
                     )
                 }
 
                 else -> {
                     YtcApi.retrofitService.getMonsterCardsAsync(
-                        mapQueries[0], mapQueries[1], mapQueries[2], mapQueries[3], offset = offset
+                        mapQueries[0], mapQueries[1], mapQueries[2], mapQueries[3], offset = offset,
+                        sort = sortQuery
                     )
                 }
             }
         } else {
             if (selectedChips[CardFilterCategory.Spell.name] == true) {
                 YtcApi.retrofitService.getNonMonsterCardsAsync(
-                    mapOf(Pair("type", CardFilterCategory.Spell.name)), mapQueries[0], offset = offset
+                    mapOf(Pair("type", CardFilterCategory.Spell.name)), mapQueries[0], offset = offset,
+                    sort = sortQuery
                 )
             } else {
                 YtcApi.retrofitService.getNonMonsterCardsAsync(
-                    mapOf(Pair("type", CardFilterCategory.Trap.name)), mapQueries[0], offset = offset
+                    mapOf(Pair("type", CardFilterCategory.Trap.name)), mapQueries[0], offset = offset,
+                    sort = sortQuery
                 )
             }
         }
@@ -89,13 +97,13 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(
-        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, sortType: SortItem
     ): Flow<PagingData<DatabaseCard>> {
         return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
-                CardPagingSource(object : CardRemoteMediator.Callback {
+                CardPagingSource(sortType.isAsc, object : CardRemoteMediator.Callback {
                     override suspend fun getNetworkCardsAsync(offset: Int): Response {
-                        return getCards(selectedCardFilters, offset)
+                        return getCards(selectedCardFilters, sortType.query, offset)
                     }
                 })
             }).flow
@@ -104,7 +112,9 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     interface RepoCallback {
         fun getCardResponseType(): CardsViewModel.CardType
 
-        fun selectedChips(): Map<String, Boolean>
+        fun selectedCategories(): Map<String, Boolean>
+
+        fun sortType(): SortItem
     }
 
 }

@@ -11,20 +11,9 @@ import com.te6lim.ytcviewer.databinding.ItemSortBinding
 class HomeBottomSheetAdapter(val callback: SortItemViewHolder.Callback) :
     RecyclerView.Adapter<SortItemViewHolder>() {
 
-    private val sortItems = listOf(
-        SortItem("Name(ASC)", query = "name", isAsc = true, isSelected = true),
-        SortItem("Name(DESC)", query = "name", isAsc = false),
-        SortItem("Level/Rank(ASC)", query = "level", isAsc = true),
-        SortItem("Level/Rank(DESC)", query = "level", isAsc = false),
-        SortItem("ATK(ASC)", query = "atk", isAsc = true),
-        SortItem("ATK(DESC)", query = "atk", isAsc = false),
-        SortItem("DEF(ASC)", query = "def", isAsc = true),
-        SortItem("DEF(DESC)", query = "def", isAsc = false)
-    )
+    private val sortItems = SortItem.getItems()
 
     init {
-
-        callback.onClick(sortItems.find { it.isSelected }!!)
         callback.currentlySelected()?.let {
             sortItems.find { item -> item.name == it.name }?.isSelected = true
         }

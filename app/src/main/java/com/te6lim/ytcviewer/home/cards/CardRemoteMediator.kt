@@ -44,7 +44,7 @@ class CardRemoteMediator(
         val prevKey = if (response.meta.pagesRemaining == response.meta.totalPages) null
         else newOffset - PAGE_SIZE
         if (loadType == LoadType.REFRESH) clearDb()
-        val cardIds = db.cardDao.insertMany(response.data.toDatabaseCard())
+        val cardIds = db.cardDao.insertMany(response.data.toDatabaseCard(true))
         db.remoteKeysDao.insertMany(cardIds.map { cardId ->
             RemoteKey(cardId, nextKey, prevKey)
         })

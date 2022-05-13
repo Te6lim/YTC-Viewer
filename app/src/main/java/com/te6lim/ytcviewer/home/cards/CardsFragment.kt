@@ -103,6 +103,12 @@ class CardsFragment : Fragment() {
                     pagingDataFlow.collectLatest { adapter.submitData(it) }
                 }
             }
+
+            sortType.observe(viewLifecycleOwner) { pagingDataFlow ->
+                lifecycleScope.launch {
+                    pagingDataFlow.collectLatest { adapter.submitData(it) }
+                }
+            }
         }
     }
 
@@ -167,11 +173,11 @@ class CardsFragment : Fragment() {
             R.id.sort -> {
                 val bottomSheet = HomeBottomSheetFragment(object : HomeBottomSheetFragment.Communicator {
                     override fun setSortMethod(sort: SortItem) {
-                        cardsViewModel.sortMethod = sort
+                        cardsViewModel.setSortType(sort)
                     }
 
                     override fun getSortMethod(): SortItem? {
-                        return cardsViewModel.sortMethod
+                        return cardsViewModel.getSortType()
                     }
                 })
                 bottomSheet.show(requireActivity().supportFragmentManager, HomeBottomSheetFragment.TAG)

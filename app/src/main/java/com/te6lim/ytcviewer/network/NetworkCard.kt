@@ -60,11 +60,8 @@ class CardPrice(
     val coolStuffIncPrice: String? = null
 )
 
-fun List<NetworkCard>.toDatabaseCard(): List<DatabaseCard> {
-    return map {
-        DatabaseCard(
-            networkId = it.id, name = it.name, cardImages = it
-                .cardImages
-        )
-    }
+fun List<NetworkCard>.toDatabaseCard(isAsc: Boolean): List<DatabaseCard> {
+    val list = map { DatabaseCard(networkId = it.id, name = it.name, cardImages = it.cardImages) }
+    return if (!isAsc) list.reversed()
+    else list
 }

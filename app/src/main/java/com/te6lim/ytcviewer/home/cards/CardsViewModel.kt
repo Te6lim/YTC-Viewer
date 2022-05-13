@@ -23,18 +23,24 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     private val _selectedCardFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
 
     val selectedCardFilters = Transformations.map(_selectedCardFilters) {
-        repo.getCardStream(it).map { pagingData ->
+        repo.getCardStream(it, getSortType()).map { pagingData ->
             pagingData.map { card -> card.toDomainCard() }
         }
     }
 
-    var sortMethod: SortItem? = null
+    private val _sortType = MutableLiveData<SortItem>()
+    val sortType = Transformations.map(_sortType) {
+        repo.getCardStream(_selectedCardFilters.value!!, it).map { pagingData ->
+            pagingData.map { card -> card.toDomainCard() }
+        }
+    }
 
     private var cardListType = CardType.MonsterCard
 
     private val repo = CardRepository(db, object : CardRepository.RepoCallback {
         override fun getCardResponseType(): CardType = cardListType
-        override fun selectedChips(): Map<String, Boolean> = selectedChipsCopy()
+        override fun selectedCategories(): Map<String, Boolean> = selectedChipsCopy()
+        override fun sortType(): SortItem = _sortType.value!!
     })
 
     private fun selectedChipsCopy(): MutableMap<String, Boolean> {
@@ -145,6 +151,12 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         _selectedChips.value = categories
         updateFilters()?.let { _selectedCardFilters.value = it }
     }
+
+    fun setSortType(value: SortItem) {
+        _sortType.value = value
+    }
+
+    fun getSortType() = _sortType.value ?: SortItem.defaultSortType
 }
 
 class CardsViewModelFactory(private val db: CardDatabase) : ViewModelProvider.Factory {

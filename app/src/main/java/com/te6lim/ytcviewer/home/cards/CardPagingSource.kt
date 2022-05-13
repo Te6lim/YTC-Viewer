@@ -6,7 +6,9 @@ import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.toDatabaseCard
 
-class CardPagingSource(val callback: CardRemoteMediator.Callback) : PagingSource<Int, DatabaseCard>() {
+class CardPagingSource(private val sortAsc: Boolean, val callback: CardRemoteMediator.Callback) :
+    PagingSource<Int,
+            DatabaseCard>() {
     override fun getRefreshKey(state: PagingState<Int, DatabaseCard>): Int? {
         return state.anchorPosition?.let { position ->
             state.closestPageToPosition(position)?.prevKey?.plus(PAGE_SIZE) ?: state.closestPageToPosition(
@@ -22,7 +24,9 @@ class CardPagingSource(val callback: CardRemoteMediator.Callback) : PagingSource
 
             val prevKey = if (key == 0) null else key - PAGE_SIZE
 
-            LoadResult.Page(response.data.toDatabaseCard(), prevKey, response.meta.nextPageOffset)
+            LoadResult.Page(
+                response.data.toDatabaseCard(sortAsc), prevKey, response.meta.nextPageOffset
+            )
 
         } catch (e: Exception) {
             LoadResult.Error(e)
