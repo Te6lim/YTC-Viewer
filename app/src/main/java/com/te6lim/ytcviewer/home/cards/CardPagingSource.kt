@@ -19,15 +19,29 @@ class CardPagingSource(private val sortAsc: Boolean, val callback: CardRemoteMed
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DatabaseCard> {
         return try {
-            val key = params.key ?: 0
-            val response = callback.getNetworkCardsAsync(key)
+            if (sortAsc) {
+                val key = params.key ?: 0
+                val response = callback.getNetworkCardsAsync(key)
 
-            val prevKey = if (key == 0) null else key - PAGE_SIZE
+                val prevKey = if (key == 0) null else key - PAGE_SIZE
+                val nextKey = response.meta.nextPageOffset
 
-            LoadResult.Page(
-                response.data.toDatabaseCard(sortAsc), prevKey, response.meta.nextPageOffset
-            )
+                LoadResult.Page(response.data.toDatabaseCard(sortAsc), prevKey, nextKey)
+            } else {
+                var key = params.key ?: 0
+                var response = callback.getNetworkCardsAsync(key)
 
+                if (key == 0) {
+                    key = response.meta.totalRows - PAGE_SIZE
+                    response = callback.getNetworkCardsAsync(key)
+                }
+
+                val nextKey = if (key == 0) null else key - PAGE_SIZE
+
+                val prevKey = response.meta.nextPageOffset
+
+                LoadResult.Page(response.data.toDatabaseCard(sortAsc), prevKey, nextKey)
+            }
         } catch (e: Exception) {
             LoadResult.Error(e)
         }

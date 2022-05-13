@@ -23,6 +23,6 @@ class CardMetaData(
     @Json(name = "rows_remaining") val rowsRemaining: Int,
     @Json(name = "total_pages") val totalPages: Int,
     @Json(name = "pages_remaining") val pagesRemaining: Int,
-    @Json(name = "next_page") val nextPage: String,
-    @Json(name = "next_page_offset") val nextPageOffset: Int
+    @Json(name = "next_page") val nextPage: String?,
+    @Json(name = "next_page_offset") val nextPageOffset: Int?
 )
