@@ -8,6 +8,7 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
+import com.te6lim.ytcviewer.home.cards.CardPagingSource
 import com.te6lim.ytcviewer.home.cards.CardRemoteMediator
 import com.te6lim.ytcviewer.home.cards.CardsViewModel
 import com.te6lim.ytcviewer.network.PAGE_SIZE
@@ -17,8 +18,9 @@ import kotlinx.coroutines.flow.Flow
 
 class CardRepository(private val db: CardDatabase, private val repoCallback: RepoCallback) {
 
-    private suspend fun getCards(selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, offset: Int):
-            Response {
+    private suspend fun getCards(
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, offset: Int
+    ): Response {
         val mapQueries = getMapQueries(selectedCardFilters)
         val selectedChips = repoCallback.selectedChips()
         val deferred = if (repoCallback.getCardResponseType() == CardsViewModel.CardType.MonsterCard) {
@@ -58,8 +60,9 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
         return deferred.await()
     }
 
-    private fun getMapQueries(selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>)
-            : List<Map<String, String>> {
+    private fun getMapQueries(
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>
+    ): List<Map<String, String>> {
         val queries = mutableListOf<Map<String, String>>()
         for (key in selectedCardFilters.keys) {
             queries.add(
@@ -88,20 +91,14 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     fun getCardStream(
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>
     ): Flow<PagingData<DatabaseCard>> {
-
-        val databasePagingSource = { db.cardDao.getSource() }
-
-        return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = CardRemoteMediator(
-                db, object : CardRemoteMediator.Callback {
+        return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                CardPagingSource(object : CardRemoteMediator.Callback {
                     override suspend fun getNetworkCardsAsync(offset: Int): Response {
-                        return getCards(selectedCardFilters, offset = offset)
+                        return getCards(selectedCardFilters, offset)
                     }
-                }
-            ),
-            pagingSourceFactory = databasePagingSource
-        ).flow
+                })
+            }).flow
     }
 
     interface RepoCallback {

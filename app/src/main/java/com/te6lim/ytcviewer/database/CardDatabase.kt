@@ -20,7 +20,6 @@ abstract class CardDatabase : RoomDatabase() {
     abstract val remoteKeysDao: RemoteKeysDao
 
     companion object {
-
         @Volatile
         private var INSTANCE: CardDatabase? = null
 

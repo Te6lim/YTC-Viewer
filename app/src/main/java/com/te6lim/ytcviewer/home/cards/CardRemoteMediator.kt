@@ -6,7 +6,6 @@ import androidx.paging.RemoteMediator
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.database.RemoteKey
-import com.te6lim.ytcviewer.network.NetworkCard
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.toDatabaseCard
@@ -28,10 +27,10 @@ class CardRemoteMediator(
     private suspend fun getCardsOverHttpAndPerformCache(newOffset: Int, loadType: LoadType): MediatorResult {
         return try {
             if (loadType != LoadType.PREPEND) {
-                val cards = callback.getNetworkCardsAsync(newOffset).data
-                insertCardsAndRemoteKeysToDb(loadType, cards, newOffset)
+                val response = callback.getNetworkCardsAsync(newOffset)
+                insertCardsAndRemoteKeysToDb(loadType, response, newOffset)
             } else {
-                MediatorResult.Success(true)
+                MediatorResult.Success(false)
             }
         } catch (e: HttpException) {
             MediatorResult.Error(e)
@@ -39,14 +38,17 @@ class CardRemoteMediator(
     }
 
     private suspend fun insertCardsAndRemoteKeysToDb(
-        loadType: LoadType, cards: List<NetworkCard>, newOffset: Int
+        loadType: LoadType, response: Response, newOffset: Int
     ): MediatorResult.Success {
-        val nextKey = if (cards.isEmpty()) null else newOffset + PAGE_SIZE
-        val prevKey = if (newOffset == 0) null else newOffset - PAGE_SIZE
+        val nextKey = if (response.meta.pagesRemaining == 0) null else response.meta.nextPageOffset
+        val prevKey = if (response.meta.pagesRemaining == response.meta.totalPages) null
+        else newOffset - PAGE_SIZE
         if (loadType == LoadType.REFRESH) clearDb()
-        val cardIds = db.cardDao.insertMany(cards.toDatabaseCard())
-        db.remoteKeysDao.insertMany(cardIds.map { cardId -> RemoteKey(cardId, nextKey, prevKey) })
-        return MediatorResult.Success(cards.isEmpty())
+        val cardIds = db.cardDao.insertMany(response.data.toDatabaseCard())
+        db.remoteKeysDao.insertMany(cardIds.map { cardId ->
+            RemoteKey(cardId, nextKey, prevKey)
+        })
+        return MediatorResult.Success(response.data.isEmpty())
     }
 
     private suspend fun clearDb() {

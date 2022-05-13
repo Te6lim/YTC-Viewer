@@ -2,7 +2,6 @@ package com.te6lim.ytcviewer.network
 
 import com.squareup.moshi.Json
 import com.te6lim.ytcviewer.database.DatabaseCard
-import com.te6lim.ytcviewer.domain.DomainCard
 
 open class NetworkCard(
     open val id: Long,
@@ -61,14 +60,11 @@ class CardPrice(
     val coolStuffIncPrice: String? = null
 )
 
-fun List<NetworkCard>.toDomainCards(): List<DomainCard> {
-    return map {
-        DomainCard(id = it.id, networkId = it.id, name = it.name, cardImages = it.cardImages)
-    }
-}
-
 fun List<NetworkCard>.toDatabaseCard(): List<DatabaseCard> {
     return map {
-        DatabaseCard(networkId = it.id, name = it.name, cardImages = it.cardImages)
+        DatabaseCard(
+            networkId = it.id, name = it.name, cardImages = it
+                .cardImages
+        )
     }
 }

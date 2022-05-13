@@ -11,6 +11,7 @@ import com.te6lim.ytcviewer.databinding.ItemCardBinding
 import com.te6lim.ytcviewer.domain.DomainCard
 
 class CardListAdapter : PagingDataAdapter<DomainCard, CardViewHolder>(DiffCallback) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder.create(parent)
     }

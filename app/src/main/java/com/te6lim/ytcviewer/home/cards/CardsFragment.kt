@@ -8,12 +8,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
@@ -57,11 +55,9 @@ class CardsFragment : Fragment() {
         }
 
         resultLauncher = getActivityResultLauncher(object : Callback {
-
             override fun onResultOK(filterCategory: CardFilterCategory, list: List<CardFilter>) {
                 cardsViewModel.addFiltersToSelected(filterCategory, list)
             }
-
         })
 
         cardsViewModel = ViewModelProvider(
@@ -75,24 +71,22 @@ class CardsFragment : Fragment() {
             adapter = CardListAdapter()
             cards.adapter = adapter
 
-            adapter.addLoadStateListener { loadState ->
-                val refreshState = loadState.mediator?.refresh
-                cards.isVisible = refreshState is LoadState.NotLoading
-            }
+            buildChipsIntoChipGroup(LayoutInflater.from(cardFilter.context))
 
-            val chipInflater = LayoutInflater.from(cardFilter.context)
-            buildChipsIntoChipGroup(chipInflater)
-
-            searchBar.setClickListener { cardFilter.visibility = View.VISIBLE }
-
-            searchBar.setOnCloseListener {
-                cardFilter.visibility = View.GONE
-                false
-            }
+            setListeners()
 
             setupViewModelObservers()
 
             return root
+        }
+    }
+
+    private fun FragmentCardsBinding.setListeners() {
+        searchBar.setClickListener { cardFilter.visibility = View.VISIBLE }
+
+        searchBar.setOnCloseListener {
+            cardFilter.visibility = View.GONE
+            false
         }
     }
 
@@ -130,12 +124,8 @@ class CardsFragment : Fragment() {
     }
 
     private fun SearchView.setClickListener(action: () -> Unit) {
-        setOnClickListener {
-            isIconified = false
-        }
-        setOnSearchClickListener {
-            action()
-        }
+        setOnClickListener { isIconified = false }
+        setOnSearchClickListener { action() }
     }
 
     private fun buildChipsIntoChipGroup(chipInflater: LayoutInflater) {

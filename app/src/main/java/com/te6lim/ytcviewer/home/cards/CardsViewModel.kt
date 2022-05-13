@@ -1,7 +1,6 @@
 package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
-import androidx.paging.cachedIn
 import androidx.paging.map
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toDomainCard
@@ -26,7 +25,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     val selectedCardFilters = Transformations.map(_selectedCardFilters) {
         repo.getCardStream(it).map { pagingData ->
             pagingData.map { card -> card.toDomainCard() }
-        }.cachedIn(viewModelScope)
+        }
     }
 
     var sortMethod: SortItem? = null
