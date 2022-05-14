@@ -50,16 +50,17 @@ class SortItemViewHolder(private val binding: ItemSortBinding, val callback: Cal
         changeAppearanceOfSelection(itemSort)
         if (itemSort.isSelected) lastSelection = Pair(position, itemSort)
         binding.root.setOnClickListener {
-            itemSort.isSelected = !itemSort.isSelected
-            changeAppearanceOfPreviouslySelectedRelativeToCurrentlySelected(itemSort, position)
+            if (!itemSort.isSelected) {
+                itemSort.isSelected = !itemSort.isSelected
+                changeAppearanceOfPreviouslySelectedRelativeToCurrentlySelected(itemSort, position)
+                changeAppearanceOfSelection(itemSort)
+            }
             callback.onClick(
                 SortItem(
                     name = itemSort.name, query = itemSort.query, isSelected = itemSort.isSelected,
                     isAsc = itemSort.isAsc
                 )
             )
-
-            changeAppearanceOfSelection(itemSort)
         }
     }
 

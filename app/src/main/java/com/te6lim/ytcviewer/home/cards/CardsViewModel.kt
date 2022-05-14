@@ -28,7 +28,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         }
     }
 
-    private val _sortType = MutableLiveData<SortItem>()
+    private val _sortType = MutableLiveData(SortItem.defaultSortType)
     val sortType = Transformations.map(_sortType) {
         _selectedCardFilters.value?.let { filter ->
             repo.getCardStream(filter, it).map { pagingData ->
@@ -155,7 +155,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     fun setSortType(value: SortItem) {
-        _sortType.value = value
+        if (_sortType.value?.name != value.name) _sortType.value = value
     }
 
     fun getSortType() = _sortType.value ?: SortItem.defaultSortType

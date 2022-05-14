@@ -41,6 +41,7 @@ class HomeBottomSheetFragment(private val fragmentActivity: Communicator) : Bott
 
             override fun onClick(sortItem: SortItem) {
                 fragmentActivity.setSortMethod(sortItem)
+                dismiss()
             }
 
             override fun currentlySelected(): SortItem? {
