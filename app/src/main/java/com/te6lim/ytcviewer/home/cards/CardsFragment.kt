@@ -12,11 +12,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
+import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity
@@ -24,6 +26,7 @@ import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.FILTER_LIS
 import com.te6lim.ytcviewer.home.HomeBottomSheetFragment
 import com.te6lim.ytcviewer.home.MainActivity
 import com.te6lim.ytcviewer.home.SortItem
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -88,6 +91,20 @@ class CardsFragment : Fragment() {
             cardFilter.visibility = View.GONE
             false
         }
+
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(string: String?): Boolean {
+                string?.let { if (it.isNotEmpty()) cardsViewModel.setSearchKey(it) }
+                searchBar.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(string: String?): Boolean {
+                string?.let { if (it.isNotEmpty()) cardsViewModel.setSearchKey(it) }
+                return true
+            }
+
+        })
     }
 
     private fun setupViewModelObservers() {
@@ -99,20 +116,14 @@ class CardsFragment : Fragment() {
             }
 
             selectedCardFilters.observe(viewLifecycleOwner) { pagingDataFlow ->
-                lifecycleScope.launch {
-                    pagingDataFlow.collectLatest {
-                        adapter.submitData(it)
-                    }
-                }
+                submitDataFlow(pagingDataFlow)
             }
 
             sortType.observe(viewLifecycleOwner) { pagingDataFlow ->
-                lifecycleScope.launch {
-                    pagingDataFlow?.collectLatest {
-                        adapter.submitData(it)
-                    }
-                }
+                submitDataFlow(pagingDataFlow)
             }
+
+            searchKey.observe(viewLifecycleOwner) { pagingDataFlow -> submitDataFlow(pagingDataFlow) }
 
             isPagingDataEmpty.observe(viewLifecycleOwner) { isEmpty ->
                 if (isEmpty) {
@@ -124,6 +135,12 @@ class CardsFragment : Fragment() {
                 }
             }
 
+        }
+    }
+
+    private fun submitDataFlow(pagingDataFlow: Flow<PagingData<DomainCard>>?) {
+        lifecycleScope.launch {
+            pagingDataFlow?.collectLatest { adapter.submitData(it) }
         }
     }
 

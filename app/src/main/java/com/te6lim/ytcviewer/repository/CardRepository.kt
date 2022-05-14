@@ -20,6 +20,10 @@ import kotlinx.coroutines.flow.Flow
 
 class CardRepository(private val db: CardDatabase, private val repoCallback: RepoCallback) {
 
+    enum class SearchType {
+        Filter, SearchKey
+    }
+
     private val _isEmpty = MutableLiveData<Boolean>()
     val isEmpty: LiveData<Boolean>
         get() = _isEmpty
@@ -73,6 +77,12 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
         return deferred.await()
     }
 
+    private suspend fun getCardsBySearchKey(searchKey: String, sortQuery: String, offset: Int): Response {
+        return YtcApi.retrofitService.getCardsBySearchAsync(
+            searchKey, sort = sortQuery, offset = offset
+        ).await()
+    }
+
     private fun getMapQueries(
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>
     ): List<Map<String, String>> {
@@ -106,9 +116,29 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     ): Flow<PagingData<DatabaseCard>> {
         return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
-                CardPagingSource(sortType.isAsc, object : CardPagingSource.Callback {
+                CardPagingSource(SearchType.Filter, sortType.isAsc, object : CardPagingSource.Callback {
+
                     override suspend fun getNetworkCardsAsync(offset: Int): Response {
                         return getCards(selectedCardFilters, sortType.query, offset)
+                    }
+
+                    override fun setIsDataEmpty(value: Boolean) {
+                        if (_isEmpty.value != value) _isEmpty.value = value
+                    }
+                })
+            }).flow
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getCardStream(
+        searchKey: String, sortType: SortItem
+    ): Flow<PagingData<DatabaseCard>> {
+        return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                CardPagingSource(SearchType.SearchKey, sortType.isAsc, object : CardPagingSource.Callback {
+
+                    override suspend fun getCardsBySearchAsync(offset: Int): Response {
+                        return getCardsBySearchKey(searchKey, sortType.query, offset)
                     }
 
                     override fun setIsDataEmpty(value: Boolean) {

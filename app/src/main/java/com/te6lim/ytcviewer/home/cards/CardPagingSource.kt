@@ -3,12 +3,14 @@ package com.te6lim.ytcviewer.home.cards
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.te6lim.ytcviewer.database.DatabaseCard
+import com.te6lim.ytcviewer.network.CardMetaData
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.toDatabaseCard
+import com.te6lim.ytcviewer.repository.CardRepository
 
 class CardPagingSource(
-    private val sortAsc: Boolean, val callback: Callback
+    private val searchType: CardRepository.SearchType, private val sortAsc: Boolean, val callback: Callback
 ) : PagingSource<Int, DatabaseCard>() {
     override fun getRefreshKey(state: PagingState<Int, DatabaseCard>): Int? {
         return state.anchorPosition?.let { position ->
@@ -22,7 +24,9 @@ class CardPagingSource(
         return try {
             if (sortAsc) {
                 val key = params.key ?: 0
-                val response = callback.getNetworkCardsAsync(key)
+                val response = if (searchType == CardRepository.SearchType.Filter)
+                    callback.getNetworkCardsAsync(key)
+                else callback.getCardsBySearchAsync(key)
 
                 val prevKey = if (key == 0) null else key - PAGE_SIZE
                 val nextKey = response.meta.nextPageOffset
@@ -32,11 +36,15 @@ class CardPagingSource(
                 LoadResult.Page(response.data.toDatabaseCard(sortAsc), prevKey, nextKey)
             } else {
                 var key = params.key ?: 0
-                var response = callback.getNetworkCardsAsync(key)
+                var response = if (searchType == CardRepository.SearchType.Filter)
+                    callback.getNetworkCardsAsync(key)
+                else callback.getCardsBySearchAsync(key)
 
                 if (key == 0) {
                     key = response.meta.totalRows - PAGE_SIZE
-                    response = callback.getNetworkCardsAsync(key)
+                    response = if (searchType == CardRepository.SearchType.Filter)
+                        callback.getNetworkCardsAsync(key)
+                    else callback.getCardsBySearchAsync(key)
                 }
 
                 val nextKey = if (key == 0) null else key - PAGE_SIZE
@@ -56,7 +64,26 @@ class CardPagingSource(
     }
 
     interface Callback {
-        suspend fun getNetworkCardsAsync(offset: Int): Response
+        suspend fun getNetworkCardsAsync(offset: Int): Response {
+            return Response(
+                listOf(),
+                CardMetaData(
+                    0, 0, 0, 0,
+                    0, null, null
+                )
+            )
+        }
+
+        suspend fun getCardsBySearchAsync(offset: Int): Response {
+            return Response(
+                listOf(),
+                CardMetaData(
+                    0, 0, 0, 0,
+                    0, null, null
+                )
+            )
+        }
+
         fun setIsDataEmpty(value: Boolean)
     }
 }

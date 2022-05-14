@@ -28,6 +28,13 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         }
     }
 
+    private val _searchKey = MutableLiveData<String>()
+    val searchKey = Transformations.map(_searchKey) {
+        repo.getCardStream(it, getSortType()).map { pagingData ->
+            pagingData.map { card -> card.toDomainCard() }
+        }
+    }
+
     private val _sortType = MutableLiveData(SortItem.defaultSortType)
     val sortType = Transformations.map(_sortType) {
         _selectedCardFilters.value?.let { filter ->
@@ -161,6 +168,10 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     fun getSortType() = _sortType.value ?: SortItem.defaultSortType
+
+    fun setSearchKey(key: String) {
+        if (key != _searchKey.value) _searchKey.value = key
+    }
 }
 
 class CardsViewModelFactory(private val db: CardDatabase) : ViewModelProvider.Factory {
