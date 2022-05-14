@@ -62,6 +62,5 @@ class CardPrice(
 
 fun List<NetworkCard>.toDatabaseCard(isAsc: Boolean): List<DatabaseCard> {
     val list = map { DatabaseCard(networkId = it.id, name = it.name, cardImages = it.cardImages) }
-    return if (!isAsc) list.reversed()
-    else list
+    return if (!isAsc) list.reversed() else list
 }

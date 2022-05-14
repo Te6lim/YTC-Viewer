@@ -20,10 +20,6 @@ import kotlinx.coroutines.flow.Flow
 
 class CardRepository(private val db: CardDatabase, private val repoCallback: RepoCallback) {
 
-    enum class SearchType {
-        Filter, SearchKey
-    }
-
     private val _isEmpty = MutableLiveData<Boolean>()
     val isEmpty: LiveData<Boolean>
         get() = _isEmpty
@@ -36,25 +32,25 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
         val deferred = if (repoCallback.getCardResponseType() == CardsViewModel.CardType.MonsterCard) {
             when (selectedCardFilters.size) {
                 1 -> {
-                    YtcApi.retrofitService.getMonsterCardsAsync(
+                    YtcApi.retrofitService.getCardsAsync(
                         mapQueries[0], offset = offset, sort = sortQuery
                     )
                 }
 
                 2 -> {
-                    YtcApi.retrofitService.getMonsterCardsAsync(
+                    YtcApi.retrofitService.getCardsAsync(
                         mapQueries[0], mapQueries[1], offset = offset, sort = sortQuery
                     )
                 }
 
                 3 -> {
-                    YtcApi.retrofitService.getMonsterCardsAsync(
+                    YtcApi.retrofitService.getCardsAsync(
                         mapQueries[0], mapQueries[1], mapQueries[2], offset = offset, sort = sortQuery
                     )
                 }
 
                 else -> {
-                    YtcApi.retrofitService.getMonsterCardsAsync(
+                    YtcApi.retrofitService.getCardsAsync(
                         mapQueries[0], mapQueries[1], mapQueries[2], mapQueries[3], offset = offset,
                         sort = sortQuery
                     )
@@ -62,12 +58,12 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
             }
         } else {
             if (selectedChips[CardFilterCategory.Spell.name] == true) {
-                YtcApi.retrofitService.getNonMonsterCardsAsync(
+                YtcApi.retrofitService.getCardsAsync(
                     mapOf(Pair("type", CardFilterCategory.Spell.name)), mapQueries[0], offset = offset,
                     sort = sortQuery
                 )
             } else {
-                YtcApi.retrofitService.getNonMonsterCardsAsync(
+                YtcApi.retrofitService.getCardsAsync(
                     mapOf(Pair("type", CardFilterCategory.Trap.name)), mapQueries[0], offset = offset,
                     sort = sortQuery
                 )
@@ -112,33 +108,19 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(
-        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, sortType: SortItem
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>? = null, searchKey: String?, sortType:
+        SortItem
     ): Flow<PagingData<DatabaseCard>> {
         return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
-                CardPagingSource(SearchType.Filter, sortType.isAsc, object : CardPagingSource.Callback {
+                CardPagingSource(sortType.isAsc, object : CardPagingSource.Callback {
 
                     override suspend fun getNetworkCardsAsync(offset: Int): Response {
-                        return getCards(selectedCardFilters, sortType.query, offset)
-                    }
-
-                    override fun setIsDataEmpty(value: Boolean) {
-                        if (_isEmpty.value != value) _isEmpty.value = value
-                    }
-                })
-            }).flow
-    }
-
-    @OptIn(ExperimentalPagingApi::class)
-    fun getCardStream(
-        searchKey: String, sortType: SortItem
-    ): Flow<PagingData<DatabaseCard>> {
-        return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
-            pagingSourceFactory = {
-                CardPagingSource(SearchType.SearchKey, sortType.isAsc, object : CardPagingSource.Callback {
-
-                    override suspend fun getCardsBySearchAsync(offset: Int): Response {
-                        return getCardsBySearchKey(searchKey, sortType.query, offset)
+                        return if (selectedCardFilters != null)
+                            getCards(
+                                selectedCardFilters, sortType.query, offset
+                            )
+                        else getCardsBySearchKey(searchKey ?: "", sortType.query, offset)
                     }
 
                     override fun setIsDataEmpty(value: Boolean) {

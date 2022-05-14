@@ -1,6 +1,7 @@
 package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toDomainCard
@@ -22,26 +23,18 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     private val _selectedCardFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
 
-    val selectedCardFilters = Transformations.map(_selectedCardFilters) {
-        repo.getCardStream(it, getSortType()).map { pagingData ->
-            pagingData.map { card -> card.toDomainCard() }
-        }
+    val selectedCardFilters = Transformations.map(_selectedCardFilters) { filters ->
+        getCardPagingDataFlow(filters, _searchKey.value, getSortType())
     }
 
     private val _searchKey = MutableLiveData<String>()
     val searchKey = Transformations.map(_searchKey) {
-        repo.getCardStream(it, getSortType()).map { pagingData ->
-            pagingData.map { card -> card.toDomainCard() }
-        }
+        getCardPagingDataFlow(null, it, getSortType())
     }
 
     private val _sortType = MutableLiveData(SortItem.defaultSortType)
     val sortType = Transformations.map(_sortType) {
-        _selectedCardFilters.value?.let { filter ->
-            repo.getCardStream(filter, it).map { pagingData ->
-                pagingData.map { card -> card.toDomainCard() }
-            }
-        }
+        getCardPagingDataFlow(_selectedCardFilters.value, _searchKey.value, it)
     }
 
     private var cardListType = CardType.MonsterCard
@@ -61,6 +54,12 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         }
         _selectedChips.value = map
     }
+
+    private fun getCardPagingDataFlow(
+        filters: Map<CardFilterCategory, List<CardFilter>>?, searchKey: String?, sortType: SortItem
+    ) = repo.getCardStream(filters, searchKey, sortType).map { pagingData ->
+        pagingData.map { card -> card.toDomainCard() }
+    }.cachedIn(viewModelScope)
 
     private fun selectedChipsCopy(): MutableMap<String, Boolean> {
         val chips = mutableMapOf<String, Boolean>()

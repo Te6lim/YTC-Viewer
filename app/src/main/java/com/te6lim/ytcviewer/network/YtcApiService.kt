@@ -83,6 +83,50 @@ interface YtcApiService {
         @Query("sort") sort: String
     ): Deferred<Response.NonMonsterCardResponse>
 
+
+    @GET("cardinfo.php")
+    fun getCardsAsync(
+        @QueryMap query: Map<String, String>,
+        @Query("fname") searchString: String = "",
+        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("offset") offset: Int,
+        @Query("sort") sort: String
+    ): Deferred<Response>
+
+    @GET("cardinfo.php")
+    fun getCardsAsync(
+        @QueryMap query1: Map<String, String>,
+        @QueryMap query2: Map<String, String>,
+        @Query("fname") searchString: String = "",
+        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("offset") offset: Int,
+        @Query("sort") sort: String
+    ): Deferred<Response>
+
+    @GET("cardinfo.php")
+    fun getCardsAsync(
+        @QueryMap query1: Map<String, String>,
+        @QueryMap query2: Map<String, String>,
+        @QueryMap query3: Map<String, String>,
+        @Query("fname") searchString: String = "",
+        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("offset") offset: Int,
+        @Query("sort") sort: String
+    ): Deferred<Response>
+
+    @GET("cardinfo.php")
+    fun getCardsAsync(
+        @QueryMap query1: Map<String, String>,
+        @QueryMap query2: Map<String, String>,
+        @QueryMap query3: Map<String, String>,
+        @QueryMap query4: Map<String, String>,
+        @Query("fname") searchString: String = "",
+        @Query("num") pageSize: Int = PAGE_SIZE,
+        @Query("offset") offset: Int,
+        @Query("sort") sort: String
+    ): Deferred<Response>
+
+
     @GET("cardinfo.php")
     fun getCardsBySearchAsync(
         @Query("fname") searchString: String,
