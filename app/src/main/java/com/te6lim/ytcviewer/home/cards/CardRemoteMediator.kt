@@ -13,7 +13,7 @@ import retrofit2.HttpException
 
 @OptIn(androidx.paging.ExperimentalPagingApi::class)
 class CardRemoteMediator(
-    private val db: CardDatabase, val callback: Callback
+    private val db: CardDatabase, val callback: CardPagingSource.Callback
 ) : RemoteMediator<Int, DatabaseCard>() {
 
     override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -91,9 +91,5 @@ class CardRemoteMediator(
         return pages.firstOrNull { page -> page.data.isNotEmpty() }?.data?.lastOrNull()?.let { card ->
             db.remoteKeysDao.get(card.id)?.prevKey
         }
-    }
-
-    interface Callback {
-        suspend fun getNetworkCardsAsync(offset: Int): Response
     }
 }

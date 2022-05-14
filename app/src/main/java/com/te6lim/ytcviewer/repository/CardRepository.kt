@@ -1,5 +1,7 @@
 package com.te6lim.ytcviewer.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -10,7 +12,6 @@ import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.SortItem
 import com.te6lim.ytcviewer.home.cards.CardPagingSource
-import com.te6lim.ytcviewer.home.cards.CardRemoteMediator
 import com.te6lim.ytcviewer.home.cards.CardsViewModel
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
@@ -18,6 +19,10 @@ import com.te6lim.ytcviewer.network.YtcApi
 import kotlinx.coroutines.flow.Flow
 
 class CardRepository(private val db: CardDatabase, private val repoCallback: RepoCallback) {
+
+    private val _isEmpty = MutableLiveData<Boolean>()
+    val isEmpty: LiveData<Boolean>
+        get() = _isEmpty
 
     private suspend fun getCards(
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, sortQuery: String, offset: Int
@@ -101,9 +106,13 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     ): Flow<PagingData<DatabaseCard>> {
         return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
-                CardPagingSource(sortType.isAsc, object : CardRemoteMediator.Callback {
+                CardPagingSource(sortType.isAsc, object : CardPagingSource.Callback {
                     override suspend fun getNetworkCardsAsync(offset: Int): Response {
                         return getCards(selectedCardFilters, sortType.query, offset)
+                    }
+
+                    override fun setIsDataEmpty(value: Boolean) {
+                        if (_isEmpty.value != value) _isEmpty.value = value
                     }
                 })
             }).flow

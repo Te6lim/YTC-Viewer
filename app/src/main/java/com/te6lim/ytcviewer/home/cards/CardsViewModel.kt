@@ -45,11 +45,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         override fun sortType(): SortItem = _sortType.value!!
     })
 
-    private fun selectedChipsCopy(): MutableMap<String, Boolean> {
-        val chips = mutableMapOf<String, Boolean>()
-        for (k in selectedChips.value!!.keys) chips[k] = selectedChips.value!![k]!!
-        return chips
-    }
+    val isPagingDataEmpty = repo.isEmpty
 
     init {
         val map = mutableMapOf<String, Boolean>()
@@ -57,6 +53,12 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
             map[category.name] = false
         }
         _selectedChips.value = map
+    }
+
+    private fun selectedChipsCopy(): MutableMap<String, Boolean> {
+        val chips = mutableMapOf<String, Boolean>()
+        for (k in selectedChips.value!!.keys) chips[k] = selectedChips.value!![k]!!
+        return chips
     }
 
     fun addFiltersToSelected(category: CardFilterCategory, list: List<CardFilter>) {

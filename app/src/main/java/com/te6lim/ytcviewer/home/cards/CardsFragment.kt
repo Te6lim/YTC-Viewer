@@ -100,15 +100,30 @@ class CardsFragment : Fragment() {
 
             selectedCardFilters.observe(viewLifecycleOwner) { pagingDataFlow ->
                 lifecycleScope.launch {
-                    pagingDataFlow.collectLatest { adapter.submitData(it) }
+                    pagingDataFlow.collectLatest {
+                        adapter.submitData(it)
+                    }
                 }
             }
 
             sortType.observe(viewLifecycleOwner) { pagingDataFlow ->
                 lifecycleScope.launch {
-                    pagingDataFlow?.collectLatest { adapter.submitData(it) }
+                    pagingDataFlow?.collectLatest {
+                        adapter.submitData(it)
+                    }
                 }
             }
+
+            isPagingDataEmpty.observe(viewLifecycleOwner) { isEmpty ->
+                if (isEmpty) {
+                    binding.searchDescription.visibility = View.VISIBLE
+                    binding.cards.visibility = View.GONE
+                } else {
+                    binding.searchDescription.visibility = View.GONE
+                    binding.cards.visibility = View.VISIBLE
+                }
+            }
+
         }
     }
 
