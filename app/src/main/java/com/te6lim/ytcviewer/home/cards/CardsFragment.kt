@@ -116,14 +116,16 @@ class CardsFragment : Fragment() {
             }
 
             selectedCardFilters.observe(viewLifecycleOwner) { pagingDataFlow ->
-                submitDataFlow(pagingDataFlow)
+                lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
             }
 
             sortType.observe(viewLifecycleOwner) { pagingDataFlow ->
-                submitDataFlow(pagingDataFlow)
+                lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
             }
 
-            searchKey.observe(viewLifecycleOwner) { pagingDataFlow -> submitDataFlow(pagingDataFlow) }
+            searchKey.observe(viewLifecycleOwner) { pagingDataFlow ->
+                lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
+            }
 
             isPagingDataEmpty.observe(viewLifecycleOwner) { isEmpty ->
                 if (isEmpty) {
@@ -138,7 +140,7 @@ class CardsFragment : Fragment() {
         }
     }
 
-    private fun submitDataFlow(pagingDataFlow: Flow<PagingData<DomainCard>>?) {
+    private suspend fun submitDataFlow(pagingDataFlow: Flow<PagingData<DomainCard>>?) {
         lifecycleScope.launch {
             pagingDataFlow?.collectLatest { adapter.submitData(it) }
         }

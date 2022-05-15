@@ -23,8 +23,8 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     private val _selectedCardFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
 
-    val selectedCardFilters = Transformations.map(_selectedCardFilters) { filters ->
-        getCardPagingDataFlow(filters, _searchKey.value, getSortType())
+    val selectedCardFilters = Transformations.map(_selectedCardFilters) {
+        getCardPagingDataFlow(it, _searchKey.value, getSortType())
     }
 
     private val _searchKey = MutableLiveData<String>()
