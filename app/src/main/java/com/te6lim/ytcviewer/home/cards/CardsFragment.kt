@@ -18,6 +18,7 @@ import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
+import com.te6lim.ytcviewer.details.CardDetailsActivity
 import com.te6lim.ytcviewer.domain.DomainCard
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
@@ -71,7 +72,7 @@ class CardsFragment : Fragment() {
             viewModel = cardsViewModel
             lifecycleOwner = this@CardsFragment
 
-            adapter = CardListAdapter()
+            adapter = CardListAdapter { (cardsViewModel::setSelectedCardId)(it) }
             cards.adapter = adapter
 
             buildChipsIntoChipGroup(LayoutInflater.from(cardFilter.context))
@@ -134,6 +135,15 @@ class CardsFragment : Fragment() {
                 } else {
                     binding.searchDescription.visibility = View.GONE
                     binding.cards.visibility = View.VISIBLE
+                }
+            }
+
+            selectedCardId.observe(viewLifecycleOwner) {
+                it?.let {
+                    val intent = Intent(this@CardsFragment.context, CardDetailsActivity::class.java)
+                    intent.putExtra("card id", it)
+                    startActivity(intent)
+                    setSelectedCardId(null)
                 }
             }
 

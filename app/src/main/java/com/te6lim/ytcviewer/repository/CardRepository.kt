@@ -59,12 +59,12 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
         } else {
             if (selectedChips[CardFilterCategory.Spell.name] == true) {
                 YtcApi.retrofitService.getCardsAsync(
-                    mapOf(Pair(CardFilterCategory.Type.query, CardFilterCategory.SpellTypeParam)),
+                    mapOf(Pair(CardFilterCategory.Type.query, CardFilterCategory.TypeArgumentForSpellCard)),
                     mapQueries[0], offset = offset, sort = sortQuery
                 )
             } else {
                 YtcApi.retrofitService.getCardsAsync(
-                    mapOf(Pair(CardFilterCategory.Type.query, CardFilterCategory.TrapTypeParam)),
+                    mapOf(Pair(CardFilterCategory.Type.query, CardFilterCategory.TypeArgumentForTrapCard)),
                     mapQueries[0], offset = offset, sort = sortQuery
                 )
             }

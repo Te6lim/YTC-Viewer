@@ -80,8 +80,7 @@ class FilterSelectionActivity : AppCompatActivity() {
     }
 
     private fun getFilterColorResource(filter: CardFilter) = ContextCompat.getColor(
-        this@FilterSelectionActivity,
-        viewModel.getBackgroundsForFilters()[filter.name]!!
+        this@FilterSelectionActivity, viewModel.getBackgroundsForFilters()[filter.name]!!
     )
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

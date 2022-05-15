@@ -39,6 +39,10 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     private var cardListType = CardType.MonsterCard
 
+    private val _selectedCardId = MutableLiveData<Long?>()
+    val selectedCardId: LiveData<Long?>
+        get() = _selectedCardId
+
     private val repo = CardRepository(db, object : CardRepository.RepoCallback {
         override fun getCardResponseType(): CardType = cardListType
         override fun selectedCategories(): Map<String, Boolean> = selectedChipsCopy()
@@ -170,6 +174,10 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     fun setSearchKey(key: String) {
         if (key != _searchKey.value) _searchKey.value = key
+    }
+
+    fun setSelectedCardId(id: Long?) {
+        _selectedCardId.value = id
     }
 }
 

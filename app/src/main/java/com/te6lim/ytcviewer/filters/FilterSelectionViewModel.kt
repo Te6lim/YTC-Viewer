@@ -14,8 +14,8 @@ enum class CardFilterCategory(val query: String) {
     Spell("race"), Trap("race");
 
     companion object {
-        const val SpellTypeParam = "spell card"
-        const val TrapTypeParam = "trap card"
+        const val TypeArgumentForSpellCard = "spell card"
+        const val TypeArgumentForTrapCard = "trap card"
         fun get(name: String) = valueOf(name)
     }
 }
