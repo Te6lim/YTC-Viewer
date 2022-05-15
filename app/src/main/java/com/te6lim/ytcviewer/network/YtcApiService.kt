@@ -37,54 +37,6 @@ const val PAGE_SIZE = 10
 interface YtcApiService {
 
     @GET("cardinfo.php")
-    fun getMonsterCardsAsync(
-        @QueryMap query: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
-        @Query("offset") offset: Int,
-        @Query("sort") sort: String
-    ): Deferred<Response.MonsterCardResponse>
-
-    @GET("cardinfo.php")
-    fun getMonsterCardsAsync(
-        @QueryMap query1: Map<String, String>,
-        @QueryMap query2: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
-        @Query("offset") offset: Int,
-        @Query("sort") sort: String
-    ): Deferred<Response.MonsterCardResponse>
-
-    @GET("cardinfo.php")
-    fun getMonsterCardsAsync(
-        @QueryMap query1: Map<String, String>,
-        @QueryMap query2: Map<String, String>,
-        @QueryMap query3: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
-        @Query("offset") offset: Int,
-        @Query("sort") sort: String
-    ): Deferred<Response.MonsterCardResponse>
-
-    @GET("cardinfo.php")
-    fun getMonsterCardsAsync(
-        @QueryMap query1: Map<String, String>,
-        @QueryMap query2: Map<String, String>,
-        @QueryMap query3: Map<String, String>,
-        @QueryMap query4: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
-        @Query("offset") offset: Int,
-        @Query("sort") sort: String
-    ): Deferred<Response.MonsterCardResponse>
-
-    @GET("cardinfo.php")
-    fun getNonMonsterCardsAsync(
-        @QueryMap query1: Map<String, String>,
-        @QueryMap query2: Map<String, String>,
-        @Query("num") pageSize: Int = PAGE_SIZE,
-        @Query("offset") offset: Int,
-        @Query("sort") sort: String
-    ): Deferred<Response.NonMonsterCardResponse>
-
-
-    @GET("cardinfo.php")
     fun getCardsAsync(
         @QueryMap query: Map<String, String>,
         @Query("fname") searchString: String = "",
@@ -134,6 +86,9 @@ interface YtcApiService {
         @Query("offset") offset: Int,
         @Query("sort") sort: String
     ): Deferred<Response>
+
+    @GET("cardinfo.php")
+    fun getCard(@Query("id") cardId: Long): Deferred<Response>
 }
 
 object YtcApi {

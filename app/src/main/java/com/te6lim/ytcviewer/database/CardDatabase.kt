@@ -7,16 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [DatabaseCard::class, DatabaseMonsterCard::class, DatabaseNonMonsterCard::class,
-        RemoteKey::class],
-    version = 1, exportSchema = false
+    entities = [DatabaseCard::class, RemoteKey::class], version = 1, exportSchema = false
 )
 @TypeConverters(Converter::class)
 abstract class CardDatabase : RoomDatabase() {
 
     abstract val cardDao: CardDao
-    abstract val monsterDao: MonsterDao
-    abstract val nonMonsterDao: NonMonsterDao
     abstract val remoteKeysDao: RemoteKeysDao
 
     companion object {

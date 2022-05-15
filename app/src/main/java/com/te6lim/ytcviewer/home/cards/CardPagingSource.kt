@@ -3,7 +3,6 @@ package com.te6lim.ytcviewer.home.cards
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.te6lim.ytcviewer.database.DatabaseCard
-import com.te6lim.ytcviewer.network.CardMetaData
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.toDatabaseCard
@@ -26,7 +25,7 @@ class CardPagingSource(
                 val response = callback.getNetworkCardsAsync(key)
 
                 val prevKey = if (key == 0) null else key - PAGE_SIZE
-                val nextKey = response.meta.nextPageOffset
+                val nextKey = if (response.meta.nextPage == null) null else response.meta.nextPageOffset
 
                 callback.setIsDataEmpty(false)
 
@@ -40,9 +39,8 @@ class CardPagingSource(
                     response = callback.getNetworkCardsAsync(key)
                 }
 
+                val prevKey = if (response.meta.nextPage == null) null else response.meta.nextPageOffset
                 val nextKey = if (key == 0) null else key - PAGE_SIZE
-
-                val prevKey = response.meta.nextPageOffset
 
                 callback.setIsDataEmpty(false)
 
@@ -57,24 +55,7 @@ class CardPagingSource(
     }
 
     interface Callback {
-        suspend fun getNetworkCardsAsync(offset: Int): Response {
-            return Response(
-                listOf(),
-                CardMetaData(
-                    0, 0, 0, 0,
-                    0, null, null
-                )
-            )
-        }
-        suspend fun getCardsBySearchAsync(offset: Int): Response {
-            return Response(
-                listOf(),
-                CardMetaData(
-                    0, 0, 0, 0,
-                    0, null, null
-                )
-            )
-        }
+        suspend fun getNetworkCardsAsync(offset: Int): Response
         fun setIsDataEmpty(value: Boolean)
     }
 }

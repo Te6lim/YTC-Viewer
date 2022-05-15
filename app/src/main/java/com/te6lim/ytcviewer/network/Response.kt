@@ -5,17 +5,7 @@ import com.squareup.moshi.Json
 open class Response(
     open val data: List<NetworkCard>,
     open val meta: CardMetaData
-) {
-    class MonsterCardResponse(
-        override val data: List<NetworkCard.NetworkMonsterCard>,
-        override val meta: CardMetaData
-    ) : Response(data, meta)
-
-    class NonMonsterCardResponse(
-        override val data: List<NetworkCard.NetworkNonMonsterCard>,
-        override val meta: CardMetaData
-    ) : Response(data, meta)
-}
+)
 
 class CardMetaData(
     @Json(name = "current_rows") val currentRows: Int,
