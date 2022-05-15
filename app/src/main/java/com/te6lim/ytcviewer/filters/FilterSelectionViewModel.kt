@@ -11,9 +11,11 @@ import com.te6lim.ytcviewer.R
 enum class CardFilterCategory(val query: String) {
     Type("type"), Race("race"),
     Attribute("attribute"), Level("level"),
-    Spell("spell card"), Trap("trap card");
+    Spell("race"), Trap("race");
 
     companion object {
+        const val SpellTypeParam = "spell card"
+        const val TrapTypeParam = "trap card"
         fun get(name: String) = valueOf(name)
     }
 }
