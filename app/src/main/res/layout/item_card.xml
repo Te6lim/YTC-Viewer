@@ -6,7 +6,7 @@
 
         <variable
             name="card"
-            type="com.te6lim.ytcviewer.domain.DomainCard" />
+            type="com.te6lim.ytcviewer.domain.Card" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

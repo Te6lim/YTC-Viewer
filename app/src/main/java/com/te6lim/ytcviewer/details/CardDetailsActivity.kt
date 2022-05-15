@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ActivityDetailsCardBinding
+import com.te6lim.ytcviewer.domain.Card
 
 class CardDetailsActivity : AppCompatActivity() {
 
@@ -18,6 +19,10 @@ class CardDetailsActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar as Toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val card = intent.getParcelableExtra<Card>("card")
+
+        supportActionBar?.title = card?.name
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

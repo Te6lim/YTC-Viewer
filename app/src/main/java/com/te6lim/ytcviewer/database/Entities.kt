@@ -2,7 +2,7 @@ package com.te6lim.ytcviewer.database
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.te6lim.ytcviewer.domain.DomainCard
+import com.te6lim.ytcviewer.domain.Card
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet
@@ -60,8 +60,8 @@ interface RemoteKeysDao {
     suspend fun clear()
 }
 
-fun DatabaseCard.toDomainCard(): DomainCard {
-    return DomainCard(
+fun DatabaseCard.toDomainCard(): Card {
+    return Card(
         id = id, networkId = networkId, name = name, type = type, desc = desc, race = race, atk = atk,
         def = def, level = level, attribute = attribute, archetype = archetype, cardSets = cardSets,
         cardImages = cardImages, cardPrices = cardPrices

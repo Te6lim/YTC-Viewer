@@ -1,7 +1,9 @@
 package com.te6lim.ytcviewer.network
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.te6lim.ytcviewer.database.DatabaseCard
+import kotlinx.parcelize.Parcelize
 
 open class NetworkCard(
     val id: Long,
@@ -49,26 +51,29 @@ open class NetworkCard(
     ) : NetworkCard(id, name, cardImages)*/
 }
 
+@Parcelize
 class CardSet(
     val setName: String? = null,
     val setCode: String? = null,
     val setRarity: String? = null,
     val setRarityCode: String? = null,
     val setPrice: String? = null
-)
+) : Parcelable
 
+@Parcelize
 class CardImage(
     @Json(name = "image_url") val imageUrl: String? = null,
     @Json(name = "image_url_small") val imageUrlSmall: String? = null
-)
+) : Parcelable
 
+@Parcelize
 class CardPrice(
     val cardMarketPrice: String? = null,
     val tcgPlayerPrice: String? = null,
     val ebayPrice: String? = null,
     val amazonPrice: String? = null,
     val coolStuffIncPrice: String? = null
-)
+) : Parcelable
 
 fun List<NetworkCard>.toDatabaseCard(isAsc: Boolean): List<DatabaseCard> {
     val list = map {

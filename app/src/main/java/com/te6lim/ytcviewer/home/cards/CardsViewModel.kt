@@ -5,6 +5,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toDomainCard
+import com.te6lim.ytcviewer.domain.Card
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.SortItem
@@ -39,9 +40,9 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     private var cardListType = CardType.MonsterCard
 
-    private val _selectedCardId = MutableLiveData<Long?>()
-    val selectedCardId: LiveData<Long?>
-        get() = _selectedCardId
+    private val _selectedCard = MutableLiveData<Card?>()
+    val selectedCard: LiveData<Card?>
+        get() = _selectedCard
 
     private val repo = CardRepository(db, object : CardRepository.RepoCallback {
         override fun getCardResponseType(): CardType = cardListType
@@ -176,8 +177,8 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         if (key != _searchKey.value) _searchKey.value = key
     }
 
-    fun setSelectedCardId(id: Long?) {
-        _selectedCardId.value = id
+    fun setSelectedCard(card: Card?) {
+        _selectedCard.value = card
     }
 }
 

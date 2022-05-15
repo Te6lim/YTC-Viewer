@@ -4,10 +4,10 @@ import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.te6lim.ytcviewer.domain.DomainCard
+import com.te6lim.ytcviewer.domain.Card
 
 @BindingAdapter("setImage")
-fun ImageView.setImage(card: DomainCard?) {
+fun ImageView.setImage(card: Card?) {
     card?.let {
         Glide.with(this.context).load(
             card.cardImages?.get(0)?.imageUrlSmall?.toUri()
