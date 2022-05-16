@@ -6,6 +6,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.te6lim.ytcviewer.details.CardDetailsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -61,6 +64,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:scaleType="centerCrop"
+                        app:setLargeImage="@{viewModel.card.cardImages[0].imageUrl}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -101,7 +105,7 @@
                             <TextView
                                 android:id="@+id/cardType_text"
                                 style="@style/card_property_value_style"
-                                android:text="XYZ Monster" />
+                                app:setCardText="@{viewModel.card.type}" />
                         </LinearLayout>
 
                         <FrameLayout
@@ -113,137 +117,18 @@
                             app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
                         <LinearLayout
-                            android:id="@+id/linearLayout3"
-                            style="@style/card_property_container_style"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginEnd="4dp"
-                            android:orientation="horizontal"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/divider_1">
-
-                            <TextView
-                                android:id="@+id/textView9"
-                                style="@style/card_property_title_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="ATK" />
-
-                            <TextView
-                                android:id="@+id/atk_text"
-                                style="@style/card_property_value_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="2100" />
-                        </LinearLayout>
-
-                        <FrameLayout
-                            android:id="@+id/divider_2"
-                            style="@style/card_property_divider_style"
-                            android:layout_marginTop="1dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
-
-                        <LinearLayout
-                            android:id="@+id/linearLayout4"
-                            style="@style/card_property_container_style"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginEnd="4dp"
-                            android:orientation="horizontal"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/divider_2">
-
-                            <TextView
-                                android:id="@+id/textView11"
-                                style="@style/card_property_title_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="DEF" />
-
-                            <TextView
-                                android:id="@+id/def_text"
-                                style="@style/card_property_value_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="2000" />
-                        </LinearLayout>
-
-                        <FrameLayout
-                            android:id="@+id/divider_3"
-                            style="@style/card_property_divider_style"
-                            android:layout_marginTop="1dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
-
-                        <LinearLayout
-                            android:id="@+id/linearLayout5"
-                            style="@style/card_property_container_style"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginEnd="4dp"
-                            android:orientation="horizontal"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/divider_3">
-
-                            <TextView
-                                android:id="@+id/textView13"
-                                style="@style/card_property_title_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center|start"
-                                android:text="Rank" />
-
-                            <ImageView
-                                android:id="@+id/level"
-                                style="@style/small_image_style"
-                                app:srcCompat="@drawable/rank" />
-
-                            <TextView
-                                android:id="@+id/level_text"
-                                style="@style/card_property_value_style"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/small_spacing"
-                                android:text="x4" />
-
-                        </LinearLayout>
-
-                        <FrameLayout
-                            android:id="@+id/divider_4"
-                            style="@style/card_property_divider_style"
-                            android:layout_marginTop="1dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
-
-                        <LinearLayout
                             android:id="@+id/linearLayout6"
                             style="@style/card_property_container_style"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="1dp"
                             android:layout_marginEnd="4dp"
                             android:orientation="horizontal"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/divider_4">
+                            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
                             <TextView
                                 android:id="@+id/textView15"
@@ -265,7 +150,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="(Wyrm)" />
+                                app:setCardRaceOrAttribute="@{viewModel.card.race}" />
                         </LinearLayout>
 
                         <FrameLayout
@@ -312,29 +197,147 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="(Wind)" />
+                                app:setCardAttributeOrArchetype="@{viewModel.card}" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout"
+                            android:layout_width="517dp"
+                            android:layout_height="122dp"
+                            android:layout_marginTop="1dp"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider_1">
+
+                            <LinearLayout
+                                android:id="@+id/linearLayout3"
+                                style="@style/card_property_container_style"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginEnd="4dp"
+                                android:orientation="horizontal"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/divider_1">
+
+                                <TextView
+                                    android:id="@+id/textView9"
+                                    style="@style/card_property_title_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ATK" />
+
+                                <TextView
+                                    android:id="@+id/atk_text"
+                                    style="@style/card_property_value_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    app:setCardText="@{viewModel.card.atk.toString()}" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/linearLayout5"
+                                style="@style/card_property_container_style"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginEnd="4dp"
+                                android:orientation="horizontal"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/divider_3">
+
+                                <TextView
+                                    android:id="@+id/textView13"
+                                    style="@style/card_property_title_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center|start"
+                                    android:text="Rank" />
+
+                                <ImageView
+                                    android:id="@+id/level"
+                                    style="@style/small_image_style"
+                                    app:srcCompat="@drawable/rank" />
+
+                                <TextView
+                                    android:id="@+id/level_text"
+                                    style="@style/card_property_value_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/small_spacing"
+                                    app:setCardLevel="@{viewModel.card.level.toString()}" />
+
+                            </LinearLayout>
+
+                            <FrameLayout
+                                android:id="@+id/divider_2"
+                                style="@style/card_property_divider_style"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
+                            <FrameLayout
+                                android:id="@+id/divider_4"
+                                style="@style/card_property_divider_style"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+
+                            <FrameLayout
+                                android:id="@+id/divider_3"
+                                style="@style/card_property_divider_style"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
+
+                            <LinearLayout
+                                android:id="@+id/linearLayout4"
+                                style="@style/card_property_container_style"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginEnd="4dp"
+                                android:orientation="horizontal"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/divider_2">
+
+                                <TextView
+                                    android:id="@+id/textView11"
+                                    style="@style/card_property_title_style"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="DEF" />
+
+                                <TextView
+                                    android:id="@+id/def_text"
+                                    style="@style/card_property_value_style"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    app:setCardText="@{viewModel.card.def.toString()}" />
+                            </LinearLayout>
                         </LinearLayout>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/description_text"
-                    style="@style/descriptionTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/card_description_background"
-                    android:fontFamily="@font/playfair_display"
-                    android:lineSpacingExtra="8dp"
-                    android:minHeight="200dp"
-                    android:padding="@dimen/standard_spacing"
-                    android:text="2 Level 4 monsters\nOnce per turn (Quick Effect): You can detach 1 material from this card, then target 1 Spell/Trap on the field; destroy it."
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description" />
 
                 <TextView
                     android:id="@+id/description"
@@ -352,6 +355,24 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
+
+                <TextView
+                    android:id="@+id/description_text"
+                    style="@style/descriptionTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/card_description_background"
+                    android:fontFamily="@font/playfair_display"
+                    android:lineSpacingExtra="8dp"
+                    android:minHeight="200dp"
+                    android:padding="@dimen/standard_spacing"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/description"
+                    app:setCardText="@{viewModel.card.desc}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="0dp"

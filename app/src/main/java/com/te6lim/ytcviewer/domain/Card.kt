@@ -23,4 +23,8 @@ class Card(
     @SerializedName("card_sets") val cardSets: List<CardSet?>?,
     @SerializedName("card_images") val cardImages: List<CardImage?>?,
     @SerializedName("card_prices") val cardPrices: List<CardPrice?>?
-) : Parcelable
+) : Parcelable {
+    fun isNonMonsterCard(): Boolean {
+        return atk == null && def == null && level == null && attribute == null
+    }
+}

@@ -6,6 +6,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.te6lim.ytcviewer.details.CardDetailsViewModel" />
     </data>
 
     <androidx.constraintlayout.motion.widget.MotionLayout
@@ -63,6 +66,7 @@
                         android:layout_marginEnd="4dp"
                         android:layout_marginBottom="4dp"
                         android:scaleType="centerCrop"
+                        app:setLargeImage="@{viewModel.card.cardImages[0].imageUrl}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -104,7 +108,7 @@
                         <TextView
                             android:id="@+id/cardType_text"
                             style="@style/card_property_value_style"
-                            android:text="XYZ Monster" />
+                            app:setCardText="@{viewModel.card.type}" />
                     </LinearLayout>
 
                     <FrameLayout
@@ -141,7 +145,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="2100" />
+                            app:setCardText="@{viewModel.card.atk.toString()}" />
                     </LinearLayout>
 
                     <FrameLayout
@@ -177,7 +181,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="2000" />
+                            app:setCardText="@{viewModel.card.def.toString()}" />
                     </LinearLayout>
 
                     <FrameLayout
@@ -219,7 +223,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/small_spacing"
-                            android:text="x4" />
+                            app:setCardLevel="@{viewModel.card.level.toString()}" />
 
                     </LinearLayout>
 
@@ -264,7 +268,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="(Wyrm)" />
+                            app:setCardRaceOrAttribute="@{viewModel.card.race}" />
                     </LinearLayout>
 
                     <FrameLayout
@@ -311,28 +315,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="(Wind)" />
+                            app:setCardAttributeOrArchetype="@{viewModel.card}" />
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/description_text"
-                    style="@style/descriptionTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/card_description_background"
-                    android:fontFamily="@font/playfair_display"
-                    android:lineSpacingExtra="8dp"
-                    android:minHeight="200dp"
-                    android:padding="@dimen/standard_spacing"
-                    android:text="2 Level 4 monsters\nOnce per turn (Quick Effect): You can detach 1 material from this card, then target 1 Spell/Trap on the field; destroy it."
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description" />
 
                 <TextView
                     android:id="@+id/description"
@@ -350,6 +336,24 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+
+                <TextView
+                    android:id="@+id/description_text"
+                    style="@style/descriptionTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/card_description_background"
+                    android:fontFamily="@font/playfair_display"
+                    android:lineSpacingExtra="8dp"
+                    android:minHeight="200dp"
+                    android:padding="@dimen/standard_spacing"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/description"
+                    app:setCardText="@{viewModel.card.desc}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"

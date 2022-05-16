@@ -24,4 +24,6 @@
     <string name="type_name">type name</string>
     <string name="sort">Sort</string>
     <string name="sort_by">SORT BY</string>
+    <string name="level">x%s</string>
+    <string name="race">(%s)</string>
 </resources>
