@@ -41,8 +41,7 @@ class CardDetailsActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.atk_text).text = viewModel.card.atk.toString()
             findViewById<TextView>(R.id.def_text).text = viewModel.card.def.toString()
             findViewById<TextView>(R.id.level_text).text = getString(
-                R.string.level, viewModel.card.level
-                    .toString()
+                R.string.level, viewModel.card.level.toString()
             )
             findViewById<TextView>(R.id.race_text).text = getString(R.string.race, viewModel.card.race)
             findViewById<TextView>(R.id.attribute_archetype_text).text =

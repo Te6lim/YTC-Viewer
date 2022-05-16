@@ -1,12 +1,12 @@
 package com.te6lim.ytcviewer.filters
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
+import kotlinx.parcelize.Parcelize
 
 enum class CardFilterCategory(val query: String) {
     Type("type"), Race("race"),
@@ -100,6 +100,48 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
                 )
             }
         }
+
+        fun getRaceIconResource() = hashMapOf(
+            Pair("Aqua", R.drawable.aqua),
+            Pair("Beast", R.drawable.beast),
+            Pair("Beast-Warrior", R.drawable.beast_warrior),
+            Pair("Creator-God", R.drawable.divine),
+            Pair("Cyberse", R.drawable.machine),
+            Pair("Dinosaur", R.drawable.dinosaur),
+            Pair("Divine-Beast", R.drawable.divine_beast),
+            Pair("Dragon", R.drawable.dragon),
+            Pair("Fairy", R.drawable.fairy),
+            Pair("Fiend", R.drawable.fiend),
+            Pair("Fish", R.drawable.fish),
+            Pair("Insect", R.drawable.insect),
+            Pair("Machine", R.drawable.machine),
+            Pair("Plant", R.drawable.plant),
+            Pair("Psychic", R.drawable.psychic),
+            Pair("Pyro", R.drawable.pyro),
+            Pair("Reptile", R.drawable.reptile),
+            Pair("Rock", R.drawable.rock),
+            Pair("Sea Serpent", R.drawable.sea_serpent),
+            Pair("Spellcaster", R.drawable.spellcaster),
+            Pair("Thunder", R.drawable.thunder),
+            Pair("Warrior", R.drawable.warrior),
+            Pair("Winged Beast", R.drawable.winged_beast),
+            Pair("Normal", R.drawable.normal),
+            Pair("Field", R.drawable.field),
+            Pair("Equip", R.drawable.equip),
+            Pair("Continuous", R.drawable.continuous),
+            Pair("Quick-Play", R.drawable.quick_play),
+            Pair("Ritual", R.drawable.ritual)
+        )
+
+        fun getAttributeIconResource() = hashMapOf(
+            Pair("dark", R.drawable.dark),
+            Pair("earth", R.drawable.earth),
+            Pair("fire", R.drawable.fire),
+            Pair("light", R.drawable.light),
+            Pair("water", R.drawable.water),
+            Pair("wind", R.drawable.wind),
+            Pair("divine", R.drawable.wind)
+        )
     }
 
     private val types = listOf(
@@ -238,35 +280,11 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
 
 }
 
-data class CardFilter(val name: String, var isSelected: Boolean = false) :
+@Parcelize
+data class CardFilter(val name: String, var isSelected: Boolean = false, val iconResource: Int? = null) :
     Parcelable {
     val isEffectMonster = name != "Normal Monster" && name != "Normal Tuner Monster"
             && name != "Pendulum Normal Monster"
-
-    constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readByte() != 0.toByte()
-    ) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeByte(if (isSelected) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<CardFilter> {
-        override fun createFromParcel(parcel: Parcel): CardFilter {
-            return CardFilter(parcel)
-        }
-
-        override fun newArray(size: Int): Array<CardFilter?> {
-            return arrayOfNulls(size)
-        }
-    }
 }
 
 @Suppress("UNCHECKED_CAST")
