@@ -26,4 +26,5 @@
     <string name="sort_by">SORT BY</string>
     <string name="level">x%s</string>
     <string name="race">(%s)</string>
+    <string name="archetype_title">Archetype</string>
 </resources>

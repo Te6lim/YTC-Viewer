@@ -1,5 +1,7 @@
 package com.te6lim.ytcviewer.details
 
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
@@ -39,5 +41,12 @@ fun TextView.setCardLevel(string: String?) {
 fun TextView.setCardRaceOrAttribute(string: String?) {
     string?.let {
         text = context.getString(R.string.race, string)
+    }
+}
+
+@BindingAdapter("setPropertiesVisibility")
+fun ViewGroup.setVisibility(isNonMonsterCard: Boolean?) {
+    isNonMonsterCard?.let {
+        visibility = if (isNonMonsterCard) View.GONE else View.VISIBLE
     }
 }
