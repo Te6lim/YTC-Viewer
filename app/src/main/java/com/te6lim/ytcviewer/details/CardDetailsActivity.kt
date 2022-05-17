@@ -3,6 +3,7 @@ package com.te6lim.ytcviewer.details
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ActivityDetailsCardBinding
 import com.te6lim.ytcviewer.domain.Card
+import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 
 class CardDetailsActivity : AppCompatActivity() {
 
@@ -51,6 +53,18 @@ class CardDetailsActivity : AppCompatActivity() {
                     context.getString(R.string.archetype_title)
             findViewById<LinearLayout>(R.id.monster_properties).visibility =
                 if (viewModel.card.isNonMonsterCard()) View.GONE else View.VISIBLE
+
+            findViewById<ImageView>(R.id.level).setImageResource(
+                FilterSelectionViewModel.getLevelOrRankIcon(viewModel.card.type!!)
+            )
+            findViewById<ImageView>(R.id.raceIcon).setImageResource(
+                FilterSelectionViewModel.getRaceIconResource()[viewModel.card.race]!!
+            )
+            viewModel.card.attribute?.let {
+                findViewById<ImageView>(R.id.attribute_image).setImageResource(
+                    FilterSelectionViewModel.getAttributeIconResource()[it]!!
+                )
+            } ?: run { findViewById<ImageView>(R.id.attribute_image).visibility = View.GONE }
         }
 
         with(binding.descriptionAndCardSets) {

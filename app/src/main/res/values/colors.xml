@@ -86,4 +86,12 @@
     <color name="normalTrap">#FF69B4</color>
     <color name="continuous">#FFC0CB</color>
     <color name="counter">#AA336A</color>
+    <color name="fusionMonster">#AE23FF</color>
+    <color name="linkedMonster">#03A9F4</color>
+    <color name="pendulumEffectFusionMonster">#90C900</color>
+    <color name="synchroMonster">#FF9422</color>
+    <color name="synchroPendulumEFFectMonster">#44C400</color>
+    <color name="synchroTunerMonster">#FF0066</color>
+    <color name="xyzMonster">#CECECE</color>
+    <color name="xyzPendulumEffectMonster">#EBE1AC</color>
 </resources>

@@ -43,7 +43,15 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
                     Pair("Spirit Monster", R.color.effectMonster),
                     Pair("Toon Monster", R.color.toon),
                     Pair("Tuner Monster", R.color.effectMonster),
-                    Pair("Union Effect Monster", R.color.effectMonster)
+                    Pair("Union Effect Monster", R.color.effectMonster),
+                    Pair("Fusion Monster", R.color.fusionMonster),
+                    Pair("Link Monster", R.color.linkedMonster),
+                    Pair("Pendulum Effect Fusion Monster", R.color.pendulumEffectFusionMonster),
+                    Pair("Synchro Monster", R.color.synchroMonster),
+                    Pair("Synchro Pendulum Effect Monster", R.color.synchroPendulumEFFectMonster),
+                    Pair("Synchro Tuner Monster", R.color.synchroTunerMonster),
+                    Pair("XYZ Monster", R.color.xyzMonster),
+                    Pair("XYZ Pendulum Effect Monster", R.color.xyzPendulumEffectMonster)
                 )
 
                 CardFilterCategory.Race -> hashMapOf(
@@ -134,14 +142,19 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
         )
 
         fun getAttributeIconResource() = hashMapOf(
-            Pair("dark", R.drawable.dark),
-            Pair("earth", R.drawable.earth),
-            Pair("fire", R.drawable.fire),
-            Pair("light", R.drawable.light),
-            Pair("water", R.drawable.water),
-            Pair("wind", R.drawable.wind),
-            Pair("divine", R.drawable.wind)
+            Pair("DARK", R.drawable.dark),
+            Pair("EARTH", R.drawable.earth),
+            Pair("FIRE", R.drawable.fire),
+            Pair("LIGHT", R.drawable.light),
+            Pair("WATER", R.drawable.water),
+            Pair("WIND", R.drawable.wind),
+            Pair("DIVINE", R.drawable.divine)
         )
+
+        fun getLevelOrRankIcon(type: String): Int {
+            return if (type == "XYZ Monster") R.drawable.rank
+            else R.drawable.level
+        }
     }
 
     private val types = listOf(
@@ -161,7 +174,15 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
         CardFilter("Spirit Monster"),
         CardFilter("Toon Monster"),
         CardFilter("Tuner Monster"),
-        CardFilter("Union Effect Monster")
+        CardFilter("Union Effect Monster"),
+        CardFilter("Fusion Monster"),
+        CardFilter("Link Monster"),
+        CardFilter("Pendulum Effect Fusion Monster"),
+        CardFilter("Synchro Monster"),
+        CardFilter("Synchro Pendulum Effect Monster"),
+        CardFilter("Synchro Tuner Monster"),
+        CardFilter("XYZ Monster"),
+        CardFilter("XYZ Pendulum Effect Monster")
     )
 
     private val races = listOf(

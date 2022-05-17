@@ -187,11 +187,10 @@
             android:text="Race" />
 
         <ImageView
-            android:id="@+id/imageView12"
+            android:id="@+id/raceIcon"
             style="@style/small_image_style"
             android:layout_gravity="center"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/dragon" />
+            android:layout_weight="0" />
 
         <TextView
             android:id="@+id/race_text"
