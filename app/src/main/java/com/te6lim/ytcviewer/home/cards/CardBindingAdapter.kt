@@ -4,7 +4,7 @@ import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.te6lim.ytcviewer.domain.Card
+import com.te6lim.ytcviewer.database.Card
 
 @BindingAdapter("setImage")
 fun ImageView.setImage(card: Card?) {

@@ -26,7 +26,11 @@ data class Card(
     @ColumnInfo val cardSets: List<CardSet?>?,
     @ColumnInfo val cardImages: List<CardImage?>?,
     @ColumnInfo val cardPrices: List<CardPrice?>?
-) : Parcelable
+) : Parcelable {
+    fun isNonMonsterCard(): Boolean {
+        return atk == null && def == null && level == null && attribute == null
+    }
+}
 
 @Dao
 interface CardDao {

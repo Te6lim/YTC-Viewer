@@ -2,7 +2,7 @@ package com.te6lim.ytcviewer.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.te6lim.ytcviewer.domain.Card
+import com.te6lim.ytcviewer.database.Card
 
 class CardDetailsViewModel(val card: Card) : ViewModel() {
 

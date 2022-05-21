@@ -11,8 +11,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
+import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.databinding.ActivityDetailsCardBinding
-import com.te6lim.ytcviewer.domain.Card
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 
 class CardDetailsActivity : AppCompatActivity() {
