@@ -19,7 +19,6 @@ import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.details.CardDetailsActivity
-import com.te6lim.ytcviewer.domain.Card
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity
@@ -73,7 +72,7 @@ class CardsFragment : Fragment() {
             lifecycleOwner = this@CardsFragment
 
             adapter = CardListAdapter { (cardsViewModel::setSelectedCard)(it) }
-            cards.adapter = adapter
+            cards.adapter = adapter.withLoadStateFooter(CardDataLoadStateAdapter { adapter.retry() })
 
             buildChipsIntoChipGroup(LayoutInflater.from(cardFilter.context))
 
@@ -150,7 +149,7 @@ class CardsFragment : Fragment() {
         }
     }
 
-    private suspend fun submitDataFlow(pagingDataFlow: Flow<PagingData<Card>>?) {
+    private suspend fun submitDataFlow(pagingDataFlow: Flow<PagingData<UiItem>>?) {
         lifecycleScope.launch {
             pagingDataFlow?.collectLatest { adapter.submitData(it) }
         }

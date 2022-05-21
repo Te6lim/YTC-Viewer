@@ -6,8 +6,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.database.CardDatabase
-import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.SortItem
@@ -108,8 +108,9 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     fun getCardStream(
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>? = null, searchKey: String?, sortType:
         SortItem
-    ): Flow<PagingData<DatabaseCard>> {
-        return Pager(config = PagingConfig(pageSize = PAGE_SIZE),
+    ): Flow<PagingData<Card>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
                 CardPagingSource(sortType.isAsc, object : CardPagingSource.Callback {
 

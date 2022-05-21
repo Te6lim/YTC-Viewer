@@ -2,7 +2,7 @@ package com.te6lim.ytcviewer.network
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import com.te6lim.ytcviewer.database.DatabaseCard
+import com.te6lim.ytcviewer.database.Card
 import kotlinx.parcelize.Parcelize
 
 open class NetworkCard(
@@ -75,9 +75,9 @@ class CardPrice(
     val coolStuffIncPrice: String? = null
 ) : Parcelable
 
-fun List<NetworkCard>.toDatabaseCard(isAsc: Boolean): List<DatabaseCard> {
+fun List<NetworkCard>.toLocalCard(isAsc: Boolean): List<Card> {
     val list = map {
-        DatabaseCard(
+        Card(
             networkId = it.id, name = it.name, type = it.type, desc = it.desc, race = it.race, atk = it.atk,
             def = it.def, level = it.level, attribute = it.attribute, archetype = it.archetype,
             cardSets = it.cardSets, cardImages = it.cardImages, cardPrices = it.cardPrices

@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [DatabaseCard::class, RemoteKey::class], version = 1, exportSchema = false
+    entities = [Card::class, RemoteKey::class], version = 1, exportSchema = false
 )
 @TypeConverters(Converter::class)
 abstract class CardDatabase : RoomDatabase() {

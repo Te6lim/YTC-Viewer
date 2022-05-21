@@ -2,15 +2,15 @@ package com.te6lim.ytcviewer.home.cards
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.te6lim.ytcviewer.database.DatabaseCard
+import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
-import com.te6lim.ytcviewer.network.toDatabaseCard
+import com.te6lim.ytcviewer.network.toLocalCard
 
 class CardPagingSource(
     private val sortAsc: Boolean, val callback: Callback
-) : PagingSource<Int, DatabaseCard>() {
-    override fun getRefreshKey(state: PagingState<Int, DatabaseCard>): Int? {
+) : PagingSource<Int, Card>() {
+    override fun getRefreshKey(state: PagingState<Int, Card>): Int? {
         return state.anchorPosition?.let { position ->
             state.closestPageToPosition(position)?.prevKey?.plus(PAGE_SIZE) ?: state.closestPageToPosition(
                 position
@@ -18,7 +18,7 @@ class CardPagingSource(
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DatabaseCard> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Card> {
         return try {
             if (sortAsc) {
                 val key = params.key ?: 0
@@ -29,7 +29,7 @@ class CardPagingSource(
 
                 callback.setIsDataEmpty(false)
 
-                LoadResult.Page(response.data.toDatabaseCard(sortAsc), prevKey, nextKey)
+                LoadResult.Page(response.data.toLocalCard(sortAsc), prevKey, nextKey)
             } else {
                 var key = params.key ?: 0
                 var response = callback.getNetworkCardsAsync(key)
@@ -44,7 +44,7 @@ class CardPagingSource(
 
                 callback.setIsDataEmpty(false)
 
-                LoadResult.Page(response.data.toDatabaseCard(sortAsc), prevKey, nextKey)
+                LoadResult.Page(response.data.toLocalCard(sortAsc), prevKey, nextKey)
             }
         } catch (e: IndexOutOfBoundsException) {
             callback.setIsDataEmpty(true)

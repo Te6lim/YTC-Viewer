@@ -2,10 +2,11 @@ package com.te6lim.ytcviewer.home.cards
 
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
+import androidx.paging.insertFooterItem
 import androidx.paging.map
+import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.database.CardDatabase
-import com.te6lim.ytcviewer.database.toDomainCard
-import com.te6lim.ytcviewer.domain.Card
+import com.te6lim.ytcviewer.database.toUiItem
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.SortItem
@@ -63,8 +64,8 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     private fun getCardPagingDataFlow(
         filters: Map<CardFilterCategory, List<CardFilter>>?, searchKey: String?, sortType: SortItem
     ) = repo.getCardStream(filters, searchKey, sortType).map { pagingData ->
-        pagingData.map { card -> card.toDomainCard() }
-    }.cachedIn(viewModelScope)
+        pagingData.map { card -> card.toUiItem() }
+    }.map { it.insertFooterItem(item = UiItem.Footer) }.cachedIn(viewModelScope)
 
     private fun selectedChipsCopy(): MutableMap<String, Boolean> {
         val chips = mutableMapOf<String, Boolean>()

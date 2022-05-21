@@ -1,14 +1,17 @@
 package com.te6lim.ytcviewer.database
 
+import android.os.Parcelable
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.te6lim.ytcviewer.domain.Card
+import com.te6lim.ytcviewer.home.cards.UiItem
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "card")
-data class DatabaseCard(
+@Parcelize
+data class Card(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     @ColumnInfo val networkId: Long,
     @ColumnInfo val name: String,
@@ -23,18 +26,18 @@ data class DatabaseCard(
     @ColumnInfo val cardSets: List<CardSet?>?,
     @ColumnInfo val cardImages: List<CardImage?>?,
     @ColumnInfo val cardPrices: List<CardPrice?>?
-)
+) : Parcelable
 
 @Dao
 interface CardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(card: DatabaseCard): Long
+    suspend fun insert(card: Card): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMany(cards: List<DatabaseCard>): List<Long>
+    suspend fun insertMany(cards: List<Card>): List<Long>
 
     @Query("SELECT * FROM card")
-    fun getSource(): PagingSource<Int, DatabaseCard>
+    fun getSource(): PagingSource<Int, Card>
 
     @Query("DELETE FROM card")
     suspend fun clear()
@@ -60,10 +63,6 @@ interface RemoteKeysDao {
     suspend fun clear()
 }
 
-fun DatabaseCard.toDomainCard(): Card {
-    return Card(
-        id = id, networkId = networkId, name = name, type = type, desc = desc, race = race, atk = atk,
-        def = def, level = level, attribute = attribute, archetype = archetype, cardSets = cardSets,
-        cardImages = cardImages, cardPrices = cardPrices
-    )
+fun Card.toUiItem(): UiItem {
+    return UiItem.CardItem(this)
 }

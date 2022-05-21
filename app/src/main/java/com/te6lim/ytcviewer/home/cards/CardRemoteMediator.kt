@@ -3,22 +3,22 @@ package com.te6lim.ytcviewer.home.cards
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.database.CardDatabase
-import com.te6lim.ytcviewer.database.DatabaseCard
 import com.te6lim.ytcviewer.database.RemoteKey
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
-import com.te6lim.ytcviewer.network.toDatabaseCard
+import com.te6lim.ytcviewer.network.toLocalCard
 import retrofit2.HttpException
 
 @OptIn(androidx.paging.ExperimentalPagingApi::class)
 class CardRemoteMediator(
     private val db: CardDatabase, val callback: CardPagingSource.Callback
-) : RemoteMediator<Int, DatabaseCard>() {
+) : RemoteMediator<Int, Card>() {
 
     override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, DatabaseCard>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, Card>): MediatorResult {
         return getKeyByLoadType(loadType, state)?.let { newOffset ->
             getCardsOverHttpAndPerformCache(newOffset, loadType)
         } ?: MediatorResult.Success(false)
@@ -44,7 +44,7 @@ class CardRemoteMediator(
         val prevKey = if (response.meta.pagesRemaining == response.meta.totalPages) null
         else newOffset - PAGE_SIZE
         if (loadType == LoadType.REFRESH) clearDb()
-        val cardIds = db.cardDao.insertMany(response.data.toDatabaseCard(true))
+        val cardIds = db.cardDao.insertMany(response.data.toLocalCard(true))
         db.remoteKeysDao.insertMany(cardIds.map { cardId ->
             RemoteKey(cardId, nextKey, prevKey)
         })
@@ -56,7 +56,7 @@ class CardRemoteMediator(
         db.remoteKeysDao.clear()
     }
 
-    private suspend fun getKeyByLoadType(loadType: LoadType, state: PagingState<Int, DatabaseCard>): Int? =
+    private suspend fun getKeyByLoadType(loadType: LoadType, state: PagingState<Int, Card>): Int? =
         when (loadType) {
             LoadType.REFRESH -> {
                 state.getKeyByAnchorPosition()
@@ -71,7 +71,7 @@ class CardRemoteMediator(
             }
         }
 
-    private suspend fun PagingState<Int, DatabaseCard>.getKeyByAnchorPosition(): Int {
+    private suspend fun PagingState<Int, Card>.getKeyByAnchorPosition(): Int {
         return anchorPosition?.let { position ->
             closestItemToPosition(position)?.let { card ->
                 db.remoteKeysDao.get(card.id)
@@ -81,13 +81,13 @@ class CardRemoteMediator(
         } ?: 0
     }
 
-    private suspend fun PagingState<Int, DatabaseCard>.getNextKey(): Int? {
+    private suspend fun PagingState<Int, Card>.getNextKey(): Int? {
         return pages.lastOrNull { page -> page.data.isNotEmpty() }?.data?.lastOrNull()?.let { card ->
             db.remoteKeysDao.get(card.id)?.nextKey
         }
     }
 
-    private suspend fun PagingState<Int, DatabaseCard>.getPrevKey(): Int? {
+    private suspend fun PagingState<Int, Card>.getPrevKey(): Int? {
         return pages.firstOrNull { page -> page.data.isNotEmpty() }?.data?.lastOrNull()?.let { card ->
             db.remoteKeysDao.get(card.id)?.prevKey
         }
