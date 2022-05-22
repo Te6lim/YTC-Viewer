@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -39,6 +40,8 @@ class CardsFragment : Fragment() {
     private lateinit var adapter: CardListAdapter
 
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
+    private lateinit var loadState: LoadState
 
     companion object {
         const val FILTER_CATEGORY = "filter_category"
@@ -76,25 +79,9 @@ class CardsFragment : Fragment() {
             adapter = CardListAdapter { (cardsViewModel::setSelectedCard)(it) }
             cards.adapter = adapter.withLoadStateFooter(CardDataLoadStateAdapter { adapter.retry() })
 
-            var state: LoadState = LoadState.NotLoading(false)
+            loadState = LoadState.NotLoading(false)
 
-            adapter.addLoadStateListener {
-                state = it.source.append
-            }
-
-
-            val layoutManager = (cards.layoutManager as GridLayoutManager)
-            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    when (position) {
-                        adapter.itemCount -> {
-                            if (state is LoadState.Error) return layoutManager.spanCount
-                            return 1
-                        }
-                        else -> return 1
-                    }
-                }
-            }
+            (cards.layoutManager as GridLayoutManager).changeSpanSizeOnPagingState(loadState)
 
             buildChipsIntoChipGroup(LayoutInflater.from(cardFilter.context))
 
@@ -103,6 +90,20 @@ class CardsFragment : Fragment() {
             setupViewModelObservers()
 
             return root
+        }
+    }
+
+    private fun GridLayoutManager.changeSpanSizeOnPagingState(state: LoadState) {
+        spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                when (position) {
+                    adapter.itemCount -> {
+                        if (state is LoadState.Error || state is LoadState.NotLoading) return spanCount
+                        return 1
+                    }
+                    else -> return 1
+                }
+            }
         }
     }
 
@@ -127,6 +128,34 @@ class CardsFragment : Fragment() {
             }
 
         })
+
+        reconnectButton.setOnClickListener { adapter.retry() }
+
+        adapter.addLoadStateListener { loadStates ->
+            loadState = loadStates.source.append
+            when (loadStates.source.append) {
+                is LoadState.Error -> {
+                    if (searchDescription.isVisible) {
+                        progressBar.visibility = View.GONE
+                        reconnectButton.visibility = View.VISIBLE
+                    }
+                }
+
+                is LoadState.Loading -> {
+                    if (searchDescription.isVisible) {
+                        progressBar.visibility = View.VISIBLE
+                        reconnectButton.visibility = View.GONE
+                    }
+                }
+
+                is LoadState.NotLoading -> {
+                    if (searchDescription.isVisible) {
+                        progressBar.visibility = View.GONE
+                        reconnectButton.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
     }
 
     private fun setupViewModelObservers() {

@@ -126,13 +126,37 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="17dp"
                             android:text="@string/search_description"
                             android:textAlignment="center"
                             android:textColor="@color/searchDescriptorColor"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/frame"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+                        <FrameLayout
+                            android:id="@+id/frame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
+
+                            <ProgressBar
+                                android:id="@+id/progressBar"
+                                style="?android:attr/progressBarStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center" />
+
+                            <Button
+                                android:id="@+id/reconnect_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/retry"
+                                android:visibility="gone" />
+                        </FrameLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
