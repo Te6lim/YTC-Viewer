@@ -32,7 +32,7 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-const val PAGE_SIZE = 10
+const val PAGE_SIZE = 9
 
 interface YtcApiService {
 

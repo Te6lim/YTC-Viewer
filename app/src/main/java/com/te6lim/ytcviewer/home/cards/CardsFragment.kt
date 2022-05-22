@@ -12,7 +12,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
@@ -73,6 +75,26 @@ class CardsFragment : Fragment() {
 
             adapter = CardListAdapter { (cardsViewModel::setSelectedCard)(it) }
             cards.adapter = adapter.withLoadStateFooter(CardDataLoadStateAdapter { adapter.retry() })
+
+            var state: LoadState = LoadState.NotLoading(false)
+
+            adapter.addLoadStateListener {
+                state = it.source.append
+            }
+
+
+            val layoutManager = (cards.layoutManager as GridLayoutManager)
+            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    when (position) {
+                        adapter.itemCount -> {
+                            if (state is LoadState.Error) return layoutManager.spanCount
+                            return 1
+                        }
+                        else -> return 1
+                    }
+                }
+            }
 
             buildChipsIntoChipGroup(LayoutInflater.from(cardFilter.context))
 

@@ -46,7 +46,7 @@ class CardRemoteMediator(
         if (loadType == LoadType.REFRESH) clearDb()
         val cardIds = db.cardDao.insertMany(response.data.toLocalCard(true))
         db.remoteKeysDao.insertMany(cardIds.map { cardId ->
-            RemoteKey(cardId, nextKey, prevKey)
+            RemoteKey(cardId, newOffset, nextKey, prevKey)
         })
         return MediatorResult.Success(response.data.isEmpty())
     }

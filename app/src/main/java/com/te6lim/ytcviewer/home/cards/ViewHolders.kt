@@ -1,8 +1,8 @@
 package com.te6lim.ytcviewer.home.cards
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
@@ -49,10 +49,9 @@ class RetryButtonViewHolder(
     }
 
     fun bind(state: LoadState) {
-        retryButtonBinding.retryButton.setOnClickListener {
-            retry()
-        }
-
-        retryButtonBinding.root.isVisible = state is LoadState.Error
+        retryButtonBinding.retryButton.setOnClickListener { retry() }
+        if (state is LoadState.Error) {
+            retryButtonBinding.retryButtonContainer.visibility = View.VISIBLE
+        } else retryButtonBinding.retryButtonContainer.visibility = View.GONE
     }
 }

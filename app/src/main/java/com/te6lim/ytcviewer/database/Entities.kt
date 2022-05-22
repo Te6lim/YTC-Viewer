@@ -50,6 +50,7 @@ interface CardDao {
 @Entity(tableName = "remote_keys")
 data class RemoteKey(
     @PrimaryKey val id: Long,
+    val key: Int?,
     val nextKey: Int?,
     val prevKey: Int?
 )
