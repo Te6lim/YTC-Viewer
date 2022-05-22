@@ -1,5 +1,8 @@
 package com.te6lim.ytcviewer.home.cards
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,10 +51,28 @@ class RetryButtonViewHolder(
         }
     }
 
+    @SuppressLint("Recycle")
     fun bind(state: LoadState) {
-        retryButtonBinding.retryButton.setOnClickListener { retry() }
+        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.03f)
+        val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.03f)
+        val animator = ObjectAnimator.ofPropertyValuesHolder(
+            retryButtonBinding.retryButton, scaleX, scaleY
+        ).apply {
+            repeatCount = 1
+            repeatMode = ObjectAnimator.REVERSE
+            duration = 80
+        }
+        retryButtonBinding.retryButton.setOnClickListener {
+            animator.performAnimation()
+            retry()
+        }
         if (state is LoadState.Error) {
             retryButtonBinding.retryButtonContainer.visibility = View.VISIBLE
         } else retryButtonBinding.retryButtonContainer.visibility = View.GONE
+    }
+
+    private fun ObjectAnimator.performAnimation() {
+        end()
+        start()
     }
 }
