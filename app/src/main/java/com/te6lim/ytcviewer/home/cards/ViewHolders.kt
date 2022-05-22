@@ -30,9 +30,8 @@ class CardViewHolder(
 
     fun bind(card: Card) {
         itemCardBinding.card = card
-        itemCardBinding.cardItem.setOnClickListener {
-            clickAction(card)
-        }
+        itemCardBinding.cardItem.setOnClickListener { clickAction(card) }
+        itemCardBinding.executePendingBindings()
     }
 
 }
@@ -69,6 +68,8 @@ class RetryButtonViewHolder(
         if (state is LoadState.Error) {
             retryButtonBinding.retryButtonContainer.visibility = View.VISIBLE
         } else retryButtonBinding.retryButtonContainer.visibility = View.GONE
+
+        retryButtonBinding.executePendingBindings()
     }
 
     private fun ObjectAnimator.performAnimation() {
