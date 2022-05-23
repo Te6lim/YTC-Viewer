@@ -29,7 +29,7 @@
             app:srcCompat="@drawable/pack_of_playing_cards" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/setTitle_text"
             style="@style/card_property_value_style"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,14 +38,14 @@
             android:layout_marginEnd="8dp"
             android:text="Battles of Legend: Relentless Revenge"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textView16"
-            app:layout_constraintEnd_toStartOf="@+id/textView14"
+            app:layout_constraintBottom_toTopOf="@+id/rarity_text"
+            app:layout_constraintEnd_toStartOf="@+id/price_text"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/imageView3"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/price_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -57,7 +57,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/rarity_text"
             style="@style/card_property_value_style"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -67,9 +67,9 @@
             android:text="Super Rare"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView14"
+            app:layout_constraintEnd_toStartOf="@+id/price_text"
             app:layout_constraintStart_toEndOf="@+id/textView17"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+            app:layout_constraintTop_toBottomOf="@+id/setTitle_text" />
 
         <TextView
             android:id="@+id/textView17"
@@ -80,7 +80,7 @@
             android:text="Rarity"
             android:textColor="@color/rarityAndPriceColor"
             android:textSize="12sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView16"
+            app:layout_constraintBaseline_toBaselineOf="@+id/rarity_text"
             app:layout_constraintStart_toEndOf="@+id/imageView3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

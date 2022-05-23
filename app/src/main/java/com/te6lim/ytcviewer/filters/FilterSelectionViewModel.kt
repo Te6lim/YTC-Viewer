@@ -77,7 +77,8 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
                     Pair("Spellcaster", R.color.spellCaster),
                     Pair("Thunder", R.color.lightning),
                     Pair("Warrior", R.color.warrior),
-                    Pair("Winged Beast", R.color.beast)
+                    Pair("Winged Beast", R.color.beast),
+                    Pair("Wyrm", R.color.dragon)
                 )
 
                 CardFilterCategory.Attribute -> hashMapOf(
@@ -133,6 +134,7 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
             Pair("Thunder", R.drawable.thunder),
             Pair("Warrior", R.drawable.warrior),
             Pair("Winged Beast", R.drawable.winged_beast),
+            Pair("Wyrm", R.drawable.dragon),
             Pair("Normal", R.drawable.normal),
             Pair("Field", R.drawable.field),
             Pair("Equip", R.drawable.equip),

@@ -3,9 +3,6 @@ package com.te6lim.ytcviewer.details
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -38,37 +35,34 @@ class CardDetailsActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        with(binding.cardProperties) {
-            findViewById<TextView>(R.id.cardType_text).text = viewModel.card.type
-            findViewById<TextView>(R.id.atk_text).text = viewModel.card.atk.toString()
-            findViewById<TextView>(R.id.def_text).text = viewModel.card.def.toString()
-            findViewById<TextView>(R.id.level_text).text = getString(
+        with(binding) {
+            cardSetList.adapter = CardSetListAdapter().apply { submitList(card.cardSets) }
+            cardTypeText.text = viewModel.card.type
+            atkText.text = viewModel.card.atk.toString()
+            defText.text = viewModel.card.def.toString()
+            levelText.text = getString(
                 R.string.level, viewModel.card.level.toString()
             )
-            findViewById<TextView>(R.id.race_text).text = getString(R.string.race, viewModel.card.race)
-            findViewById<TextView>(R.id.attribute_archetype_text).text =
+            raceText.text = getString(R.string.race, viewModel.card.race)
+            attributeArchetypeText.text =
                 getString(R.string.race, viewModel.card.attribute)
             if (viewModel.card.isNonMonsterCard())
-                findViewById<TextView>(R.id.attribute_archetype_title_text).text =
-                    context.getString(R.string.archetype_title)
-            findViewById<LinearLayout>(R.id.monster_properties).visibility =
+                attributeArchetypeTitleText.text = getString(R.string.archetype_title)
+            monsterProperties.visibility =
                 if (viewModel.card.isNonMonsterCard()) View.GONE else View.VISIBLE
 
-            findViewById<ImageView>(R.id.level).setImageResource(
+            level.setImageResource(
                 FilterSelectionViewModel.getLevelOrRankIcon(viewModel.card.type!!)
             )
-            findViewById<ImageView>(R.id.raceIcon).setImageResource(
+            raceIcon.setImageResource(
                 FilterSelectionViewModel.getRaceIconResource()[viewModel.card.race]!!
             )
             viewModel.card.attribute?.let {
-                findViewById<ImageView>(R.id.attribute_image).setImageResource(
+                attributeImage.setImageResource(
                     FilterSelectionViewModel.getAttributeIconResource()[it]!!
                 )
-            } ?: run { findViewById<ImageView>(R.id.attribute_image).visibility = View.GONE }
-        }
-
-        with(binding.descriptionAndCardSets) {
-            findViewById<TextView>(R.id.description_text).text = viewModel.card.desc
+            } ?: run { attributeImage.visibility = View.GONE }
+            descriptionText.text = viewModel.card.desc
         }
 
         supportActionBar?.title = card.name

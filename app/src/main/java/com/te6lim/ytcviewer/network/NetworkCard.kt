@@ -20,44 +20,15 @@ open class NetworkCard(
     @Json(name = "card_images") val cardImages: List<CardImage?>?,
     @Json(name = "card_prices") val cardPrices: List<CardPrice?>?
 ) {
-
-    /*data class NetworkMonsterCard(
-        override val id: Long,
-        override val name: String,
-        val type: String?,
-        val desc: String?,
-        val race: String?,
-        val atk: Int? = null,
-        val def: Int? = null,
-        val level: Int? = null,
-        val attribute: String?,
-        @Json(name = "card_sets") val cardSets: List<CardSet?>?,
-        @Json(name = "card_images") override val cardImages: List<CardImage?>?,
-        @Json(name = "card_prices") val cardPrices: List<CardPrice?>?
-
-    ) : NetworkCard(id, name, cardImages)
-
-    data class NetworkNonMonsterCard(
-        override val id: Long,
-        override val name: String,
-        val type: String?,
-        val desc: String?,
-        val race: String?,
-        val archetype: String? = null,
-        @Json(name = "card_sets") val cardSets: List<CardSet?>?,
-        @Json(name = "card_images") override val cardImages: List<CardImage?>?,
-        @Json(name = "card_prices") val cardPrices: List<CardPrice?>?
-
-    ) : NetworkCard(id, name, cardImages)*/
 }
 
 @Parcelize
 class CardSet(
-    val setName: String? = null,
-    val setCode: String? = null,
-    val setRarity: String? = null,
-    val setRarityCode: String? = null,
-    val setPrice: String? = null
+    @Json(name = "set_name") val setName: String? = null,
+    @Json(name = "set_code") val setCode: String? = null,
+    @Json(name = "set_rarity") val setRarity: String? = null,
+    @Json(name = "set_rarity_code") val setRarityCode: String? = null,
+    @Json(name = "set_price") val setPrice: String? = null
 ) : Parcelable
 
 @Parcelize
@@ -68,11 +39,11 @@ class CardImage(
 
 @Parcelize
 class CardPrice(
-    val cardMarketPrice: String? = null,
-    val tcgPlayerPrice: String? = null,
-    val ebayPrice: String? = null,
-    val amazonPrice: String? = null,
-    val coolStuffIncPrice: String? = null
+    @Json(name = "card_market_price") val cardMarketPrice: String? = null,
+    @Json(name = "tcgplayer_price") val tcgPlayerPrice: String? = null,
+    @Json(name = "ebay_price") val ebayPrice: String? = null,
+    @Json(name = "amazon_price") val amazonPrice: String? = null,
+    @Json(name = "collstuffinc_price") val coolStuffIncPrice: String? = null
 ) : Parcelable
 
 fun List<NetworkCard>.toLocalCard(isAsc: Boolean): List<Card> {
