@@ -25,7 +25,7 @@ class CardPagingSource(
                 val response = callback.getNetworkCardsAsync(key)
 
                 val prevKey = if (key == 0) null else key - PAGE_SIZE
-                val nextKey = if (response.meta.nextPage == null) null else response.meta.nextPageOffset
+                val nextKey = if (response.meta.pagesRemaining == 0) null else response.meta.nextPageOffset
 
                 callback.setIsDataEmpty(false)
 
@@ -39,7 +39,7 @@ class CardPagingSource(
                     response = callback.getNetworkCardsAsync(key)
                 }
 
-                val prevKey = if (response.meta.nextPage == null) null else response.meta.nextPageOffset
+                val prevKey = if (response.meta.pagesRemaining == 0) null else response.meta.nextPageOffset
                 val nextKey = if (key == 0) null else key - PAGE_SIZE
 
                 callback.setIsDataEmpty(false)

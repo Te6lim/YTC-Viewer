@@ -13,7 +13,9 @@ class CardListAdapter(private val clickAction: (Card) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind((it as UiItem.CardItem).card) }
+        getItem(position)?.let {
+            if (it is UiItem.CardItem) holder.bind(it.card)
+        }
     }
 }
 
