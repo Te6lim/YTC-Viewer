@@ -53,6 +53,8 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     val isPagingDataEmpty = repo.isEmpty
 
+    val connectionStatus = repo.connectionStatus
+
     init {
         val map = mutableMapOf<String, Boolean>()
         for (category in CardFilterCategory.values()) {
@@ -180,6 +182,10 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     fun setSelectedCard(card: Card?) {
         _selectedCard.value = card
+    }
+
+    fun resetLoadCount() {
+        repo.resetLoadCount()
     }
 }
 

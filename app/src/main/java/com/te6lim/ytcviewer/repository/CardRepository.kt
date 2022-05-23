@@ -13,6 +13,7 @@ import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.SortItem
 import com.te6lim.ytcviewer.home.cards.CardPagingSource
 import com.te6lim.ytcviewer.home.cards.CardsViewModel
+import com.te6lim.ytcviewer.network.NetworkStatus
 import com.te6lim.ytcviewer.network.PAGE_SIZE
 import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.YtcApi
@@ -23,6 +24,12 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     private val _isEmpty = MutableLiveData<Boolean>()
     val isEmpty: LiveData<Boolean>
         get() = _isEmpty
+
+    private val _connectionStatus = MutableLiveData<NetworkStatus>()
+    val connectionStatus: LiveData<NetworkStatus>
+        get() = _connectionStatus
+
+    private var currentPagingSource: CardPagingSource? = null
 
     private suspend fun getCards(
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, sortQuery: String, offset: Int
@@ -104,28 +111,42 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
         }
     }
 
+    fun resetLoadCount() {
+        currentPagingSource?.let {
+            it.loadCount = 0
+        }
+    }
+
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(
-        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>? = null, searchKey: String?, sortType:
-        SortItem
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>? = null, searchKey: String?,
+        sortType: SortItem
     ): Flow<PagingData<Card>> {
+        val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.Callback {
+
+            override suspend fun getNetworkCardsAsync(offset: Int): Response {
+                return if (selectedCardFilters != null)
+                    getCards(
+                        selectedCardFilters, sortType.query, offset
+                    )
+                else getCardsBySearchKey(searchKey ?: "", sortType.query, offset)
+            }
+
+            override fun setIsDataEmpty(value: Boolean) {
+                if (_isEmpty.value != value) _isEmpty.value = value
+            }
+
+            override fun setNetworkStatus(status: NetworkStatus) {
+                _connectionStatus.value = status
+            }
+
+        })
+
+        currentPagingSource = pagingSource
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
-                CardPagingSource(sortType.isAsc, object : CardPagingSource.Callback {
-
-                    override suspend fun getNetworkCardsAsync(offset: Int): Response {
-                        return if (selectedCardFilters != null)
-                            getCards(
-                                selectedCardFilters, sortType.query, offset
-                            )
-                        else getCardsBySearchKey(searchKey ?: "", sortType.query, offset)
-                    }
-
-                    override fun setIsDataEmpty(value: Boolean) {
-                        if (_isEmpty.value != value) _isEmpty.value = value
-                    }
-                })
+                pagingSource
             }).flow
     }
 

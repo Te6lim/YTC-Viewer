@@ -5,8 +5,9 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.te6lim.ytcviewer.database.Card
 
-class CardListAdapter(private val clickAction: (Card) -> Unit) :
-    PagingDataAdapter<UiItem, CardViewHolder>(DiffCallback) {
+class CardListAdapter(
+    private val clickAction: (Card) -> Unit
+) : PagingDataAdapter<UiItem, CardViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         return CardViewHolder.create(parent, clickAction)

@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +30,7 @@ import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.FILTER_LIS
 import com.te6lim.ytcviewer.home.HomeBottomSheetFragment
 import com.te6lim.ytcviewer.home.MainActivity
 import com.te6lim.ytcviewer.home.SortItem
+import com.te6lim.ytcviewer.network.NetworkStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -85,8 +87,13 @@ class CardsFragment : Fragment() {
             viewModel = cardsViewModel
             lifecycleOwner = this@CardsFragment
 
-            adapter = CardListAdapter { (cardsViewModel::setSelectedCard)(it) }
-            cards.adapter = adapter.withLoadStateFooter(CardDataLoadStateAdapter { adapter.retry() })
+            adapter = CardListAdapter {
+                (cardsViewModel::setSelectedCard)(it)
+            }
+            cards.adapter = adapter.withLoadStateFooter(CardDataLoadStateAdapter {
+                cardsViewModel.resetLoadCount()
+                adapter.retry()
+            })
 
             loadState = LoadState.NotLoading(false)
 
@@ -139,33 +146,12 @@ class CardsFragment : Fragment() {
         })
 
         reconnectButton.setOnClickListener {
-            animator.apply { repeatCount = 1 }.startAnimation()
+            cardsViewModel.resetLoadCount()
             adapter.retry()
         }
 
         adapter.addLoadStateListener { loadStates ->
             loadState = loadStates.source.append
-
-            if (loadStates.source.append is LoadState.Loading) {
-                reconnectButton.visibility = View.GONE
-                networkStatusImage.setImageResource(R.drawable.ic_connecting)
-                networkStatusText.text = "connecting..."
-                return@addLoadStateListener
-            }
-
-            if (loadStates.source.append is LoadState.NotLoading) {
-                reconnectButton.visibility = View.VISIBLE
-                if (networkStatusIndicator.alpha == 1f) animator.apply { repeatCount = 0 }.reverseAnimation()
-                return@addLoadStateListener
-            }
-
-            if (loadStates.source.append is LoadState.Error) {
-                reconnectButton.visibility = View.VISIBLE
-                networkStatusImage.setImageResource(R.drawable.ic_connection_error)
-                networkStatusText.text = "connection error"
-                animator.apply { repeatCount = 0 }.startAnimation()
-                return@addLoadStateListener
-            }
         }
     }
 
@@ -215,6 +201,37 @@ class CardsFragment : Fragment() {
                     intent.putExtra("card", it)
                     startActivity(intent)
                     setSelectedCard(null)
+                }
+            }
+
+            connectionStatus.observe(viewLifecycleOwner) {
+                when (it) {
+                    NetworkStatus.LOADING -> {
+                        if (binding.searchDescription.isVisible) {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.reconnectButton.visibility = View.GONE
+                        }
+                        binding.networkStatusImage.setImageResource(R.drawable.ic_connecting)
+                        binding.networkStatusText.text = "connecting..."
+                        animator.startAnimation()
+                    }
+
+                    NetworkStatus.ERROR -> {
+                        if (binding.searchDescription.isVisible) {
+                            binding.progressBar.visibility = View.GONE
+                            binding.reconnectButton.visibility = View.VISIBLE
+                        }
+                        binding.networkStatusImage.setImageResource(R.drawable.ic_connection_error)
+                        binding.networkStatusText.text = "connection error"
+                        animator.apply { repeatCount = 0 }.startAnimation()
+                    }
+
+                    NetworkStatus.DONE -> {
+                        if (binding.networkStatusIndicator.alpha == 1f)
+                            animator.apply { repeatCount = 0 }.reverseAnimation()
+                    }
+                    else -> {
+                    }
                 }
             }
 

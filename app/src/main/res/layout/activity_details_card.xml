@@ -11,18 +11,18 @@
             type="com.te6lim.ytcviewer.details.CardDetailsViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/cardDetailsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        app:layoutDescription="@xml/fragment_card_details_motion"
+        app:layoutDescription="@xml/fragment_details_card_scene2"
         tools:context="com.te6lim.ytcviewer.details.CardDetailsFragment">
 
         <include
             android:id="@+id/toolbar"
             layout="@layout/plain_toolbar"
-            android:background="@color/toolbarColor"
+            android:background="@color/background"
             android:elevation="@dimen/small_spacing"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,6 +30,7 @@
             app:titleTextAppearance="@style/titleTextStyle" />
 
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +46,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout4"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
@@ -60,21 +61,22 @@
                         android:id="@+id/card_image"
                         android:layout_width="160dp"
                         android:layout_height="234dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginBottom="4dp"
                         android:scaleType="centerCrop"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:setLargeImage="@{viewModel.card.cardImages[0].imageUrl}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:setLargeImage="@{viewModel.card.cardImages[0].imageUrl}"
                         tools:srcCompat="@drawable/tornado_dragon" />
-
-                    <include
-                        android:id="@+id/cardProperties"
-                        layout="@layout/card_properties_large_screen" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <include
+                    android:id="@+id/cardProperties"
+                    layout="@layout/card_properties_small_screen" />
 
                 <include
                     android:id="@+id/descriptionAndCardSets"
@@ -85,11 +87,11 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
+                    app:layout_constraintTop_toBottomOf="@+id/cardProperties" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>
