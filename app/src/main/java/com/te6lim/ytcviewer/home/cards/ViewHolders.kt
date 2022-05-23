@@ -50,17 +50,18 @@ class RetryButtonViewHolder(
         }
     }
 
+    private val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.03f)
+    private val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.03f)
+    private val animator = ObjectAnimator.ofPropertyValuesHolder(
+        retryButtonBinding.retryButton, scaleX, scaleY
+    ).apply {
+        repeatCount = 1
+        repeatMode = ObjectAnimator.REVERSE
+        duration = 80
+    }
+
     @SuppressLint("Recycle")
     fun bind(state: LoadState) {
-        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.03f)
-        val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.03f)
-        val animator = ObjectAnimator.ofPropertyValuesHolder(
-            retryButtonBinding.retryButton, scaleX, scaleY
-        ).apply {
-            repeatCount = 1
-            repeatMode = ObjectAnimator.REVERSE
-            duration = 80
-        }
         retryButtonBinding.retryButton.setOnClickListener {
             animator.performAnimation()
             retry()

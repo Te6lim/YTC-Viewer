@@ -60,52 +60,8 @@
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             tools:visibility="visible" />
 
-        <LinearLayout
-            android:id="@+id/constraintLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:src="@drawable/ic_connection_error" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="connecting..." />
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cards"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/background"
-            android:scrollbarSize="@dimen/small_spacing"
-            android:scrollbars="vertical"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.50"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardFilter"
-            app:layout_constraintVertical_bias="1.0"
-            app:spanCount="3"
-            tools:itemCount="20"
-            tools:listitem="@layout/item_card" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout5"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinatorLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -113,18 +69,42 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardFilter">
 
-            <ScrollView
-                android:id="@+id/info_screen"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout5"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <FrameLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cards"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:background="@color/background"
+                    android:scrollbarSize="@dimen/small_spacing"
+                    android:scrollbars="vertical"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.50"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:spanCount="3"
+                    tools:itemCount="20"
+                    tools:listitem="@layout/item_card" />
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/info_screen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/searchDescription"
@@ -185,71 +165,40 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/unknown_query_screen"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone">
+                </androidx.core.widget.NestedScrollView>
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <ImageView
-                            android:id="@+id/imageView4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:contentDescription="@string/could_not_find_search_query"
-                            app:layout_constraintBottom_toTopOf="@+id/textView22"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:srcCompat="@drawable/ic_dissatisfied" />
+            <LinearLayout
+                android:id="@+id/networkStatusIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/connectionIndicatorSize"
+                android:alpha="0"
+                android:background="@color/connectionIndicatorBackGround"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                        <TextView
-                            android:id="@+id/textView22"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:text="@string/oops_could_not_find_your_card"
-                            android:textAlignment="center"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/networkStatus_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:src="@drawable/ic_connecting" />
 
-                        <TextView
-                            android:id="@+id/textView23"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginEnd="16dp"
-                            android:text="@string/check_to_see_if_there_were_any_errors_in_your_search_keyword"
-                            android:textAlignment="center"
-                            android:textColor="@color/searchDescriptorColor"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView22" />
+                <TextView
+                    android:id="@+id/networkStatus_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="connecting..."
+                    android:textColor="@color/connectionIndicatorItemColor"
+                    android:textStyle="bold" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
-                    <include
-                        android:id="@+id/network_error_screen"
-                        layout="@layout/network_failure_screen"
-                        android:visibility="gone" />
-
-                    <include
-                        android:id="@+id/loadingScreen"
-                        layout="@layout/loading_screen"
-                        android:visibility="gone" />
-
-                </FrameLayout>
-
-            </ScrollView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

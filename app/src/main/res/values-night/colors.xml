@@ -36,4 +36,7 @@
     <color name="searchDescriptorColor">@color/fade</color>
     <color name="chipColor">@color/primaryLightColor</color>
     <color name="filterFrame">#8000001B</color>
+
+    <color name="connectionIndicatorBackGround">#99000000</color>
+    <color name="connectionIndicatorItemColor">@color/highlight</color>
 </resources>

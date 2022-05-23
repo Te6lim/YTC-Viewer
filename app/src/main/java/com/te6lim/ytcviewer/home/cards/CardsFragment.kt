@@ -1,5 +1,6 @@
 package com.te6lim.ytcviewer.home.cards
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -43,6 +44,8 @@ class CardsFragment : Fragment() {
 
     private lateinit var loadState: LoadState
 
+    private lateinit var animator: ObjectAnimator
+
     companion object {
         const val FILTER_CATEGORY = "filter_category"
         private const val CHIP_GROUP_VISIBILITY = "chip group visibility"
@@ -57,6 +60,13 @@ class CardsFragment : Fragment() {
         )
 
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
+
+        animator = ObjectAnimator.ofFloat(
+            binding.networkStatusIndicator, View.ALPHA, 1f
+        ).apply {
+            repeatMode = ObjectAnimator.REVERSE
+            duration = 800
+        }
 
         savedInstanceState?.getInt(CHIP_GROUP_VISIBILITY)?.let {
             binding.cardFilter.visibility = it
@@ -129,16 +139,23 @@ class CardsFragment : Fragment() {
 
         })
 
-        reconnectButton.setOnClickListener { adapter.retry() }
+        reconnectButton.setOnClickListener {
+            animator.startAnimation()
+            adapter.refresh()
+        }
 
         adapter.addLoadStateListener { loadStates ->
             loadState = loadStates.source.append
+
             when (loadStates.source.append) {
                 is LoadState.Error -> {
                     if (searchDescription.isVisible) {
                         progressBar.visibility = View.GONE
                         reconnectButton.visibility = View.VISIBLE
                     }
+                    networkStatusImage.setImageResource(R.drawable.ic_connection_error)
+                    networkStatusText.text = "connection error"
+                    animator.apply { repeatCount = 0 }.startAnimation()
                 }
 
                 is LoadState.Loading -> {
@@ -146,16 +163,31 @@ class CardsFragment : Fragment() {
                         progressBar.visibility = View.VISIBLE
                         reconnectButton.visibility = View.GONE
                     }
+                    networkStatusImage.setImageResource(R.drawable.ic_connecting)
+                    networkStatusText.text = "connecting..."
                 }
 
                 is LoadState.NotLoading -> {
-                    if (searchDescription.isVisible) {
-                        progressBar.visibility = View.GONE
-                        reconnectButton.visibility = View.VISIBLE
+                    if (!loadState.endOfPaginationReached) {
+                        if (searchDescription.isVisible) {
+                            progressBar.visibility = View.GONE
+                            reconnectButton.visibility = View.VISIBLE
+                        }
                     }
+                    if (networkStatusIndicator.alpha == 1f) animator.reverseAnimation()
                 }
             }
         }
+    }
+
+    private fun ObjectAnimator.startAnimation() {
+        end()
+        start()
+    }
+
+    private fun ObjectAnimator.reverseAnimation() {
+        end()
+        reverse()
     }
 
     private fun setupViewModelObservers() {
@@ -200,9 +232,9 @@ class CardsFragment : Fragment() {
         }
     }
 
-    private suspend fun submitDataFlow(pagingDataFlow: Flow<PagingData<UiItem>>?) {
+    private suspend fun submitDataFlow(pagingDataFlow: Flow<PagingData<UiItem>>) {
         lifecycleScope.launch {
-            pagingDataFlow?.collectLatest { adapter.submitData(it) }
+            pagingDataFlow.collectLatest { adapter.submitData(it) }
         }
     }
 
@@ -270,7 +302,7 @@ class CardsFragment : Fragment() {
                         cardsViewModel.setSortType(sort)
                     }
 
-                    override fun getSortMethod(): SortItem? {
+                    override fun getSortMethod(): SortItem {
                         return cardsViewModel.getSortType()
                     }
                 })

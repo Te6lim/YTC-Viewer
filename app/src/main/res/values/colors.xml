@@ -39,6 +39,9 @@
     <color name="chipColor">@color/secondaryLightColor</color>
     <color name="filterFrame">#80FFFFFF</color>
 
+    <color name="connectionIndicatorBackGround">#657A7A7A</color>
+    <color name="connectionIndicatorItemColor">@color/white</color>
+
     <color name="effectMonster">#be6400</color>
     <color name="flipEffectMonster">#E69720</color>
     <color name="normalMonster">#F3E5AB</color>

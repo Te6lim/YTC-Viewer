@@ -21,6 +21,10 @@
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/details_background.xml" value="0.18046875" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/fade_line.xml" value="0.19537037037037036" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/filter_frame_background.xml" value="0.18046875" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_connected.xml" value="0.240625" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_connecting.xml" value="0.240625" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_connection_error.xml" value="0.240625" />
+        <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_connection_off.xml" value="0.240625" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_dissatisfied.xml" value="0.21388888888888888" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_done.xml" value="0.21388888888888888" />
         <entry key="..\:/Users/ADMIN/AndroidStudioProjects/YTCViewer/app/src/main/res/drawable/ic_not_favorite.xml" value="0.240625" />
