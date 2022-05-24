@@ -173,17 +173,21 @@ class CardsFragment : Fragment() {
                 }
             }
 
-            selectedCardFilters.observe(viewLifecycleOwner) { pagingDataFlow ->
+            /*selectedCardFilters.observe(viewLifecycleOwner) { pagingDataFlow ->
                 lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
             }
 
             sortType.observe(viewLifecycleOwner) { pagingDataFlow ->
                 lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
-            }
+            }*/
 
-            searchKey.observe(viewLifecycleOwner) { pagingDataFlow ->
+            cardsViewModel.cards.observe(viewLifecycleOwner) { pagingDataFlow ->
                 lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
             }
+
+            /*searchKey.observe(viewLifecycleOwner) { pagingDataFlow ->
+                lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
+            }*/
 
             isPagingDataEmpty.observe(viewLifecycleOwner) { isEmpty ->
                 if (isEmpty) {

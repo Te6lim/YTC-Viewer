@@ -56,12 +56,14 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
                     )
                 }
 
-                else -> {
+                4 -> {
                     YtcApi.retrofitService.getCardsAsync(
                         mapQueries[0], mapQueries[1], mapQueries[2], mapQueries[3], offset = offset,
                         sort = sortQuery
                     )
                 }
+
+                else -> throw IllegalArgumentException()
             }
         } else {
             if (selectedChips[CardFilterCategory.Spell.name] == true) {
@@ -119,17 +121,17 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(
-        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>? = null, searchKey: String?,
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> = mapOf(), searchKey: String = "",
         sortType: SortItem
     ): Flow<PagingData<Card>> {
         val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.Callback {
 
             override suspend fun getNetworkCardsAsync(offset: Int): Response {
-                return if (selectedCardFilters != null)
-                    getCards(
-                        selectedCardFilters, sortType.query, offset
-                    )
-                else getCardsBySearchKey(searchKey ?: "", sortType.query, offset)
+                return if (!selectedCardFilters.isNullOrEmpty())
+                    getCards(selectedCardFilters, sortType.query, offset)
+                else {
+                    getCardsBySearchKey(searchKey, sortType.query, offset)
+                }
             }
 
             override fun setIsDataEmpty(value: Boolean) {
@@ -144,10 +146,8 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
 
         currentPagingSource = pagingSource
         return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE),
-            pagingSourceFactory = {
-                pagingSource
-            }).flow
+            config = PagingConfig(pageSize = PAGE_SIZE), pagingSourceFactory = { pagingSource }
+        ).flow
     }
 
     interface RepoCallback {

@@ -62,7 +62,7 @@ class CardPagingSource(
 
                 LoadResult.Page(response.data.toLocalCard(sortAsc), prevKey, nextKey)
             }
-        } catch (e: IndexOutOfBoundsException) {
+        } catch (e: IllegalArgumentException) {
             callback.setIsDataEmpty(true)
             LoadResult.Page(listOf(), null, null)
         } catch (e: Exception) {
