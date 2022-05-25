@@ -55,7 +55,7 @@ class CardDetailsActivity : AppCompatActivity() {
                 FilterSelectionViewModel.getLevelOrRankIcon(viewModel.card.type!!)
             )
             raceIcon.setImageResource(
-                FilterSelectionViewModel.getRaceIconResource()[viewModel.card.race]!!
+                FilterSelectionViewModel.getRaceIconResource()[viewModel.card.race] ?: R.drawable.poker
             )
             viewModel.card.attribute?.let {
                 attributeImage.setImageResource(

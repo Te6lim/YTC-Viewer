@@ -38,7 +38,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     private val _cardSourceType = MutableLiveData(CardSourceTypes.SORT_TYPE)
 
     val cards = Transformations.switchMap(_cardSourceType) {
-        getLiveDataSubscription(it)
+        liveDataSubscription(it)
     }
 
     private var cardListType = CardType.MonsterCard
@@ -65,9 +65,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         _selectedChips.value = map
     }
 
-    private fun getLiveDataSubscription(
-        cardSourceTypes: CardSourceTypes
-    ): LiveData<Flow<PagingData<UiItem>>> {
+    private fun liveDataSubscription(cardSourceTypes: CardSourceTypes): LiveData<Flow<PagingData<UiItem>>> {
         when (cardSourceTypes) {
             CardSourceTypes.FILTERING -> {
                 return getCardsLiveData(_selectedCardFilters) {
@@ -208,7 +206,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         if (_sortType.value!!.name != value.name) _sortType.value = value
     }
 
-    fun getSortType() = _sortType.value
+    fun getSortType() = _sortType.value ?: SortItem.defaultSortType
 
     fun setSearchKey(key: String) {
         setCardSourceType(CardSourceTypes.SEARCHING)

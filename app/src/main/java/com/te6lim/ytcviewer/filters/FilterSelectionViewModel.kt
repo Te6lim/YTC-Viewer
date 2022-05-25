@@ -139,8 +139,9 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
             Pair("Field", R.drawable.field),
             Pair("Equip", R.drawable.equip),
             Pair("Continuous", R.drawable.continuous),
+            Pair("Counter", R.drawable.counter),
             Pair("Quick-Play", R.drawable.quick_play),
-            Pair("Ritual", R.drawable.ritual)
+            Pair("Ritual", R.drawable.ritual),
         )
 
         fun getAttributeIconResource() = hashMapOf(
