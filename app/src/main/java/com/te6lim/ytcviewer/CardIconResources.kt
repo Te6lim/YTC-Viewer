@@ -1,0 +1,45 @@
+package com.te6lim.ytcviewer
+
+val raceIconResources = hashMapOf(
+    Pair("Aqua", R.drawable.aqua),
+    Pair("Beast", R.drawable.beast),
+    Pair("Beast-Warrior", R.drawable.beast_warrior),
+    Pair("Creator-God", R.drawable.divine),
+    Pair("Cyberse", R.drawable.machine),
+    Pair("Dinosaur", R.drawable.dinosaur),
+    Pair("Divine-Beast", R.drawable.divine_beast),
+    Pair("Dragon", R.drawable.dragon),
+    Pair("Fairy", R.drawable.fairy),
+    Pair("Fiend", R.drawable.fiend),
+    Pair("Fish", R.drawable.fish),
+    Pair("Insect", R.drawable.insect),
+    Pair("Machine", R.drawable.machine),
+    Pair("Plant", R.drawable.plant),
+    Pair("Psychic", R.drawable.psychic),
+    Pair("Pyro", R.drawable.pyro),
+    Pair("Reptile", R.drawable.reptile),
+    Pair("Rock", R.drawable.rock),
+    Pair("Sea Serpent", R.drawable.sea_serpent),
+    Pair("Spellcaster", R.drawable.spellcaster),
+    Pair("Thunder", R.drawable.thunder),
+    Pair("Warrior", R.drawable.warrior),
+    Pair("Winged Beast", R.drawable.winged_beast),
+    Pair("Wyrm", R.drawable.dragon),
+    Pair("Normal", R.drawable.normal),
+    Pair("Field", R.drawable.field),
+    Pair("Equip", R.drawable.equip),
+    Pair("Continuous", R.drawable.continuous),
+    Pair("Counter", R.drawable.counter),
+    Pair("Quick-Play", R.drawable.quick_play),
+    Pair("Ritual", R.drawable.ritual),
+)
+
+val attributeIconResources = hashMapOf(
+    Pair("DARK", R.drawable.dark),
+    Pair("EARTH", R.drawable.earth),
+    Pair("FIRE", R.drawable.fire),
+    Pair("LIGHT", R.drawable.light),
+    Pair("WATER", R.drawable.water),
+    Pair("WIND", R.drawable.wind),
+    Pair("DIVINE", R.drawable.divine)
+)
