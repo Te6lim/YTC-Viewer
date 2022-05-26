@@ -78,10 +78,11 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
                     getCardPagingDataFlow(searchKey = it, sortType = _sortType.value!!)
                 }
             }
-
-            CardSourceTypes.SORT_TYPE -> {
-                return getCardsLiveData(_sortType) {
-                    getCardPagingDataFlow(sortType = it)
+            else -> {
+                return getCardsLiveData(_sortType) { sortItem ->
+                    _selectedCardFilters.value?.let { filters ->
+                        getCardPagingDataFlow(filters = filters, sortType = sortItem)
+                    } ?: getCardPagingDataFlow(searchKey = _searchKey.value ?: "", sortType = sortItem)
                 }
             }
         }
@@ -141,6 +142,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
             for (k in selectedChips.value!!.keys) {
                 if (!selectedChips.value!![k]!!) it.remove(CardFilterCategory.get(k))
             }
+            if (it.isEmpty()) _cardSourceType.value = CardSourceTypes.SORT_TYPE
         }
         return selected
     }
@@ -202,8 +204,8 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     fun setSortType(value: SortItem) {
-        setCardSourceType(CardSourceTypes.SORT_TYPE)
         if (_sortType.value!!.name != value.name) _sortType.value = value
+        setCardSourceType(CardSourceTypes.SORT_TYPE)
     }
 
     fun getSortType() = _sortType.value ?: SortItem.defaultSortType
