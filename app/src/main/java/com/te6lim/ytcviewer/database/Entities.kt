@@ -25,7 +25,8 @@ data class Card(
     @ColumnInfo val archetype: String?,
     @ColumnInfo val cardSets: List<CardSet?>?,
     @ColumnInfo val cardImages: List<CardImage?>?,
-    @ColumnInfo val cardPrices: List<CardPrice?>?
+    @ColumnInfo val cardPrices: List<CardPrice?>?,
+    @ColumnInfo val favourite: Boolean = false
 ) : Parcelable {
     fun isNonMonsterCard(): Boolean {
         return atk == null && def == null && level == null && attribute == null

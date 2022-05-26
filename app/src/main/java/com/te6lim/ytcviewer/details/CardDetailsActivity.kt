@@ -54,12 +54,14 @@ class CardDetailsActivity : AppCompatActivity() {
             level.setImageResource(
                 FilterSelectionViewModel.getLevelOrRankIcon(viewModel.card.type!!)
             )
-            raceIcon.setImageResource(
-                FilterSelectionViewModel.getRaceIconResource()[viewModel.card.race] ?: R.drawable.poker
-            )
+
+            viewModel.card.race?.let {
+                raceIcon.setImageResource(FilterSelectionViewModel.getRaceIcon(it))
+            }
+
             viewModel.card.attribute?.let {
                 attributeImage.setImageResource(
-                    FilterSelectionViewModel.getAttributeIconResource()[it]!!
+                    FilterSelectionViewModel.getAttributeIcon(it)
                 )
             } ?: run { attributeImage.visibility = View.GONE }
             descriptionText.text = viewModel.card.desc

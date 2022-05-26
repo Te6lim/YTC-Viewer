@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.*
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 enum class CardFilterCategory(val query: String) {
@@ -40,9 +41,17 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
             }
         }
 
-        fun getRaceIconResource() = raceIconResources
+        fun getRaceIconResources() = raceIconResources
 
-        fun getAttributeIconResource() = attributeIconResources
+        fun getAttributeIconResources() = attributeIconResources
+
+        fun getRaceIcon(race: String): Int {
+            return raceIconResources[race] ?: R.drawable.poker
+        }
+
+        fun getAttributeIcon(attribute: String): Int {
+            return attributeIconResources[attribute]!!
+        }
 
         fun getLevelOrRankIcon(type: String): Int {
             return if (type == "XYZ Monster") R.drawable.rank
@@ -114,6 +123,7 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
 @Parcelize
 data class CardFilter(val name: String, var isSelected: Boolean = false, val iconResource: Int? = null) :
     Parcelable {
+    @IgnoredOnParcel
     val isEffectMonster = name != "Normal Monster" && name != "Normal Tuner Monster"
             && name != "Pendulum Normal Monster"
 }
