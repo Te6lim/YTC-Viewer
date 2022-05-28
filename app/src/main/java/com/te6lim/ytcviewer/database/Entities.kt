@@ -1,6 +1,7 @@
 package com.te6lim.ytcviewer.database
 
 import android.os.Parcelable
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.te6lim.ytcviewer.home.cards.UiItem
@@ -26,7 +27,7 @@ data class Card(
     @ColumnInfo val cardSets: List<CardSet?>?,
     @ColumnInfo val cardImages: List<CardImage?>?,
     @ColumnInfo val cardPrices: List<CardPrice?>?,
-    @ColumnInfo val favourite: Boolean = false
+    @ColumnInfo var favourite: Boolean = false
 ) : Parcelable {
     fun isNonMonsterCard(): Boolean {
         return atk == null && def == null && level == null && attribute == null
@@ -41,11 +42,17 @@ interface CardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMany(cards: List<Card>): List<Long>
 
+    @Query("SELECT * FROM card WHERE networkId = :id")
+    fun getCard(id: Long): LiveData<Card?>
+
     @Query("SELECT * FROM card")
     fun getSource(): PagingSource<Int, Card>
 
     @Query("DELETE FROM card")
     suspend fun clear()
+
+    @Query("DELETE FROM card WHERE networkId = :id")
+    suspend fun deleteCard(id: Long)
 }
 
 @Entity(tableName = "remote_keys")

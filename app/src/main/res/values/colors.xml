@@ -41,6 +41,7 @@
 
     <color name="connectionIndicatorBackGround">#657A7A7A</color>
     <color name="connectionIndicatorItemColor">@color/white</color>
+    <color name="favorite">#FF1100</color>
 
     <color name="effectMonster">#be6400</color>
     <color name="flipEffectMonster">#E69720</color>

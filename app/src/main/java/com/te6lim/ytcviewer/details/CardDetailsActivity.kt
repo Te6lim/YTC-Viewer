@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.database.Card
+import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.ActivityDetailsCardBinding
 import com.te6lim.ytcviewer.filters.FilterSelectionViewModel
 
@@ -29,11 +30,13 @@ class CardDetailsActivity : AppCompatActivity() {
         val card = intent.getParcelableExtra<Card>("card")!!
 
         val viewModel = ViewModelProvider(
-            this, CardDetailsViewModelFactory(card)
+            this, CardDetailsViewModelFactory(CardDatabase.getInstance(this).cardDao, card)
         )[CardDetailsViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
+        supportActionBar?.title = card.name
 
         with(binding) {
             cardSetList.adapter = CardSetListAdapter().apply { submitList(card.cardSets) }
@@ -65,9 +68,18 @@ class CardDetailsActivity : AppCompatActivity() {
                 )
             } ?: run { attributeImage.visibility = View.GONE }
             descriptionText.text = viewModel.card.desc
+
+            favouriteIcon.setOnClickListener {
+                if (viewModel.isCardFavorite()) viewModel.removeCardFromFavorite()
+                else viewModel.addToFavorite()
+            }
         }
 
-        supportActionBar?.title = card.name
+        viewModel.favoriteCard.observe(this) {
+            it?.let {
+                if (it.favourite) binding.favouriteIcon.setImageResource(R.drawable.ic_favorite)
+            } ?: binding.favouriteIcon.setImageResource(R.drawable.ic_not_favorite)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
