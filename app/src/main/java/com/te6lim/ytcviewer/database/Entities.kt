@@ -48,7 +48,7 @@ interface CardDao {
     @Query("SELECT * FROM card")
     fun getSource(): PagingSource<Int, Card>
 
-    @Query("SELECT * FROM card WHERE favourite = :isFavorite")
+    @Query("SELECT * FROM card WHERE favourite = :isFavorite ORDER BY id DESC")
     fun getFavorites(isFavorite: Boolean = true): LiveData<List<Card>?>
 
     @Query("DELETE FROM card")

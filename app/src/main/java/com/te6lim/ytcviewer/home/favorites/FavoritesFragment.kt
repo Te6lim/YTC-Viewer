@@ -1,5 +1,6 @@
 package com.te6lim.ytcviewer.home.favorites
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.te6lim.ytcviewer.R
+import com.te6lim.ytcviewer.cardDetailsActivityIntentCardKey
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentFavoritesBinding
+import com.te6lim.ytcviewer.details.CardDetailsActivity
 import com.te6lim.ytcviewer.home.MainActivity
 
 class FavoritesFragment : Fragment() {
@@ -40,10 +43,12 @@ class FavoritesFragment : Fragment() {
         binding.favoritesList.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
-        val adapter = FavoritesListAdapter()
+        val adapter = FavoritesListAdapter {
+            val intent = Intent(requireContext(), CardDetailsActivity::class.java)
+            intent.putExtra(cardDetailsActivityIntentCardKey, it)
+            startActivity(intent)
+        }
         binding.favoritesList.adapter = adapter
-
-
 
         return binding.root
     }

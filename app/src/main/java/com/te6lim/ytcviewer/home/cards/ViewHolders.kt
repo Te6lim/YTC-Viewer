@@ -81,19 +81,22 @@ class RetryButtonViewHolder(
 }
 
 class FavoriteViewHolder(
-    private val favoriteBinding: ItemFavoriteBinding
+    private val favoriteBinding: ItemFavoriteBinding, private val action: (card: Card) -> Unit
 ) : RecyclerView.ViewHolder(favoriteBinding.root) {
     companion object {
-        fun create(parent: ViewGroup): FavoriteViewHolder {
+        fun create(parent: ViewGroup, action: (card: Card) -> Unit): FavoriteViewHolder {
             val binding: ItemFavoriteBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context), R.layout.item_favorite, parent, false
             )
-            return FavoriteViewHolder(binding)
+            return FavoriteViewHolder(binding, action)
         }
     }
 
     fun bind(card: Card) {
         favoriteBinding.cardItem = card
         favoriteBinding.briefDescription.text = card.name
+        favoriteBinding.root.setOnClickListener {
+            action(card)
+        }
     }
 }

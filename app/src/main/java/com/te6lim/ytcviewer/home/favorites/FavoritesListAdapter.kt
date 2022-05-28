@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.ListAdapter
 import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.home.cards.FavoriteViewHolder
 
-class FavoritesListAdapter : ListAdapter<Card, FavoriteViewHolder>(DiffCallback) {
+class FavoritesListAdapter(
+    private val action: (card: Card) -> Unit
+) : ListAdapter<Card, FavoriteViewHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
-        return FavoriteViewHolder.create(parent)
+        return FavoriteViewHolder.create(parent, action)
     }
 
     override fun onBindViewHolder(holder: FavoriteViewHolder, position: Int) {
@@ -22,7 +24,7 @@ object DiffCallback : DiffUtil.ItemCallback<Card>() {
     }
 
     override fun areContentsTheSame(oldItem: Card, newItem: Card): Boolean {
-        return oldItem == newItem
+        return oldItem.networkId == newItem.networkId
     }
 
 }

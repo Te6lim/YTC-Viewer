@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
+import com.te6lim.ytcviewer.cardDetailsActivityIntentCardKey
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.details.CardDetailsActivity
@@ -173,21 +174,9 @@ class CardsFragment : Fragment() {
                 }
             }
 
-            /*selectedCardFilters.observe(viewLifecycleOwner) { pagingDataFlow ->
-                lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
-            }
-
-            sortType.observe(viewLifecycleOwner) { pagingDataFlow ->
-                lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
-            }*/
-
             cardsViewModel.cards.observe(viewLifecycleOwner) { pagingDataFlow ->
                 lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
             }
-
-            /*searchKey.observe(viewLifecycleOwner) { pagingDataFlow ->
-                lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
-            }*/
 
             isPagingDataEmpty.observe(viewLifecycleOwner) { isEmpty ->
                 if (isEmpty) {
@@ -202,7 +191,7 @@ class CardsFragment : Fragment() {
             selectedCard.observe(viewLifecycleOwner) {
                 it?.let {
                     val intent = Intent(this@CardsFragment.context, CardDetailsActivity::class.java)
-                    intent.putExtra("card", it)
+                    intent.putExtra(cardDetailsActivityIntentCardKey, it)
                     startActivity(intent)
                     setSelectedCard(null)
                 }

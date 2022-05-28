@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
+import com.te6lim.ytcviewer.cardDetailsActivityIntentCardKey
 import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.ActivityDetailsCardBinding
@@ -27,7 +28,7 @@ class CardDetailsActivity : AppCompatActivity() {
             elevation = this@CardDetailsActivity.resources.getDimension(R.dimen.small_spacing)
         }
 
-        val card = intent.getParcelableExtra<Card>("card")!!
+        val card = intent.getParcelableExtra<Card>(cardDetailsActivityIntentCardKey)!!
 
         val viewModel = ViewModelProvider(
             this, CardDetailsViewModelFactory(CardDatabase.getInstance(this).cardDao, card)
