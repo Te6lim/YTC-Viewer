@@ -20,11 +20,11 @@ class FavoritesListAdapter(
 
 object DiffCallback : DiffUtil.ItemCallback<Card>() {
     override fun areItemsTheSame(oldItem: Card, newItem: Card): Boolean {
-        return oldItem == newItem
+        return oldItem.networkId == newItem.networkId
     }
 
     override fun areContentsTheSame(oldItem: Card, newItem: Card): Boolean {
-        return oldItem.networkId == newItem.networkId
+        return oldItem == newItem
     }
 
 }
