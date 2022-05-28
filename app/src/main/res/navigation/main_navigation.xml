@@ -10,8 +10,8 @@
         android:label="fragment_cards"
         tools:layout="@layout/fragment_cards" />
     <fragment
-        android:id="@+id/collectionFragment"
-        android:name="com.te6lim.ytcviewer.home.collections.CollectionFragment"
-        android:label="fragment_collection"
-        tools:layout="@layout/fragment_collection" />
+        android:id="@+id/favoritesFragment"
+        android:name="com.te6lim.ytcviewer.home.favorites.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_favorites" />
 </navigation>

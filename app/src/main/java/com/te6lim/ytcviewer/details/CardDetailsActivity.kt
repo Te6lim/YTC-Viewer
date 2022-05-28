@@ -77,13 +77,12 @@ class CardDetailsActivity : AppCompatActivity() {
 
         viewModel.favoriteCard.observe(this) {
             it?.let {
-                if (it.favourite) binding.favouriteIcon.setImageResource(R.drawable.ic_favorite)
+                binding.favouriteIcon.setImageResource(R.drawable.ic_favorite)
             } ?: binding.favouriteIcon.setImageResource(R.drawable.ic_not_favorite)
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         return when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()

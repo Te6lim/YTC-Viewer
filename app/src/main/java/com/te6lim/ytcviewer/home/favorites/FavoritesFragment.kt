@@ -1,4 +1,4 @@
-package com.te6lim.ytcviewer.home.collections
+package com.te6lim.ytcviewer.home.favorites
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.FragmentCollectionBinding
 import com.te6lim.ytcviewer.home.MainActivity
 
-class CollectionFragment : Fragment() {
+class FavoritesFragment : Fragment() {
 
     private lateinit var binding: FragmentCollectionBinding
 
@@ -21,7 +21,7 @@ class CollectionFragment : Fragment() {
     ): View {
 
         binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_collection, container, false
+            inflater, R.layout.fragment_favorites, container, false
         )
 
         binding.lifecycleOwner = this

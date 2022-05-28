@@ -6,7 +6,7 @@
         android:title="@string/search" />
 
     <item
-        android:id="@+id/collectionFragment"
-        android:icon="@drawable/library"
+        android:id="@+id/favoritesFragment"
+        android:icon="@drawable/favorite"
         android:title="@string/collection" />
 </menu>
