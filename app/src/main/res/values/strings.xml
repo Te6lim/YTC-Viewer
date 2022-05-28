@@ -5,7 +5,7 @@
     <string name="search">Search</string>
     <string name="group_by_alphabet">group by alphabet</string>
     <string name="filter">Filter</string>
-    <string name="collection">Collection</string>
+    <string name="favorites">Favorites</string>
     <string name="theme_mode">Dark mode</string>
     <string name="description">Description</string>
     <string name="search_description">Search by name, and filter by type, race and attribute</string>

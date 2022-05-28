@@ -336,7 +336,7 @@ class CardsFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(CHIP_GROUP_VISIBILITY, binding.cardFilter.visibility)
+        if (this::binding.isInitialized) outState.putInt(CHIP_GROUP_VISIBILITY, binding.cardFilter.visibility)
     }
 
     private interface Callback {

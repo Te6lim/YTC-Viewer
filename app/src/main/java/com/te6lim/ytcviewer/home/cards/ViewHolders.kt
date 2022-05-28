@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.databinding.ItemCardBinding
+import com.te6lim.ytcviewer.databinding.ItemFavoriteBinding
 import com.te6lim.ytcviewer.databinding.RetryButtonBinding
 
 class CardViewHolder(
@@ -76,5 +77,23 @@ class RetryButtonViewHolder(
     private fun ObjectAnimator.performAnimation() {
         end()
         start()
+    }
+}
+
+class FavoriteViewHolder(
+    private val favoriteBinding: ItemFavoriteBinding
+) : RecyclerView.ViewHolder(favoriteBinding.root) {
+    companion object {
+        fun create(parent: ViewGroup): FavoriteViewHolder {
+            val binding: ItemFavoriteBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context), R.layout.item_favorite, parent, false
+            )
+            return FavoriteViewHolder(binding)
+        }
+    }
+
+    fun bind(card: Card) {
+        favoriteBinding.cardItem = card
+        favoriteBinding.briefDescription.text = card.name
     }
 }
