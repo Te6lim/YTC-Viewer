@@ -25,6 +25,9 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         FILTERING, SEARCHING, SORT_TYPE
     }
 
+    var cardFilterIsVisible = false
+
+
     private val _selectedChips = MutableLiveData<Map<String, Boolean>>()
     val selectedChips: LiveData<Map<String, Boolean>>
         get() = _selectedChips

@@ -50,7 +50,6 @@ class CardsFragment : Fragment() {
 
     companion object {
         const val FILTER_CATEGORY = "filter_category"
-        private const val CHIP_GROUP_VISIBILITY = "chip group visibility"
     }
 
     override fun onCreateView(
@@ -70,10 +69,6 @@ class CardsFragment : Fragment() {
             duration = 800
         }
 
-        savedInstanceState?.getInt(CHIP_GROUP_VISIBILITY)?.let {
-            binding.cardFilter.visibility = it
-        }
-
         resultLauncher = getActivityResultLauncher(object : Callback {
             override fun onResultOK(filterCategory: CardFilterCategory, list: List<CardFilter>) {
                 cardsViewModel.addFiltersToSelected(filterCategory, list)
@@ -83,6 +78,9 @@ class CardsFragment : Fragment() {
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(CardDatabase.getInstance(requireContext()))
         )[CardsViewModel::class.java]
+
+        if (cardsViewModel.cardFilterIsVisible) binding.cardFilter.visibility = View.VISIBLE
+        else binding.cardFilter.visibility = View.GONE
 
         with(binding) {
             viewModel = cardsViewModel
@@ -125,10 +123,14 @@ class CardsFragment : Fragment() {
     }
 
     private fun FragmentCardsBinding.setListeners() {
-        searchBar.setClickListener { cardFilter.visibility = View.VISIBLE }
+        searchBar.setClickListener {
+            cardFilter.visibility = View.VISIBLE
+            cardsViewModel.cardFilterIsVisible = true
+        }
 
         searchBar.setOnCloseListener {
             cardFilter.visibility = View.GONE
+            cardsViewModel.cardFilterIsVisible = false
             false
         }
 
@@ -321,11 +323,6 @@ class CardsFragment : Fragment() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             app.toDarkMode = true
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        if (this::binding.isInitialized) outState.putInt(CHIP_GROUP_VISIBILITY, binding.cardFilter.visibility)
     }
 
     private interface Callback {
