@@ -1,5 +1,6 @@
 package com.te6lim.ytcviewer.home.cards
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
@@ -19,20 +20,54 @@ class CardViewHolder(
     private val itemCardBinding: ItemCardBinding, private val clickAction: (Card) -> Unit
 ) : RecyclerView.ViewHolder(itemCardBinding.root) {
 
+    private lateinit var animatorSet: AnimatorSet
+
     companion object {
         fun create(parent: ViewGroup, clickAction: (Card) -> Unit): CardViewHolder {
             val itemBinding = DataBindingUtil.inflate<ItemCardBinding>(
                 LayoutInflater.from(parent.context), R.layout.item_card, parent,
                 false
             )
-            return CardViewHolder(itemBinding, clickAction)
+            return CardViewHolder(itemBinding, clickAction).apply {
+                val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.03f)
+                val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.03f)
+
+                val scaleAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                    itemCardBinding.cardItem, scaleX, scaleY
+                ).apply {
+                    repeatCount = 1
+                    repeatMode = ObjectAnimator.REVERSE
+                }
+
+                val alphaAnimator = ObjectAnimator.ofFloat(itemBinding.cardItem, View.ALPHA, 0.6f).apply {
+                    repeatCount = 1
+                    repeatMode = ObjectAnimator.REVERSE
+                }
+
+                animatorSet = AnimatorSet().apply {
+                    duration = 80
+                    playTogether(scaleAnimator, alphaAnimator)
+                }
+            }
         }
     }
 
     fun bind(card: Card) {
         itemCardBinding.card = card
-        itemCardBinding.cardItem.setOnClickListener { clickAction(card) }
+        itemCardBinding.cardItem.setOnClickListener {
+            animatorSet.play()
+            clickAction(card)
+        }
+        itemCardBinding.cardItem.setOnLongClickListener {
+            animatorSet.play()
+            true
+        }
         itemCardBinding.executePendingBindings()
+    }
+
+    private fun AnimatorSet.play() {
+        end()
+        start()
     }
 
 }
