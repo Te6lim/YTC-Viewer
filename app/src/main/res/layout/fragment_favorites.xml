@@ -25,7 +25,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:elevation="@dimen/standard_elevation"
-            app:title="@string/favorites" />
+            app:title="@string/favorites">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchFavorites"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end" />
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -45,7 +52,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:setListItems="@{viewModel.favoriteCards}"
                 tools:itemCount="20"
                 tools:listitem="@layout/item_favorite" />
 

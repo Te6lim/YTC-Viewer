@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -48,7 +49,24 @@ class FavoritesFragment : Fragment() {
             intent.putExtra(cardDetailsActivityIntentCardKey, it)
             startActivity(intent)
         }
+
         binding.favoritesList.adapter = adapter
+
+        binding.searchFavorites.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { viewModel.setSearchKey(it) }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let { viewModel.setSearchKey(it) }
+                return true
+            }
+        })
+
+        viewModel.cards.observe(viewLifecycleOwner) {
+            it?.let { adapter.submitList(it) }
+        }
 
         return binding.root
     }

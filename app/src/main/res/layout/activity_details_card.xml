@@ -18,9 +18,10 @@
         app:layoutDescription="@xml/fragment_details_card_scene2"
         tools:context="com.te6lim.ytcviewer.details.CardDetailsFragment">
 
-        <include
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            layout="@layout/plain_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
             android:background="@color/background"
             android:elevation="@dimen/small_spacing"
             app:layout_constraintEnd_toEndOf="parent"
