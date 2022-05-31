@@ -136,13 +136,13 @@ class CardsFragment : Fragment() {
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(string: String?): Boolean {
+                cardsViewModel.deselectAllSelectedCategories()
                 string?.let { if (it.isNotEmpty()) cardsViewModel.setSearchKey(it) }
                 searchBar.clearFocus()
                 return true
             }
 
             override fun onQueryTextChange(string: String?): Boolean {
-                string?.let { if (it.isNotEmpty()) cardsViewModel.setSearchKey(it) }
                 return true
             }
 

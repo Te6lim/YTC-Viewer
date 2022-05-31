@@ -184,9 +184,9 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
             CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
                 if (switch) {
                     for (s in categories.keys) categories[s] = s == chipName
+                    cardListType = CardType.NonMonsterCard
                 }
                 categories[chipName] = switch
-                cardListType = CardType.NonMonsterCard
             }
 
             else -> {
@@ -204,6 +204,13 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         }
         _selectedChips.value = categories
         updateFilters()?.let { _selectedCardFilters.value = it }
+    }
+
+    fun deselectAllSelectedCategories() {
+        val categories = selectedChips.value?.toMutableMap()
+        categories?.keys?.forEach {
+            switchChip(it, false)
+        }
     }
 
     fun setSortType(value: SortItem) {
