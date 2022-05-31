@@ -67,20 +67,20 @@ val attributeFilters = listOf(
 )
 
 val levelFilters = listOf(
-    CardFilter("one"),
-    CardFilter("two"),
-    CardFilter("three"),
-    CardFilter("four"),
-    CardFilter("five"),
-    CardFilter("six"),
-    CardFilter("seven"),
-    CardFilter("eight"),
-    CardFilter("nine"),
-    CardFilter("ten"),
-    CardFilter("eleven"),
-    CardFilter("twelve"),
-    CardFilter("thirteen"),
-    CardFilter("?")
+    CardFilter("one", query = "1"),
+    CardFilter("two", query = "2"),
+    CardFilter("three", query = "3"),
+    CardFilter("four", query = ""),
+    CardFilter("five", query = "5"),
+    CardFilter("six", query = "6"),
+    CardFilter("seven", query = "7"),
+    CardFilter("eight", query = "8"),
+    CardFilter("nine", query = "9"),
+    CardFilter("ten", query = "10"),
+    CardFilter("eleven", query = "11"),
+    CardFilter("twelve", query = "12"),
+    CardFilter("thirteen", query = "13"),
+    CardFilter("?", query = "?")
 )
 
 val spellFilters = listOf(

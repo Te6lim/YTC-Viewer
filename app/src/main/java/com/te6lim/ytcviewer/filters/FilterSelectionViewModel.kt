@@ -109,7 +109,7 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
 }
 
 @Parcelize
-data class CardFilter(val name: String, var isSelected: Boolean = false, val iconResource: Int? = null) :
+data class CardFilter(val name: String, val query: String = name, var isSelected: Boolean = false) :
     Parcelable {
     @IgnoredOnParcel
     val isEffectMonster = name != "Normal Monster" && name != "Normal Tuner Monster"

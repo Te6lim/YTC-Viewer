@@ -103,7 +103,7 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
         with(formattedStringBuilder) {
             for (filter in this@stringFormatForNetworkQuery) {
                 apply {
-                    append(filter.name)
+                    append(filter.query)
                     append(",")
                 }
 
