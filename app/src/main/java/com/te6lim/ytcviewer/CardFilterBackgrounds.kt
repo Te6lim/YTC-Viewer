@@ -65,7 +65,22 @@ val attributeBackgrounds = hashMapOf(
     Pair("divine", R.color.divine)
 )
 
-val levelFiltersBackgrounds = hashMapOf<String, Int>()
+val levelFiltersBackgrounds = hashMapOf(
+    Pair("one", R.color.fade),
+    Pair("two", R.color.fade),
+    Pair("three", R.color.fade),
+    Pair("four", R.color.fade),
+    Pair("five", R.color.fade),
+    Pair("six", R.color.fade),
+    Pair("seven", R.color.fade),
+    Pair("eight", R.color.fade),
+    Pair("nine", R.color.fade),
+    Pair("ten", R.color.fade),
+    Pair("eleven", R.color.fade),
+    Pair("twelve", R.color.fade),
+    Pair("thirteen", R.color.fade),
+    Pair("?", R.color.fade),
+)
 
 val spellFiltersBackgrounds = hashMapOf(
     Pair("Normal", R.color.normalSpell),

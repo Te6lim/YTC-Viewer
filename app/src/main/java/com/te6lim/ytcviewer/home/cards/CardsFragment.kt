@@ -18,6 +18,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
+import com.te6lim.ytcviewer.CardFilterCategory
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.cardDetailsActivityIntentCardKey
@@ -25,7 +26,6 @@ import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.details.CardDetailsActivity
 import com.te6lim.ytcviewer.filters.CardFilter
-import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity
 import com.te6lim.ytcviewer.filters.FilterSelectionActivity.Companion.FILTER_LIST_RESULT_KEY
 import com.te6lim.ytcviewer.home.HomeBottomSheetFragment

@@ -5,11 +5,11 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertFooterItem
 import androidx.paging.map
+import com.te6lim.ytcviewer.CardFilterCategory
 import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toUiItem
 import com.te6lim.ytcviewer.filters.CardFilter
-import com.te6lim.ytcviewer.filters.CardFilterCategory
 import com.te6lim.ytcviewer.home.SortItem
 import com.te6lim.ytcviewer.repository.CardRepository
 import kotlinx.coroutines.flow.Flow

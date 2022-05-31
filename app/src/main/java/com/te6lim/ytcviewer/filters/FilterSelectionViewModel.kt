@@ -9,18 +9,6 @@ import com.te6lim.ytcviewer.*
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
-enum class CardFilterCategory(val query: String) {
-    Type("type"), Race("race"),
-    Attribute("attribute"), Level("level"),
-    Spell("race"), Trap("race");
-
-    companion object {
-        const val TypeArgumentForSpellCard = "spell card"
-        const val TypeArgumentForTrapCard = "trap card"
-        fun get(name: String) = valueOf(name)
-    }
-}
-
 class FilterSelectionViewModel(private val category: String) : ViewModel() {
 
     companion object {
