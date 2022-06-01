@@ -25,7 +25,7 @@ class CardDetailsActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            elevation = this@CardDetailsActivity.resources.getDimension(R.dimen.small_spacing)
+            /*elevation = this@CardDetailsActivity.resources.getDimension(R.dimen.small_spacing)*/
         }
 
         val card = intent.getParcelableExtra<Card>(cardDetailsActivityIntentCardKey)!!

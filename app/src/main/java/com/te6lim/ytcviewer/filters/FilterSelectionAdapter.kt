@@ -12,11 +12,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ItemFilterBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FilterSelectionAdapter(
     private val callBack: CardFilterCallback
-) :
-    ListAdapter<CardFilter, CardFilterViewHolder>(DiffClass) {
+) : ListAdapter<CardFilterUiItem, CardFilterViewHolder>(DiffClass) {
+
+    private val adapterScope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardFilterViewHolder {
         return CardFilterViewHolder.create(parent, callBack)
@@ -26,15 +30,21 @@ class FilterSelectionAdapter(
         holder.bind(getItem(position))
     }
 
-    object DiffClass : DiffUtil.ItemCallback<CardFilter>() {
-        override fun areItemsTheSame(oldItem: CardFilter, newItem: CardFilter): Boolean {
-            return oldItem == newItem
-        }
-
-        override fun areContentsTheSame(oldItem: CardFilter, newItem: CardFilter): Boolean {
+    object DiffClass : DiffUtil.ItemCallback<CardFilterUiItem>() {
+        override fun areItemsTheSame(oldItem: CardFilterUiItem, newItem: CardFilterUiItem): Boolean {
             return oldItem.isSelected == newItem.isSelected
         }
 
+        override fun areContentsTheSame(oldItem: CardFilterUiItem, newItem: CardFilterUiItem): Boolean {
+            return oldItem == newItem
+        }
+
+    }
+
+    fun submit(items: List<CardFilter>) {
+        adapterScope.launch {
+            submitList(items.map { filter -> CardFilterUiItem(filter) })
+        }
     }
 }
 
@@ -81,9 +91,9 @@ class CardFilterViewHolder(
         }
     }
 
-    fun bind(filter: CardFilter) {
+    fun bind(filter: CardFilterUiItem) {
 
-        itemViewBinding.filterName.text = filter.name
+        itemViewBinding.filterName.text = filter.cardFilter.name
 
         if (filter.isSelected) itemViewBinding.selectFilter.visibility = View.VISIBLE
         else itemViewBinding.selectFilter.visibility = View.GONE
@@ -96,12 +106,12 @@ class CardFilterViewHolder(
                     filter.isSelected = false
                     itemViewBinding.selectFilter.visibility = View.GONE
 
-                    callback.unSelectCardFilter(filter)
+                    callback.unSelectCardFilter(filter.cardFilter)
                 } else {
                     filter.isSelected = true
                     itemViewBinding.selectFilter.visibility = View.VISIBLE
 
-                    callback.setSelectedCardFilter(filter)
+                    callback.setSelectedCardFilter(filter.cardFilter)
                 }
 
             }
@@ -109,7 +119,7 @@ class CardFilterViewHolder(
                 this@CardFilterViewHolder.animate()
                 true
             }
-            background.setTint(callback.getColor(filter))
+            background.setTint(callback.getColor(filter.cardFilter))
         }
 
         itemViewBinding.executePendingBindings()
@@ -121,6 +131,8 @@ class CardFilterViewHolder(
     }
 
 }
+
+data class CardFilterUiItem(val cardFilter: CardFilter, var isSelected: Boolean = false)
 
 abstract class CardFilterCallback {
     abstract fun getColor(filter: CardFilter): Int

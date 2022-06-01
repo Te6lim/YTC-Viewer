@@ -67,7 +67,7 @@ class FilterSelectionActivity : AppCompatActivity() {
 
         binding.filterList.adapter = adapter
 
-        viewModel.filters.observe(this) { adapter.submitList(it) }
+        viewModel.filters.observe(this) { adapter.submit(it) }
 
         viewModel.filterCategory.observe(this) {
             setSupportActionBar(binding.toolbar.apply { title = it })
