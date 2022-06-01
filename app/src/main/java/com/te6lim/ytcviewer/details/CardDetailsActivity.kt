@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
+import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.cardDetailsActivityIntentCardKey
 import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.database.CardDatabase
@@ -25,7 +26,9 @@ class CardDetailsActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            /*elevation = this@CardDetailsActivity.resources.getDimension(R.dimen.small_spacing)*/
+            elevation = if (!(application as YTCApplication).toDarkMode) {
+                this@CardDetailsActivity.resources.getDimension(R.dimen.small_spacing)
+            } else this@CardDetailsActivity.resources.getDimension(R.dimen.no_spacing)
         }
 
         val card = intent.getParcelableExtra<Card>(cardDetailsActivityIntentCardKey)!!
