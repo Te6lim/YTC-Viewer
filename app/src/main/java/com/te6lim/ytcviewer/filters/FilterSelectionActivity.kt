@@ -41,8 +41,6 @@ class FilterSelectionActivity : AppCompatActivity() {
             )
         )[FilterSelectionViewModel::class.java]
 
-        intent.removeExtra(FILTER_CATEGORY)
-
         val adapter = FilterSelectionAdapter(object : CardFilterCallback() {
             override fun getColor(filter: CardFilter): Int {
                 return getFilterColorResource(filter)
