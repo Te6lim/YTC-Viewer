@@ -57,43 +57,43 @@ val raceFilters = listOf(
 )
 
 val attributeFilters = listOf(
-    CardFilter("dark"),
-    CardFilter("earth"),
-    CardFilter("fire"),
-    CardFilter("light"),
-    CardFilter("water"),
-    CardFilter("wind"),
-    CardFilter("divine")
+    CardFilter(AttributeFilters.Dark.query),
+    CardFilter(AttributeFilters.Earth.query),
+    CardFilter(AttributeFilters.Fire.query),
+    CardFilter(AttributeFilters.Light.query),
+    CardFilter(AttributeFilters.Water.query),
+    CardFilter(AttributeFilters.Wind.query),
+    CardFilter(AttributeFilters.Divine.query)
 )
 
 val levelFilters = listOf(
-    CardFilter("one", query = "1"),
-    CardFilter("two", query = "2"),
-    CardFilter("three", query = "3"),
-    CardFilter("four", query = ""),
-    CardFilter("five", query = "5"),
-    CardFilter("six", query = "6"),
-    CardFilter("seven", query = "7"),
-    CardFilter("eight", query = "8"),
-    CardFilter("nine", query = "9"),
-    CardFilter("ten", query = "10"),
-    CardFilter("eleven", query = "11"),
-    CardFilter("twelve", query = "12"),
-    CardFilter("thirteen", query = "13"),
-    CardFilter("?", query = "?")
+    CardFilter(LevelFilters.One.query, query = "1"),
+    CardFilter(LevelFilters.Two.query, query = "2"),
+    CardFilter(LevelFilters.Three.query, query = "3"),
+    CardFilter(LevelFilters.Four.query, query = ""),
+    CardFilter(LevelFilters.Five.query, query = "5"),
+    CardFilter(LevelFilters.Six.query, query = "6"),
+    CardFilter(LevelFilters.Seven.query, query = "7"),
+    CardFilter(LevelFilters.Eight.query, query = "8"),
+    CardFilter(LevelFilters.Nine.query, query = "9"),
+    CardFilter(LevelFilters.Ten.query, query = "10"),
+    CardFilter(LevelFilters.Eleven.query, query = "11"),
+    CardFilter(LevelFilters.Twelve.query, query = "12"),
+    CardFilter(LevelFilters.Thirteen.query, query = "13"),
+    CardFilter(LevelFilters.Unknown.query, query = "?")
 )
 
 val spellFilters = listOf(
-    CardFilter("Normal"),
-    CardFilter("Field"),
-    CardFilter("Equip"),
-    CardFilter("Continuous"),
-    CardFilter("Quick-Play"),
-    CardFilter("Ritual")
+    CardFilter(SpellFilters.Normal.query),
+    CardFilter(SpellFilters.Field.query),
+    CardFilter(SpellFilters.Equip.query),
+    CardFilter(SpellFilters.Continuous.query),
+    CardFilter(SpellFilters.Quick_Play.query),
+    CardFilter(SpellFilters.Ritual.query)
 )
 
 val trapFilters = listOf(
-    CardFilter("Normal"),
-    CardFilter("Continuous"),
-    CardFilter("Counter")
+    CardFilter(TrapFilters.Normal.query),
+    CardFilter(TrapFilters.Continuous.query),
+    CardFilter(TrapFilters.Counter.query)
 )

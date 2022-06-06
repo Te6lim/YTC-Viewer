@@ -67,3 +67,45 @@ enum class RaceFilters(val query: String) {
     Warrior("Warrior"),
     Winged_Beast("Winged Beast")
 }
+
+enum class AttributeFilters(val query: String) {
+    Dark("dark"),
+    Earth("earth"),
+    Fire("fire"),
+    Light("light"),
+    Water("water"),
+    Wind("wind"),
+    Divine("divine")
+}
+
+enum class LevelFilters(val query: String) {
+    One("one"),
+    Two("two"),
+    Three("three"),
+    Four("four"),
+    Five("five"),
+    Six("six"),
+    Seven("seven"),
+    Eight("eight"),
+    Nine("nine"),
+    Ten("ten"),
+    Eleven("eleven"),
+    Twelve("twelve"),
+    Thirteen("thirteen"),
+    Unknown("?")
+}
+
+enum class SpellFilters(val query: String) {
+    Normal("Normal"),
+    Field("Field"),
+    Equip("Equip"),
+    Continuous("Continuous"),
+    Quick_Play("Quick-Play"),
+    Ritual("Ritual")
+}
+
+enum class TrapFilters(val query: String) {
+    Normal("Normal"),
+    Continuous("Continuous"),
+    Counter("Counter")
+}
