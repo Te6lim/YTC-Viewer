@@ -9,7 +9,7 @@ import com.te6lim.ytcviewer.network.Response
 import com.te6lim.ytcviewer.network.toLocalCard
 
 class CardPagingSource(
-    private val sortAsc: Boolean, val callback: Callback
+    private val sortAsc: Boolean, val callback: PagingSourceCallbacks
 ) : PagingSource<Int, Card>() {
 
     var loadCount = 0
@@ -71,7 +71,7 @@ class CardPagingSource(
         }
     }
 
-    interface Callback {
+    interface PagingSourceCallbacks {
         suspend fun getNetworkCardsAsync(offset: Int): Response
         fun setIsDataEmpty(value: Boolean)
 

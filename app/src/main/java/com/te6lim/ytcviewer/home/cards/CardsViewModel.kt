@@ -28,9 +28,9 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     var cardFilterIsVisible = false
 
 
-    private val _selectedChips = MutableLiveData<Map<String, Boolean>>()
-    val selectedChips: LiveData<Map<String, Boolean>>
-        get() = _selectedChips
+    private val _selectedCategories = MutableLiveData<Map<String, Boolean>>()
+    val selectedCategories: LiveData<Map<String, Boolean>>
+        get() = _selectedCategories
 
     private val _selectedCardFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
 
@@ -65,7 +65,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         for (category in CardFilterCategory.values()) {
             map[category.name] = false
         }
-        _selectedChips.value = map
+        _selectedCategories.value = map
     }
 
     private fun liveDataSubscription(cardSourceTypes: CardSourceTypes): LiveData<Flow<PagingData<UiItem>>> {
@@ -105,7 +105,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
 
     private fun selectedChipsCopy(): MutableMap<String, Boolean> {
         val chips = mutableMapOf<String, Boolean>()
-        for (k in selectedChips.value!!.keys) chips[k] = selectedChips.value!![k]!!
+        for (k in selectedCategories.value!!.keys) chips[k] = selectedCategories.value!![k]!!
         return chips
     }
 
@@ -134,7 +134,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
                 toggleNonSpellAndTrap(chipName)
             }
         }
-        _selectedChips.value = map
+        _selectedCategories.value = map
         updateFilters()?.let { _selectedCardFilters.value = it }
         return map[chipName]!!
     }
@@ -142,8 +142,8 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     private fun updateFilters(): Map<CardFilterCategory, List<CardFilter>>? {
         val selected = _selectedCardFilters.value?.toMutableMap()
         selected?.let {
-            for (k in selectedChips.value!!.keys) {
-                if (!selectedChips.value!![k]!!) it.remove(CardFilterCategory.get(k))
+            for (k in selectedCategories.value!!.keys) {
+                if (!selectedCategories.value!![k]!!) it.remove(CardFilterCategory.get(k))
             }
             if (it.isEmpty()) _cardSourceType.value = CardSourceTypes.SORT_TYPE
         }
@@ -151,7 +151,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     private fun toggleNonSpellAndTrap(chipName: String): Map<String, Boolean> {
-        val categories = _selectedChips.value!!.toMutableMap()
+        val categories = _selectedCategories.value!!.toMutableMap()
 
         if (categories[CardFilterCategory.Spell.name]!!) categories[CardFilterCategory.Spell.name] = false
 
@@ -164,7 +164,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     private fun toggleSpellOrTrap(chipName: String): Map<String, Boolean> {
-        val categories = _selectedChips.value!!.toMutableMap()
+        val categories = _selectedCategories.value!!.toMutableMap()
         if (!categories[chipName]!!) {
             for (s in categories.keys) {
                 categories[s] = s == chipName
@@ -178,7 +178,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     fun switchChip(chipName: String, switch: Boolean) {
-        val categories = _selectedChips.value!!.toMutableMap()
+        val categories = _selectedCategories.value!!.toMutableMap()
 
         when (chipName) {
             CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
@@ -202,12 +202,12 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
                 cardListType = CardType.MonsterCard
             }
         }
-        _selectedChips.value = categories
+        _selectedCategories.value = categories
         updateFilters()?.let { _selectedCardFilters.value = it }
     }
 
     fun deselectAllSelectedCategories() {
-        val categories = selectedChips.value?.toMutableMap()
+        val categories = selectedCategories.value?.toMutableMap()
         categories?.keys?.forEach {
             switchChip(it, false)
         }

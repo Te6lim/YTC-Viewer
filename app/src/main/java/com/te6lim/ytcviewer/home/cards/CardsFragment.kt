@@ -170,7 +170,7 @@ class CardsFragment : Fragment() {
 
     private fun setupViewModelObservers() {
         with(cardsViewModel) {
-            selectedChips.observe(viewLifecycleOwner) {
+            selectedCategories.observe(viewLifecycleOwner) {
                 for (k in it.keys) {
                     binding.cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
                 }

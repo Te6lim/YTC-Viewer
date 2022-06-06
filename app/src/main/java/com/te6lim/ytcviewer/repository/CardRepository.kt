@@ -124,7 +124,7 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> = mapOf(), searchKey: String = "",
         sortType: SortItem
     ): Flow<PagingData<Card>> {
-        val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.Callback {
+        val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.PagingSourceCallbacks {
 
             override suspend fun getNetworkCardsAsync(offset: Int): Response {
                 return if (!selectedCardFilters.isNullOrEmpty())
