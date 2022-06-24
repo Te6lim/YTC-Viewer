@@ -98,29 +98,30 @@ class FilterSelectionActivity : AppCompatActivity() {
         val intent = Intent()
         return when (item.itemId) {
             android.R.id.home -> {
-                intent.putExtra(FILTER_LIST_RESULT_KEY, viewModel.filterCategory.value)
-                setResult(RESULT_CANCELED, intent)
                 onBackPressed()
                 true
             }
 
             R.id.done -> {
-                with(viewModel.selectedFilters()) {
-                    if (size > 0) {
-                        intent.apply {
-                            putExtra(FILTER_LIST_RESULT_KEY, viewModel.selectedFilters().toTypedArray())
-                            putExtra(CATEGORY_RESULT_KEY, viewModel.filterCategory.value)
-                        }
-                        setResult(RESULT_OK, intent)
-                    } else {
-                        intent.putExtra(FILTER_LIST_RESULT_KEY, viewModel.filterCategory.value)
-                        setResult(RESULT_CANCELED, intent)
-                    }
-                }
                 onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent()
+        if (viewModel.selectedFilters().isEmpty()) {
+            intent.putExtra(FILTER_LIST_RESULT_KEY, viewModel.filterCategory.value)
+            setResult(RESULT_CANCELED, intent)
+        } else {
+            intent.apply {
+                putExtra(FILTER_LIST_RESULT_KEY, viewModel.selectedFilters().toTypedArray())
+                putExtra(CATEGORY_RESULT_KEY, viewModel.filterCategory.value)
+            }
+            setResult(RESULT_OK, intent)
+        }
+        super.onBackPressed()
     }
 }

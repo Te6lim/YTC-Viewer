@@ -251,7 +251,7 @@ class CardsFragment : Fragment() {
                 }
             )
         } else {
-            val chipName = result.data!!.getStringExtra(FILTER_LIST_RESULT_KEY)!!
+            val chipName = result.data?.getStringExtra(FILTER_LIST_RESULT_KEY)!!
             cardsViewModel.switchChip(chipName, false)
         }
     }
