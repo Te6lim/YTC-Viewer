@@ -7,7 +7,7 @@ val typeFiltersBackgrounds = hashMapOf(
     Pair(TypeFilters.Gemini_Monster.query, R.color.geminiMonster),
     Pair(TypeFilters.Normal_Monster.query, R.color.normalMonster),
     Pair(TypeFilters.Normal_Tuner_Monster.query, R.color.normalMonster),
-    Pair(TypeFilters.Pendulum_Effect_Monster, R.color.effectMonster),
+    Pair(TypeFilters.Pendulum_Effect_Monster.query, R.color.effectMonster),
     Pair(TypeFilters.Pendulum_Flip_Effect_Monster.query, R.color.flipEffectMonster),
     Pair(TypeFilters.Pendulum_Normal_Monster.query, R.color.normalMonster),
     Pair(TypeFilters.Pendulum_Tuner_Effect_Monster.query, R.color.effectMonster),

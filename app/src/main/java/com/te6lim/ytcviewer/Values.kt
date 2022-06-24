@@ -69,13 +69,13 @@ enum class RaceFilters(val query: String) {
 }
 
 enum class AttributeFilters(val query: String) {
-    Dark("dark"),
-    Earth("earth"),
-    Fire("fire"),
-    Light("light"),
-    Water("water"),
-    Wind("wind"),
-    Divine("divine")
+    Dark("DARK"),
+    Earth("EARTH"),
+    Fire("FIRE"),
+    Light("LIGHT"),
+    Water("WATER"),
+    Wind("WIND"),
+    Divine("DIVINE")
 }
 
 enum class LevelFilters(val query: String) {
