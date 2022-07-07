@@ -22,7 +22,6 @@ import com.te6lim.ytcviewer.CardFilterCategory
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.cardDetailsActivityIntentCardKey
-import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.details.CardDetailsActivity
 import com.te6lim.ytcviewer.filters.CardFilter
@@ -32,6 +31,8 @@ import com.te6lim.ytcviewer.home.HomeBottomSheetFragment
 import com.te6lim.ytcviewer.home.MainActivity
 import com.te6lim.ytcviewer.home.SortItem
 import com.te6lim.ytcviewer.network.NetworkStatus
+import com.te6lim.ytcviewer.network.YtcApi
+import com.te6lim.ytcviewer.repository.CardRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -75,8 +76,10 @@ class CardsFragment : Fragment() {
             }
         })
 
+        val repository = CardRepository(YtcApi.retrofitService)
+
         cardsViewModel = ViewModelProvider(
-            this, CardsViewModelFactory(CardDatabase.getInstance(requireContext()))
+            this, CardsViewModelFactory(repository)
         )[CardsViewModel::class.java]
 
         if (cardsViewModel.cardFilterIsVisible) binding.cardFilter.visibility = View.VISIBLE

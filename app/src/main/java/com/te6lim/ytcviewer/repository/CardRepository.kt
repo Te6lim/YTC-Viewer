@@ -8,18 +8,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.te6lim.ytcviewer.CardFilterCategory
 import com.te6lim.ytcviewer.database.Card
-import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.home.SortItem
 import com.te6lim.ytcviewer.home.cards.CardPagingSource
 import com.te6lim.ytcviewer.home.cards.CardsViewModel
-import com.te6lim.ytcviewer.network.NetworkStatus
-import com.te6lim.ytcviewer.network.PAGE_SIZE
-import com.te6lim.ytcviewer.network.Response
-import com.te6lim.ytcviewer.network.YtcApi
+import com.te6lim.ytcviewer.network.*
 import kotlinx.coroutines.flow.Flow
 
-class CardRepository(private val db: CardDatabase, private val repoCallback: RepoCallback) {
+class CardRepository(private val remoteSource: YtcApiService) {
 
     private val _isEmpty = MutableLiveData<Boolean>()
     val isEmpty: LiveData<Boolean>
@@ -32,32 +28,32 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     private var currentPagingSource: CardPagingSource? = null
 
     private suspend fun getCards(
-        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>, sortQuery: String, offset: Int
+        categories: Map<String, Boolean>, selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>,
+        responseType: CardsViewModel.CardType, sortQuery: String, offset: Int
     ): Response {
         val mapQueries = getMapQueries(selectedCardFilters)
-        val selectedChips = repoCallback.selectedCategories()
-        val deferred = if (repoCallback.getCardResponseType() == CardsViewModel.CardType.MonsterCard) {
+        val deferred = if (responseType == CardsViewModel.CardType.MonsterCard) {
             when (selectedCardFilters.size) {
                 1 -> {
-                    YtcApi.retrofitService.getCardsAsync(
+                    remoteSource.getCardsAsync(
                         mapQueries[0], offset = offset, sort = sortQuery
                     )
                 }
 
                 2 -> {
-                    YtcApi.retrofitService.getCardsAsync(
+                    remoteSource.getCardsAsync(
                         mapQueries[0], mapQueries[1], offset = offset, sort = sortQuery
                     )
                 }
 
                 3 -> {
-                    YtcApi.retrofitService.getCardsAsync(
+                    remoteSource.getCardsAsync(
                         mapQueries[0], mapQueries[1], mapQueries[2], offset = offset, sort = sortQuery
                     )
                 }
 
                 4 -> {
-                    YtcApi.retrofitService.getCardsAsync(
+                    remoteSource.getCardsAsync(
                         mapQueries[0], mapQueries[1], mapQueries[2], mapQueries[3], offset = offset,
                         sort = sortQuery
                     )
@@ -66,13 +62,13 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
                 else -> throw IllegalArgumentException()
             }
         } else {
-            if (selectedChips[CardFilterCategory.Spell.name] == true) {
-                YtcApi.retrofitService.getCardsAsync(
+            if (categories[CardFilterCategory.Spell.name] == true) {
+                remoteSource.getCardsAsync(
                     mapOf(Pair(CardFilterCategory.Type.query, CardFilterCategory.TypeArgumentForSpellCard)),
                     mapQueries[0], offset = offset, sort = sortQuery
                 )
             } else {
-                YtcApi.retrofitService.getCardsAsync(
+                remoteSource.getCardsAsync(
                     mapOf(Pair(CardFilterCategory.Type.query, CardFilterCategory.TypeArgumentForTrapCard)),
                     mapQueries[0], offset = offset, sort = sortQuery
                 )
@@ -83,7 +79,7 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
     }
 
     private suspend fun getCardsBySearchKey(searchKey: String, sortQuery: String, offset: Int): Response {
-        return YtcApi.retrofitService.getCardsBySearchAsync(
+        return remoteSource.getCardsBySearchAsync(
             searchKey, sort = sortQuery, offset = offset
         ).await()
     }
@@ -121,14 +117,15 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(
-        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> = mapOf(), searchKey: String = "",
+        categories: Map<String, Boolean>, selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> =
+            mapOf(), responseType: CardsViewModel.CardType, searchKey: String = "",
         sortType: SortItem
     ): Flow<PagingData<Card>> {
         val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.PagingSourceCallbacks {
 
             override suspend fun getNetworkCardsAsync(offset: Int): Response {
                 return if (!selectedCardFilters.isNullOrEmpty())
-                    getCards(selectedCardFilters, sortType.query, offset)
+                    getCards(categories, selectedCardFilters, responseType, sortType.query, offset)
                 else {
                     getCardsBySearchKey(searchKey, sortType.query, offset)
                 }
@@ -148,14 +145,6 @@ class CardRepository(private val db: CardDatabase, private val repoCallback: Rep
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE), pagingSourceFactory = { pagingSource }
         ).flow
-    }
-
-    interface RepoCallback {
-        fun getCardResponseType(): CardsViewModel.CardType
-
-        fun selectedCategories(): Map<String, Boolean>
-
-        fun sortType(): SortItem
     }
 
 }

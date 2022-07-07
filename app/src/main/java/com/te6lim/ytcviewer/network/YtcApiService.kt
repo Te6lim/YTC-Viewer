@@ -86,9 +86,6 @@ interface YtcApiService {
         @Query("offset") offset: Int,
         @Query("sort") sort: String
     ): Deferred<Response>
-
-    @GET("cardinfo.php")
-    fun getCard(@Query("id") cardId: Long): Deferred<Response>
 }
 
 object YtcApi {

@@ -7,7 +7,6 @@ import androidx.paging.insertFooterItem
 import androidx.paging.map
 import com.te6lim.ytcviewer.CardFilterCategory
 import com.te6lim.ytcviewer.database.Card
-import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.database.toUiItem
 import com.te6lim.ytcviewer.filters.CardFilter
 import com.te6lim.ytcviewer.home.SortItem
@@ -15,7 +14,7 @@ import com.te6lim.ytcviewer.repository.CardRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class CardsViewModel(db: CardDatabase) : ViewModel() {
+class CardsViewModel(private val repository: CardRepository) : ViewModel() {
 
     enum class CardType {
         MonsterCard, NonMonsterCard
@@ -50,15 +49,10 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     val selectedCard: LiveData<Card?>
         get() = _selectedCard
 
-    private val repo = CardRepository(db, object : CardRepository.RepoCallback {
-        override fun getCardResponseType(): CardType = cardListType
-        override fun selectedCategories(): Map<String, Boolean> = selectedChipsCopy()
-        override fun sortType(): SortItem = _sortType.value!!
-    })
 
-    val isPagingDataEmpty = repo.isEmpty
+    val isPagingDataEmpty = repository.isEmpty
 
-    val connectionStatus = repo.connectionStatus
+    val connectionStatus = repository.connectionStatus
 
     init {
         val map = mutableMapOf<String, Boolean>()
@@ -99,9 +93,10 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
         filters: Map<CardFilterCategory, List<CardFilter>> = mapOf(),
         searchKey: String = "",
         sortType: SortItem
-    ) = repo.getCardStream(filters, searchKey, sortType).map { pagingData ->
-        pagingData.map { card -> card.toUiItem() }
-    }.map { it.insertFooterItem(item = UiItem.Footer) }.cachedIn(viewModelScope)
+    ) = repository.getCardStream(selectedCategories.value!!, filters, cardListType, searchKey, sortType)
+        .map { pagingData ->
+            pagingData.map { card -> card.toUiItem() }
+        }.map { it.insertFooterItem(item = UiItem.Footer) }.cachedIn(viewModelScope)
 
     private fun selectedChipsCopy(): MutableMap<String, Boolean> {
         val chips = mutableMapOf<String, Boolean>()
@@ -232,7 +227,7 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 
     fun resetLoadCount() {
-        repo.resetLoadCount()
+        repository.resetLoadCount()
     }
 
     private fun <T, R> getCardsLiveData(liveData: LiveData<T>, func: (data: T) -> R): LiveData<R> {
@@ -242,12 +237,12 @@ class CardsViewModel(db: CardDatabase) : ViewModel() {
     }
 }
 
-class CardsViewModelFactory(private val db: CardDatabase) : ViewModelProvider.Factory {
+class CardsViewModelFactory(private val repository: CardRepository) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CardsViewModel::class.java)) {
-            return CardsViewModel(db) as T
+            return CardsViewModel(repository) as T
         } else throw IllegalArgumentException()
     }
 }
