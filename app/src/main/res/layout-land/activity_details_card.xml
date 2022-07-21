@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.te6lim.ytcviewer.details.CardDetailsViewModel" />
+            type="com.te6lim.ytcviewer.cardDetails.CardDetailsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:background="@color/background"
         app:layoutDescription="@xml/fragment_card_details_motion"
-        tools:context="com.te6lim.ytcviewer.details.CardDetailsFragment">
+        tools:context="com.te6lim.ytcviewer.cardDetails.CardDetailsFragment">
 
         <include
             android:id="@+id/toolbar"

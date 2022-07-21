@@ -6,13 +6,13 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.te6lim.ytcviewer.CardFilterCategory
+import com.te6lim.ytcviewer.cardFilters.CardFilter
+import com.te6lim.ytcviewer.cardList.CardPagingSource
+import com.te6lim.ytcviewer.cardList.CardsViewModel
 import com.te6lim.ytcviewer.database.Card
-import com.te6lim.ytcviewer.filters.CardFilter
-import com.te6lim.ytcviewer.home.SortItem
-import com.te6lim.ytcviewer.home.cards.CardPagingSource
-import com.te6lim.ytcviewer.home.cards.CardsViewModel
+import com.te6lim.ytcviewer.model.SortType
 import com.te6lim.ytcviewer.network.*
+import com.te6lim.ytcviewer.resources.CardFilterCategory
 import kotlinx.coroutines.flow.Flow
 
 class CardRepository(private val remoteSource: YtcApiService) {
@@ -119,7 +119,7 @@ class CardRepository(private val remoteSource: YtcApiService) {
     fun getCardStream(
         categories: Map<String, Boolean>, selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> =
             mapOf(), responseType: CardsViewModel.CardType, searchKey: String = "",
-        sortType: SortItem
+        sortType: SortType
     ): Flow<PagingData<Card>> {
         val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.PagingSourceCallbacks {
 

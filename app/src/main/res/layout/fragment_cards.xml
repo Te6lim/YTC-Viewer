@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".home.cards.CardsFragment">
+    tools:context=".cardList.CardListFragment">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.te6lim.ytcviewer.home.cards.CardsViewModel" />
+            type="com.te6lim.ytcviewer.cardList.CardsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.te6lim.ytcviewer.home.cards.UiItem
+import com.te6lim.ytcviewer.model.UiItem
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet

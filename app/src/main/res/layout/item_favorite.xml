@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.te6lim.ytcviewer.home.favorites.FavoritesViewModel" />
+            type="com.te6lim.ytcviewer.favorites.FavoritesViewModel" />
 
         <variable
             name="cardItem"
