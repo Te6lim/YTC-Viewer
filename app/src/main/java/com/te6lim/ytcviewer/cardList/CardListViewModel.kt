@@ -28,9 +28,9 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
     var cardFilterIsVisible = false
 
 
-    private val _selectedCategories = MutableLiveData<Map<String, Boolean>>()
-    val selectedCategories: LiveData<Map<String, Boolean>>
-        get() = _selectedCategories
+    private val _categories = MutableLiveData<Map<String, Boolean>>()
+    val categories: LiveData<Map<String, Boolean>>
+        get() = _categories
 
     private val _selectedCardFilters = MutableLiveData<Map<CardFilterCategory, List<CardFilter>>>()
 
@@ -50,17 +50,12 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
     val selectedCard: LiveData<Card?>
         get() = _selectedCard
 
-
-    val isPagingDataEmpty = repository.isEmpty
-
-    val connectionStatus = repository.connectionStatus
-
     init {
         val map = mutableMapOf<String, Boolean>()
         for (category in CardFilterCategory.values()) {
             map[category.name] = false
         }
-        _selectedCategories.value = map
+        _categories.value = map
     }
 
     private fun liveDataSubscription(loadTrigger: LoadTrigger): LiveData<Flow<PagingData<UiItem>>> {
@@ -86,6 +81,12 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
         }
     }
 
+    private fun <T, R> getCardsLiveData(liveData: LiveData<T>, func: (data: T) -> R): LiveData<R> {
+        return Transformations.map(liveData) {
+            func(it)
+        }
+    }
+
     private fun setLoadTrigger(type: LoadTrigger) {
         if (cardLoadTrigger.value != type) cardLoadTrigger.value = type
     }
@@ -94,7 +95,7 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
         filters: Map<CardFilterCategory, List<CardFilter>> = mapOf(),
         searchKey: String = "",
         sortType: SortType
-    ) = repository.getCardStream(selectedCategories.value!!, filters, cardListType, searchKey, sortType)
+    ) = repository.getCardStream(categories.value!!, filters, cardListType, searchKey, sortType)
         .map { pagingData ->
             pagingData.map { card -> card.toUiItem() }
         }.map { it.insertFooterItem(item = UiItem.Footer) }.cachedIn(viewModelScope)
@@ -107,68 +108,68 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
         _selectedCardFilters.value = map
     }
 
-    fun toggleChip(chipName: String): Boolean {
-        val map = when (chipName) {
+    fun toggleCategory(name: String): Boolean {
+        val map = when (name) {
             CardFilterCategory.Spell.name -> {
                 cardListType = CardType.NonMonsterCard
-                toggleSpellOrTrap(chipName)
+                toggleSpellOrTrapCategory(name)
             }
 
             CardFilterCategory.Trap.name -> {
                 cardListType = CardType.NonMonsterCard
-                toggleSpellOrTrap(chipName)
+                toggleSpellOrTrapCategory(name)
             }
 
             else -> {
                 cardListType = CardType.MonsterCard
-                toggleNonSpellAndTrap(chipName)
+                toggleNonSpellAndTrapCategory(name)
             }
         }
-        _selectedCategories.value = map
+        _categories.value = map
         updateFilters()?.let { _selectedCardFilters.value = it }
-        return map[chipName]!!
+        return map[name]!!
     }
 
     private fun updateFilters(): Map<CardFilterCategory, List<CardFilter>>? {
         val selected = _selectedCardFilters.value?.toMutableMap()
         selected?.let {
-            for (k in selectedCategories.value!!.keys) {
-                if (!selectedCategories.value!![k]!!) it.remove(CardFilterCategory.get(k))
+            for (k in categories.value!!.keys) {
+                if (!categories.value!![k]!!) it.remove(CardFilterCategory.get(k))
             }
             if (it.isEmpty()) cardLoadTrigger.value = LoadTrigger.SORT_TYPE
         }
         return selected
     }
 
-    private fun toggleNonSpellAndTrap(chipName: String): Map<String, Boolean> {
-        val categories = _selectedCategories.value!!.toMutableMap()
+    private fun toggleNonSpellAndTrapCategory(name: String): Map<String, Boolean> {
+        val categories = _categories.value!!.toMutableMap()
 
         if (categories[CardFilterCategory.Spell.name]!!) categories[CardFilterCategory.Spell.name] = false
 
         if (categories[CardFilterCategory.Trap.name]!!) categories[CardFilterCategory.Trap.name] = false
 
-        categories[chipName] = !categories[chipName]!!
+        categories[name] = !categories[name]!!
 
         return categories
 
     }
 
-    private fun toggleSpellOrTrap(chipName: String): Map<String, Boolean> {
-        val categories = _selectedCategories.value!!.toMutableMap()
-        if (!categories[chipName]!!) {
+    private fun toggleSpellOrTrapCategory(name: String): Map<String, Boolean> {
+        val categories = _categories.value!!.toMutableMap()
+        if (!categories[name]!!) {
             for (s in categories.keys) {
-                categories[s] = s == chipName
+                categories[s] = s == name
             }
-            categories[chipName] = true
+            categories[name] = true
         } else {
-            categories[chipName] = false
+            categories[name] = false
         }
 
         return categories
     }
 
     fun switchChip(chipName: String, switch: Boolean) {
-        val categories = _selectedCategories.value!!.toMutableMap()
+        val categories = _categories.value!!.toMutableMap()
 
         when (chipName) {
             CardFilterCategory.Spell.name, CardFilterCategory.Trap.name -> {
@@ -192,12 +193,12 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
                 cardListType = CardType.MonsterCard
             }
         }
-        _selectedCategories.value = categories
+        _categories.value = categories
         updateFilters()?.let { _selectedCardFilters.value = it }
     }
 
     fun deselectAllSelectedCategories() {
-        val categories = selectedCategories.value?.toMutableMap()
+        val categories = categories.value?.toMutableMap()
         categories?.keys?.forEach {
             switchChip(it, false)
         }
@@ -219,16 +220,6 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
 
     fun setSelectedCard(card: Card?) {
         _selectedCard.value = card
-    }
-
-    fun resetLoadCount() {
-        repository.resetLoadCount()
-    }
-
-    private fun <T, R> getCardsLiveData(liveData: LiveData<T>, func: (data: T) -> R): LiveData<R> {
-        return Transformations.map(liveData) {
-            func(it)
-        }
     }
 }
 

@@ -18,7 +18,6 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
-import com.te6lim.ytcviewer.MainActivity
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.cardDetails.CardDetailsActivity
@@ -47,6 +46,8 @@ class CardListFragment : Fragment() {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var loadState: LoadState
+
+    private lateinit var repository: CardRepository
 
     private lateinit var animator: ObjectAnimator
 
@@ -77,7 +78,7 @@ class CardListFragment : Fragment() {
             }
         })
 
-        val repository = CardRepository(YtcApi.retrofitService)
+        repository = CardRepository(YtcApi.retrofitService)
 
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(repository)
@@ -87,14 +88,13 @@ class CardListFragment : Fragment() {
         else binding.cardFilter.visibility = View.GONE
 
         with(binding) {
-            viewModel = cardsViewModel
             lifecycleOwner = this@CardListFragment
 
             adapter = CardListAdapter {
-                (cardsViewModel::setSelectedCard)(it)
+                cardsViewModel.setSelectedCard(it)
             }
             cards.adapter = adapter.withLoadStateFooter(CardDataLoadStateAdapter {
-                cardsViewModel.resetLoadCount()
+                repository.resetLoadCount()
                 adapter.retry()
             })
 
@@ -153,7 +153,7 @@ class CardListFragment : Fragment() {
         })
 
         reconnectButton.setOnClickListener {
-            cardsViewModel.resetLoadCount()
+            repository.resetLoadCount()
             adapter.retry()
         }
 
@@ -174,7 +174,7 @@ class CardListFragment : Fragment() {
 
     private fun setupViewModelObservers() {
         with(cardsViewModel) {
-            selectedCategories.observe(viewLifecycleOwner) {
+            categories.observe(viewLifecycleOwner) {
                 for (k in it.keys) {
                     binding.cardFilter.findViewWithTag<Chip>(k).isChecked = it[k]!!
                 }
@@ -184,7 +184,7 @@ class CardListFragment : Fragment() {
                 lifecycleScope.launch { submitDataFlow(pagingDataFlow) }
             }
 
-            isPagingDataEmpty.observe(viewLifecycleOwner) { isEmpty ->
+            repository.isEmpty.observe(viewLifecycleOwner) { isEmpty ->
                 if (isEmpty) {
                     binding.searchDescription.visibility = View.VISIBLE
                     binding.cards.visibility = View.GONE
@@ -203,7 +203,7 @@ class CardListFragment : Fragment() {
                 }
             }
 
-            connectionStatus.observe(viewLifecycleOwner) {
+            repository.connectionStatus.observe(viewLifecycleOwner) {
                 when (it) {
                     NetworkStatus.LOADING -> {
                         if (binding.searchDescription.isVisible) {
@@ -274,7 +274,7 @@ class CardListFragment : Fragment() {
                     tag = category.name
                     text = category.name
                     setOnClickListener {
-                        if (cardsViewModel.toggleChip(category.name))
+                        if (cardsViewModel.toggleCategory(category.name))
                             navigateToActivityForResult(FilterSelectionActivity::class.java, category.name)
                         else cardsViewModel.switchChip(category.name, false)
                     }

@@ -2,7 +2,6 @@ package com.te6lim.ytcviewer.database
 
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
-import androidx.paging.PagingSource
 import androidx.room.*
 import com.te6lim.ytcviewer.model.UiItem
 import com.te6lim.ytcviewer.network.CardImage
@@ -45,9 +44,6 @@ interface CardDao {
     @Query("SELECT * FROM card WHERE networkId = :id")
     fun getCard(id: Long): LiveData<Card?>
 
-    @Query("SELECT * FROM card")
-    fun getSource(): PagingSource<Int, Card>
-
     @Query("SELECT * FROM card WHERE favourite = :isFavorite ORDER BY id DESC")
     fun getFavorites(isFavorite: Boolean = true): LiveData<List<Card>?>
 
@@ -56,27 +52,6 @@ interface CardDao {
 
     @Query("DELETE FROM card WHERE networkId = :id")
     suspend fun deleteCard(id: Long)
-}
-
-@Entity(tableName = "remote_keys")
-data class RemoteKey(
-    @PrimaryKey val id: Long,
-    val key: Int?,
-    val nextKey: Int?,
-    val prevKey: Int?
-)
-
-@Dao
-interface RemoteKeysDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMany(keys: List<RemoteKey>)
-
-    @Query("SELECT * FROM remote_keys WHERE id = :remoteKeyId LIMIT 1")
-    suspend fun get(remoteKeyId: Long): RemoteKey?
-
-    @Query("DELETE FROM remote_keys")
-    suspend fun clear()
 }
 
 fun Card.toUiItem(): UiItem {

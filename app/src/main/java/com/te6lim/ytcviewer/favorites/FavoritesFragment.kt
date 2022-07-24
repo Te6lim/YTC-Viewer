@@ -11,9 +11,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.te6lim.ytcviewer.MainActivity
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.cardDetails.CardDetailsActivity
+import com.te6lim.ytcviewer.cardList.MainActivity
 import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentFavoritesBinding
 import com.te6lim.ytcviewer.resources.cardDetailsActivityIntentCardKey

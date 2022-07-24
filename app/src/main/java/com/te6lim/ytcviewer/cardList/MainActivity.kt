@@ -1,10 +1,11 @@
-package com.te6lim.ytcviewer
+package com.te6lim.ytcviewer.cardList
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
