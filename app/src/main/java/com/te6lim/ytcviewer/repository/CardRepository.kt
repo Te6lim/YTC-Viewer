@@ -33,10 +33,12 @@ class CardRepository(private val remoteSource: YtcApiService, private val cardDa
 
     private val searchKey = MutableLiveData("")
 
-    val favorites = Transformations.switchMap(searchKey) {
+    private val _favorites = Transformations.switchMap(searchKey) {
         cardDatabase.cardDao.getFavorites()
-    }.apply {
-        value?.filter { card ->
+    }
+
+    val favorites = Transformations.map(_favorites) {
+        it?.filter { card ->
             card.name.lowercase(Locale.getDefault())
                 .contains(searchKey.value!!.lowercase(Locale.getDefault()))
         }
