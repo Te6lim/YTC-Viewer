@@ -12,7 +12,9 @@ class CardDetailsViewModel(private val repository: CardRepository, val card: Car
         get() = _favoriteCard
 
     init {
-        setCardAsLiveData(card.networkId)
+        viewModelScope.launch {
+            _favoriteCard.postValue(repository.getCard(card.networkId))
+        }
     }
 
     fun addToFavorite() {
@@ -33,12 +35,6 @@ class CardDetailsViewModel(private val repository: CardRepository, val card: Car
         favoriteCard.value?.let {
             return it.isFavourite
         } ?: return false
-    }
-
-    private fun setCardAsLiveData(id: Long) {
-        viewModelScope.launch {
-            repository.getCard(id)?.let { _favoriteCard.postValue(it) }
-        }
     }
 
 }
