@@ -6,6 +6,9 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import com.te6lim.ytcviewer.database.CardDatabase
+import com.te6lim.ytcviewer.network.YtcApi
+import com.te6lim.ytcviewer.repository.CardRepository
 
 class YTCApplication : Application() {
 
@@ -14,6 +17,10 @@ class YTCApplication : Application() {
     }
 
     private lateinit var preference: SharedPreferences
+
+    val repository: CardRepository by lazy {
+        CardRepository(YtcApi.retrofitService, CardDatabase.getInstance(this))
+    }
 
     var toDarkMode = false
         set(value) {

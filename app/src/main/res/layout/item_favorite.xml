@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="com.te6lim.ytcviewer.favorites.FavoritesViewModel" />
-
-        <variable
             name="cardItem"
             type="com.te6lim.ytcviewer.database.Card" />
     </data>

@@ -28,7 +28,6 @@ import com.te6lim.ytcviewer.databinding.FragmentCardsBinding
 import com.te6lim.ytcviewer.model.SortType
 import com.te6lim.ytcviewer.model.UiItem
 import com.te6lim.ytcviewer.network.NetworkStatus
-import com.te6lim.ytcviewer.network.YtcApi
 import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.resources.CardFilterCategory
 import com.te6lim.ytcviewer.resources.cardDetailsActivityIntentCardKey
@@ -78,7 +77,7 @@ class CardListFragment : Fragment() {
             }
         })
 
-        repository = CardRepository(YtcApi.retrofitService)
+        repository = (requireActivity().application as YTCApplication).repository
 
         cardsViewModel = ViewModelProvider(
             this, CardsViewModelFactory(repository)

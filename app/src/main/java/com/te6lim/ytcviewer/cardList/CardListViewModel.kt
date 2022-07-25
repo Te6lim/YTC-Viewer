@@ -22,7 +22,7 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
     }
 
     enum class LoadTrigger {
-        FILTERING, SEARCHING, SORT_TYPE
+        FILTER, SEARCH, SORT
     }
 
     var cardFilterIsVisible = false
@@ -38,7 +38,7 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
 
     private val _sortType = MutableLiveData(SortType.defaultSortType)
 
-    private val cardLoadTrigger = MutableLiveData(LoadTrigger.SORT_TYPE)
+    private val cardLoadTrigger = MutableLiveData(LoadTrigger.SORT)
 
     val cards = Transformations.switchMap(cardLoadTrigger) {
         liveDataSubscription(it)
@@ -60,13 +60,13 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
 
     private fun liveDataSubscription(loadTrigger: LoadTrigger): LiveData<Flow<PagingData<UiItem>>> {
         when (loadTrigger) {
-            LoadTrigger.FILTERING -> {
+            LoadTrigger.FILTER -> {
                 return getCardsLiveData(_selectedCardFilters) {
                     getCardPagingDataFlow(filters = it, sortType = _sortType.value!!)
                 }
             }
 
-            LoadTrigger.SEARCHING -> {
+            LoadTrigger.SEARCH -> {
                 return getCardsLiveData(_searchKey) {
                     getCardPagingDataFlow(searchKey = it, sortType = _sortType.value!!)
                 }
@@ -104,7 +104,7 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
         val map = _selectedCardFilters.value?.toMutableMap() ?: mutableMapOf()
         if (!map.contains(category)) map[category] = list
         else map.replace(category, list)
-        setLoadTrigger(LoadTrigger.FILTERING)
+        setLoadTrigger(LoadTrigger.FILTER)
         _selectedCardFilters.value = map
     }
 
@@ -136,7 +136,7 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
             for (k in categories.value!!.keys) {
                 if (!categories.value!![k]!!) it.remove(CardFilterCategory.get(k))
             }
-            if (it.isEmpty()) cardLoadTrigger.value = LoadTrigger.SORT_TYPE
+            if (it.isEmpty()) cardLoadTrigger.value = LoadTrigger.SORT
         }
         return selected
     }
@@ -206,13 +206,13 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
 
     fun setSortType(value: SortType) {
         if (_sortType.value!!.name != value.name) _sortType.value = value
-        setLoadTrigger(LoadTrigger.SORT_TYPE)
+        setLoadTrigger(LoadTrigger.SORT)
     }
 
     fun getSortType() = _sortType.value ?: SortType.defaultSortType
 
     fun setSearchKey(key: String) {
-        setLoadTrigger(LoadTrigger.SEARCHING)
+        setLoadTrigger(LoadTrigger.SEARCH)
         _searchKey.value?.let {
             if (key != it) _searchKey.value = key
         } ?: run { _searchKey.value = key }

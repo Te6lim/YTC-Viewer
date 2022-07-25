@@ -9,12 +9,11 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.te6lim.ytcviewer.R
+import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.cardDetails.CardDetailsActivity
 import com.te6lim.ytcviewer.cardList.MainActivity
-import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.FragmentFavoritesBinding
 import com.te6lim.ytcviewer.resources.cardDetailsActivityIntentCardKey
 
@@ -28,6 +27,8 @@ class FavoritesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        val repository = (requireActivity().application as YTCApplication).repository
+
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_favorites, container, false
         )
@@ -36,11 +37,6 @@ class FavoritesFragment : Fragment() {
 
         (requireActivity() as MainActivity).setSupportActionBar(binding.toolbar)
 
-        val viewModel = ViewModelProvider(
-            this, FavoritesViewModelFactory(CardDatabase.getInstance(requireContext()).cardDao)
-        )[FavoritesViewModel::class.java]
-
-        binding.viewModel = viewModel
 
         binding.favoritesList.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL).apply {
@@ -61,17 +57,17 @@ class FavoritesFragment : Fragment() {
 
         binding.searchFavorites.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { viewModel.setSearchKey(it) }
+                query?.let { repository.setFavoritesSearchKey(it) }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { viewModel.setSearchKey(it) }
+                newText?.let { repository.setFavoritesSearchKey(it) }
                 return true
             }
         })
 
-        viewModel.cards.observe(viewLifecycleOwner) {
+        repository.favorites.observe(viewLifecycleOwner) {
             it?.let { adapter.submitList(it) }
         }
 

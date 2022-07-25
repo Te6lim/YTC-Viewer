@@ -2,6 +2,7 @@ package com.te6lim.ytcviewer.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -10,12 +11,15 @@ import com.te6lim.ytcviewer.cardFilters.CardFilter
 import com.te6lim.ytcviewer.cardList.CardPagingSource
 import com.te6lim.ytcviewer.cardList.CardsViewModel
 import com.te6lim.ytcviewer.database.Card
+import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.model.SortType
 import com.te6lim.ytcviewer.network.*
 import com.te6lim.ytcviewer.resources.CardFilterCategory
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
-class CardRepository(private val remoteSource: YtcApiService) {
+class CardRepository(private val remoteSource: YtcApiService, private val cardDatabase: CardDatabase) {
 
     private val _isEmpty = MutableLiveData<Boolean>()
     val isEmpty: LiveData<Boolean>
@@ -26,6 +30,53 @@ class CardRepository(private val remoteSource: YtcApiService) {
         get() = _connectionStatus
 
     private var currentPagingSource: CardPagingSource? = null
+
+    private val searchKey = MutableLiveData("")
+
+    val favorites = Transformations.switchMap(searchKey) {
+        cardDatabase.cardDao.getFavorites()
+    }.apply {
+        value?.filter { card ->
+            card.name.lowercase(Locale.getDefault())
+                .contains(searchKey.value!!.lowercase(Locale.getDefault()))
+        }
+    }
+
+    fun setFavoritesSearchKey(key: String) {
+        searchKey.value = key
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getCardStream(
+        categories: Map<String, Boolean>, selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> =
+            mapOf(), responseType: CardsViewModel.CardType, searchKey: String = "",
+        sortType: SortType
+    ): Flow<PagingData<Card>> {
+        val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.PagingSourceCallbacks {
+
+            override suspend fun getNetworkCardsAsync(offset: Int): Response {
+                return if (!selectedCardFilters.isNullOrEmpty())
+                    getCards(categories, selectedCardFilters, responseType, sortType.query, offset)
+                else {
+                    getCardsBySearchKey(searchKey, sortType.query, offset)
+                }
+            }
+
+            override fun setIsDataEmpty(value: Boolean) {
+                if (_isEmpty.value != value) _isEmpty.value = value
+            }
+
+            override fun setNetworkStatus(status: NetworkStatus) {
+                _connectionStatus.value = status
+            }
+
+        })
+
+        currentPagingSource = pagingSource
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE), pagingSourceFactory = { pagingSource }
+        ).flow
+    }
 
     private suspend fun getCards(
         categories: Map<String, Boolean>, selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>,
@@ -78,12 +129,6 @@ class CardRepository(private val remoteSource: YtcApiService) {
         return deferred.await()
     }
 
-    private suspend fun getCardsBySearchKey(searchKey: String, sortQuery: String, offset: Int): Response {
-        return remoteSource.getCardsBySearchAsync(
-            searchKey, sort = sortQuery, offset = offset
-        ).await()
-    }
-
     private fun getMapQueries(
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>
     ): List<Map<String, String>> {
@@ -92,6 +137,12 @@ class CardRepository(private val remoteSource: YtcApiService) {
             queries.add(mapOf(Pair(key.query, selectedCardFilters[key]!!.stringFormatForNetworkQuery())))
         }
         return queries
+    }
+
+    private suspend fun getCardsBySearchKey(searchKey: String, sortQuery: String, offset: Int): Response {
+        return remoteSource.getCardsBySearchAsync(
+            searchKey, sort = sortQuery, offset = offset
+        ).await()
     }
 
     private fun List<CardFilter>.stringFormatForNetworkQuery(): String {
@@ -113,38 +164,6 @@ class CardRepository(private val remoteSource: YtcApiService) {
         currentPagingSource?.let {
             it.loadCount = 0
         }
-    }
-
-    @OptIn(ExperimentalPagingApi::class)
-    fun getCardStream(
-        categories: Map<String, Boolean>, selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> =
-            mapOf(), responseType: CardsViewModel.CardType, searchKey: String = "",
-        sortType: SortType
-    ): Flow<PagingData<Card>> {
-        val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.PagingSourceCallbacks {
-
-            override suspend fun getNetworkCardsAsync(offset: Int): Response {
-                return if (!selectedCardFilters.isNullOrEmpty())
-                    getCards(categories, selectedCardFilters, responseType, sortType.query, offset)
-                else {
-                    getCardsBySearchKey(searchKey, sortType.query, offset)
-                }
-            }
-
-            override fun setIsDataEmpty(value: Boolean) {
-                if (_isEmpty.value != value) _isEmpty.value = value
-            }
-
-            override fun setNetworkStatus(status: NetworkStatus) {
-                _connectionStatus.value = status
-            }
-
-        })
-
-        currentPagingSource = pagingSource
-        return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE), pagingSourceFactory = { pagingSource }
-        ).flow
     }
 
 }
