@@ -42,7 +42,7 @@ interface CardDao {
     suspend fun insertMany(cards: List<Card>): List<Long>
 
     @Query("SELECT * FROM card WHERE networkId = :id")
-    fun getCard(id: Long): LiveData<Card?>
+    suspend fun getCard(id: Long): Card?
 
     @Query("SELECT * FROM card ORDER BY id DESC")
     fun getAll(): LiveData<List<Card>?>

@@ -11,7 +11,6 @@ import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.cardFilters.FilterSelectionViewModel
 import com.te6lim.ytcviewer.database.Card
-import com.te6lim.ytcviewer.database.CardDatabase
 import com.te6lim.ytcviewer.databinding.ActivityDetailsCardBinding
 import com.te6lim.ytcviewer.resources.cardDetailsActivityIntentCardKey
 
@@ -33,8 +32,10 @@ class CardDetailsActivity : AppCompatActivity() {
 
         val card = intent.getParcelableExtra<Card>(cardDetailsActivityIntentCardKey)!!
 
+        val repository = (application as YTCApplication).repository
+
         val viewModel = ViewModelProvider(
-            this, CardDetailsViewModelFactory(CardDatabase.getInstance(this).cardDao, card)
+            this, CardDetailsViewModelFactory(repository, card)
         )[CardDetailsViewModel::class.java]
 
         binding.viewModel = viewModel

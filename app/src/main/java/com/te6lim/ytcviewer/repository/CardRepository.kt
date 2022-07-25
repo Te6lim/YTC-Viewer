@@ -147,6 +147,24 @@ class CardRepository(private val remoteSource: YtcApiService, private val cardDa
         }
     }
 
+    suspend fun getCard(id: Long): Card? {
+        return withContext(Dispatchers.IO) {
+            cardDatabase.cardDao.getCard(id)
+        }
+    }
+
+    suspend fun addCard(card: Card) {
+        withContext(Dispatchers.IO) {
+            cardDatabase.cardDao.insert(card)
+        }
+    }
+
+    suspend fun deleteCard(id: Long) {
+        withContext(Dispatchers.IO) {
+            cardDatabase.cardDao.deleteCard(id)
+        }
+    }
+
     fun resetLoadCount() {
         currentPagingSource?.let {
             it.loadCount = 0

@@ -1,29 +1,31 @@
 package com.te6lim.ytcviewer.cardDetails
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.te6lim.ytcviewer.database.Card
-import com.te6lim.ytcviewer.database.CardDao
-import kotlinx.coroutines.Dispatchers
+import com.te6lim.ytcviewer.repository.CardRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class CardDetailsViewModel(private val database: CardDao, val card: Card) : ViewModel() {
+class CardDetailsViewModel(private val repository: CardRepository, val card: Card) : ViewModel() {
 
-    val favoriteCard = database.getCard(card.networkId)
+    private val _favoriteCard = MutableLiveData<Card?>()
+    val favoriteCard: LiveData<Card?>
+        get() = _favoriteCard
+
+    init {
+        setCardAsLiveData(card.networkId)
+    }
 
     fun addToFavorite() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                database.insert(card.apply { isFavourite = true })
-            }
+            repository.addCard(card.apply { isFavourite = true })
+            _favoriteCard.postValue(card)
         }
     }
 
     fun removeCardFromFavorite() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { database.deleteCard(card.apply { isFavourite = false }.networkId) }
+            repository.deleteCard(card.apply { isFavourite = false }.networkId)
+            _favoriteCard.postValue(null)
         }
     }
 
@@ -33,13 +35,20 @@ class CardDetailsViewModel(private val database: CardDao, val card: Card) : View
         } ?: return false
     }
 
+    private fun setCardAsLiveData(id: Long) {
+        viewModelScope.launch {
+            repository.getCard(id)?.let { _favoriteCard.postValue(it) }
+        }
+    }
+
 }
 
-class CardDetailsViewModelFactory(private val database: CardDao, private val card: Card) : ViewModelProvider
-.Factory {
+class CardDetailsViewModelFactory(private val repository: CardRepository, private val card: Card) :
+    ViewModelProvider
+    .Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CardDetailsViewModel::class.java))
-            return CardDetailsViewModel(database, card) as T
+            return CardDetailsViewModel(repository, card) as T
         throw IllegalArgumentException("unknown view model class")
     }
 
