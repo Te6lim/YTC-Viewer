@@ -26,7 +26,7 @@ data class Card(
     @ColumnInfo val cardSets: List<CardSet?>?,
     @ColumnInfo val cardImages: List<CardImage?>?,
     @ColumnInfo val cardPrices: List<CardPrice?>?,
-    @ColumnInfo var favourite: Boolean = false
+    @ColumnInfo var isFavourite: Boolean = false
 ) : Parcelable {
     fun isNonMonsterCard(): Boolean {
         return atk == null && def == null && level == null && attribute == null
@@ -44,8 +44,8 @@ interface CardDao {
     @Query("SELECT * FROM card WHERE networkId = :id")
     fun getCard(id: Long): LiveData<Card?>
 
-    @Query("SELECT * FROM card WHERE favourite = :isFavorite ORDER BY id DESC")
-    fun getFavorites(isFavorite: Boolean = true): LiveData<List<Card>?>
+    @Query("SELECT * FROM card ORDER BY id DESC")
+    fun getAll(): LiveData<List<Card>?>
 
     @Query("DELETE FROM card")
     suspend fun clear()

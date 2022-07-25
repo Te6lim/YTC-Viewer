@@ -2,7 +2,6 @@ package com.te6lim.ytcviewer.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -31,22 +30,8 @@ class CardRepository(private val remoteSource: YtcApiService, private val cardDa
 
     private var currentPagingSource: CardPagingSource? = null
 
-    private val searchKey = MutableLiveData("")
+    val savedCards = { cardDatabase.cardDao.getAll() }
 
-    private val _favorites = Transformations.switchMap(searchKey) {
-        cardDatabase.cardDao.getFavorites()
-    }
-
-    val favorites = Transformations.map(_favorites) {
-        it?.filter { card ->
-            card.name.lowercase(Locale.getDefault())
-                .contains(searchKey.value!!.lowercase(Locale.getDefault()))
-        }
-    }
-
-    fun setFavoritesSearchKey(key: String) {
-        searchKey.value = key
-    }
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(

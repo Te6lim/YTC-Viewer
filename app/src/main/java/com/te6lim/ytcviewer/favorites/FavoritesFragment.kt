@@ -9,6 +9,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
@@ -28,6 +29,10 @@ class FavoritesFragment : Fragment() {
     ): View {
 
         val repository = (requireActivity().application as YTCApplication).repository
+
+        val viewModel = ViewModelProvider(
+            this, FavoritesViewModelProvider(repository)
+        )[FavoritesViewModel::class.java]
 
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_favorites, container, false
@@ -57,17 +62,17 @@ class FavoritesFragment : Fragment() {
 
         binding.searchFavorites.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { repository.setFavoritesSearchKey(it) }
+                query?.let { viewModel.setSearchKey(it) }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { repository.setFavoritesSearchKey(it) }
+                newText?.let { viewModel.setSearchKey(it) }
                 return true
             }
         })
 
-        repository.favorites.observe(viewLifecycleOwner) {
+        viewModel.favorites.observe(viewLifecycleOwner) {
             it?.let { adapter.submitList(it) }
         }
 

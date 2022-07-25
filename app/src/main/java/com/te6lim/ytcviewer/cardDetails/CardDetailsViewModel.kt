@@ -16,20 +16,20 @@ class CardDetailsViewModel(private val database: CardDao, val card: Card) : View
     fun addToFavorite() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                database.insert(card.apply { favourite = true })
+                database.insert(card.apply { isFavourite = true })
             }
         }
     }
 
     fun removeCardFromFavorite() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { database.deleteCard(card.apply { favourite = false }.networkId) }
+            withContext(Dispatchers.IO) { database.deleteCard(card.apply { isFavourite = false }.networkId) }
         }
     }
 
     fun isCardFavorite(): Boolean {
         favoriteCard.value?.let {
-            return it.favourite
+            return it.isFavourite
         } ?: return false
     }
 
