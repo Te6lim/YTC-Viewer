@@ -28,22 +28,22 @@ class CardRepository(private val remoteSource: YtcApiService, private val cardDa
     val connectionStatus: LiveData<NetworkStatus>
         get() = _connectionStatus
 
-    private var currentPagingSource: CardPagingSource? = null
-
     val savedCards = { cardDatabase.cardDao.getAll() }
+
+    private var currentPagingSource: CardPagingSource? = null
 
 
     @OptIn(ExperimentalPagingApi::class)
     fun getCardStream(
-        categories: Map<String, Boolean>, selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> =
-            mapOf(), responseType: CardsViewModel.CardType, searchKey: String = "",
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> = mapOf(),
+        responseType: CardsViewModel.CardType, searchKey: String = "",
         sortType: SortType
     ): Flow<PagingData<Card>> {
         val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.PagingSourceCallbacks {
 
             override suspend fun getNetworkCardsAsync(offset: Int): Response {
                 return if (!selectedCardFilters.isNullOrEmpty())
-                    getCards(categories, selectedCardFilters, responseType, sortType.query, offset)
+                    getCards(selectedCardFilters, responseType, sortType.query, offset)
                 else {
                     getCardsBySearchKey(searchKey, sortType.query, offset)
                 }
@@ -66,7 +66,7 @@ class CardRepository(private val remoteSource: YtcApiService, private val cardDa
     }
 
     private suspend fun getCards(
-        categories: Map<String, Boolean>, selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>,
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>,
         responseType: CardsViewModel.CardType, sortQuery: String, offset: Int
     ): Response {
         val mapQueries = getMapQueries(selectedCardFilters)
@@ -100,7 +100,7 @@ class CardRepository(private val remoteSource: YtcApiService, private val cardDa
                 else -> throw IllegalArgumentException()
             }
         } else {
-            if (categories[CardFilterCategory.Spell.name] == true) {
+            if (selectedCardFilters.containsKey(CardFilterCategory.Spell)) {
                 remoteSource.getCardsAsync(
                     mapOf(Pair(CardFilterCategory.Type.query, CardFilterCategory.TypeArgumentForSpellCard)),
                     mapQueries[0], offset = offset, sort = sortQuery

@@ -15,6 +15,7 @@ import retrofit2.http.QueryMap
 enum class NetworkStatus {
     LOADING, ERROR, DONE
 }
+
 private const val BASE_URL = "https://db.ygoprodeck.com/api/v7/"
 
 private val interceptor = HttpLoggingInterceptor().apply {

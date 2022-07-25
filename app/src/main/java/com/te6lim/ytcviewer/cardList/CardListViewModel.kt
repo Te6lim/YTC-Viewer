@@ -95,7 +95,7 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
         filters: Map<CardFilterCategory, List<CardFilter>> = mapOf(),
         searchKey: String = "",
         sortType: SortType
-    ) = repository.getCardStream(categories.value!!, filters, cardListType, searchKey, sortType)
+    ) = repository.getCardStream(filters, cardListType, searchKey, sortType)
         .map { pagingData ->
             pagingData.map { card -> card.toUiItem() }
         }.map { it.insertFooterItem(item = UiItem.Footer) }.cachedIn(viewModelScope)
