@@ -69,7 +69,7 @@
                         android:scaleType="centerCrop"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:setLargeImage="@{viewModel.card.cardImages[0].imageUrl}"
+                        app:setLargeImage="@{viewModel.databaseCard.cardImages[0].imageUrl}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:srcCompat="@drawable/tornado_dragon" />

@@ -5,46 +5,40 @@ import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.repository.CardRepository
 import kotlinx.coroutines.launch
 
-class CardDetailsViewModel(private val repository: CardRepository, val card: Card) : ViewModel() {
+class CardDetailsViewModel(private val repository: CardRepository, private val cardId: Long) : ViewModel() {
 
-    private val _favoriteCard = MutableLiveData<Card?>()
-    val favoriteCard: LiveData<Card?>
-        get() = _favoriteCard
+    private val _databaseCard = MutableLiveData<Card?>()
+    val databaseCard: LiveData<Card?>
+        get() = _databaseCard
 
     init {
         viewModelScope.launch {
-            _favoriteCard.postValue(repository.getCard(card.networkId))
+            _databaseCard.postValue(repository.getCard(cardId))
         }
     }
 
-    fun addToFavorite() {
+    fun addToFavorites() {
         viewModelScope.launch {
-            repository.addCard(card.apply { isFavourite = true })
-            _favoriteCard.postValue(card)
+            repository.addCard(_databaseCard.value!!.apply { isFavourite = true })
+            _databaseCard.postValue(_databaseCard.value!!)
         }
     }
 
-    fun removeCardFromFavorite() {
+    fun removeFromFavorites() {
         viewModelScope.launch {
-            repository.deleteCard(card.apply { isFavourite = false }.networkId)
-            _favoriteCard.postValue(null)
+            repository.deleteCard(_databaseCard.value!!.apply { isFavourite = false }.networkId)
+            _databaseCard.postValue(_databaseCard.value!!)
         }
-    }
-
-    fun isCardFavorite(): Boolean {
-        favoriteCard.value?.let {
-            return it.isFavourite
-        } ?: return false
     }
 
 }
 
-class CardDetailsViewModelFactory(private val repository: CardRepository, private val card: Card) :
+class CardDetailsViewModelFactory(private val repository: CardRepository, private val cardId: Long) :
     ViewModelProvider
     .Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CardDetailsViewModel::class.java))
-            return CardDetailsViewModel(repository, card) as T
+            return CardDetailsViewModel(repository, cardId) as T
         throw IllegalArgumentException("unknown view model class")
     }
 

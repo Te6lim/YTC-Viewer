@@ -195,8 +195,9 @@ class CardListFragment : Fragment() {
 
             selectedCard.observe(viewLifecycleOwner) {
                 it?.let {
+                    saveCardToDatabase(it)
                     val intent = Intent(this@CardListFragment.context, CardDetailsActivity::class.java)
-                    intent.putExtra(cardDetailsActivityIntentCardKey, it)
+                    intent.putExtra(cardDetailsActivityIntentCardKey, it.networkId)
                     startActivity(intent)
                     setSelectedCard(null)
                 }

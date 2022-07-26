@@ -1,16 +1,13 @@
 package com.te6lim.ytcviewer.database
 
-import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.te6lim.ytcviewer.model.UiItem
 import com.te6lim.ytcviewer.network.CardImage
 import com.te6lim.ytcviewer.network.CardPrice
 import com.te6lim.ytcviewer.network.CardSet
-import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "card")
-@Parcelize
 data class Card(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     @ColumnInfo val networkId: Long,
@@ -27,7 +24,7 @@ data class Card(
     @ColumnInfo val cardImages: List<CardImage?>?,
     @ColumnInfo val cardPrices: List<CardPrice?>?,
     @ColumnInfo var isFavourite: Boolean = false
-) : Parcelable {
+) {
     fun isNonMonsterCard(): Boolean {
         return atk == null && def == null && level == null && attribute == null
     }

@@ -1,7 +1,11 @@
-package com.te6lim.ytcviewer
+package com.te6lim.ytcviewer.cardFilters
 
-import com.te6lim.ytcviewer.cardFilters.CardFilter
+import android.os.Parcelable
 import com.te6lim.ytcviewer.resources.*
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class CardFilter(val name: String, val query: String = name) : Parcelable
 
 val typeFilters = listOf(
     CardFilter(TypeFilters.Effect_Monster.query),

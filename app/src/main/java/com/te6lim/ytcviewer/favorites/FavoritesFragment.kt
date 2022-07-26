@@ -54,7 +54,7 @@ class FavoritesFragment : Fragment() {
         )
         val adapter = FavoritesListAdapter {
             val intent = Intent(requireContext(), CardDetailsActivity::class.java)
-            intent.putExtra(cardDetailsActivityIntentCardKey, it)
+            intent.putExtra(cardDetailsActivityIntentCardKey, it.networkId)
             startActivity(intent)
         }
 

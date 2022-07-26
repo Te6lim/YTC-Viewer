@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.te6lim.ytcviewer.R
 import com.te6lim.ytcviewer.YTCApplication
 import com.te6lim.ytcviewer.cardFilters.FilterSelectionViewModel
-import com.te6lim.ytcviewer.database.Card
 import com.te6lim.ytcviewer.databinding.ActivityDetailsCardBinding
 import com.te6lim.ytcviewer.resources.cardDetailsActivityIntentCardKey
 
@@ -30,60 +29,62 @@ class CardDetailsActivity : AppCompatActivity() {
             } else this@CardDetailsActivity.resources.getDimension(R.dimen.no_spacing)
         }
 
-        val card = intent.getParcelableExtra<Card>(cardDetailsActivityIntentCardKey)!!
+        val cardId = intent.getLongExtra(cardDetailsActivityIntentCardKey, -1)
 
         val repository = (application as YTCApplication).repository
 
         val viewModel = ViewModelProvider(
-            this, CardDetailsViewModelFactory(repository, card)
+            this, CardDetailsViewModelFactory(repository, cardId)
         )[CardDetailsViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        supportActionBar?.title = card.name
+        viewModel.databaseCard.observe(this) {
+            it?.let { card ->
 
-        with(binding) {
-            cardSetList.adapter = CardSetListAdapter().apply { submitList(card.cardSets) }
-            cardTypeText.text = viewModel.card.type
-            atkText.text = viewModel.card.atk.toString()
-            defText.text = viewModel.card.def.toString()
-            levelText.text = getString(
-                R.string.level, viewModel.card.level.toString()
-            )
-            raceText.text = getString(R.string.race, viewModel.card.race)
-            attributeArchetypeText.text =
-                getString(R.string.race, viewModel.card.attribute)
-            if (viewModel.card.isNonMonsterCard())
-                attributeArchetypeTitleText.text = getString(R.string.archetype_title)
-            monsterProperties.visibility =
-                if (viewModel.card.isNonMonsterCard()) View.GONE else View.VISIBLE
+                supportActionBar?.title = card.name
 
-            level.setImageResource(
-                FilterSelectionViewModel.getLevelOrRankIcon(viewModel.card.type!!)
-            )
+                with(binding) {
+                    cardSetList.adapter = CardSetListAdapter().apply { submitList(card.cardSets) }
+                    cardTypeText.text = card.type
+                    atkText.text = card.atk.toString()
+                    defText.text = card.def.toString()
+                    levelText.text = getString(
+                        R.string.level, card.level.toString()
+                    )
+                    raceText.text = getString(R.string.race, card.race)
+                    attributeArchetypeText.text =
+                        getString(R.string.race, card.attribute)
+                    if (card.isNonMonsterCard())
+                        attributeArchetypeTitleText.text = getString(R.string.archetype_title)
+                    monsterProperties.visibility =
+                        if (card.isNonMonsterCard()) View.GONE else View.VISIBLE
 
-            viewModel.card.race?.let {
-                raceIcon.setImageResource(FilterSelectionViewModel.getRaceIcon(it))
+                    level.setImageResource(
+                        FilterSelectionViewModel.getLevelOrRankIcon(card.type!!)
+                    )
+
+                    card.race?.let {
+                        raceIcon.setImageResource(FilterSelectionViewModel.getRaceIcon(it))
+                    }
+
+                    card.attribute?.let {
+                        attributeImage.setImageResource(
+                            FilterSelectionViewModel.getAttributeIcon(it)
+                        )
+                    } ?: run { attributeImage.visibility = View.GONE }
+                    descriptionText.text = card.desc
+
+                    favouriteIcon.setOnClickListener {
+                        if (card.isFavourite) viewModel.removeFromFavorites()
+                        else viewModel.addToFavorites()
+                    }
+
+                    if (card.isFavourite) favouriteIcon.setImageResource(R.drawable.ic_favorite)
+                    else favouriteIcon.setImageResource(R.drawable.ic_not_favorite)
+                }
             }
-
-            viewModel.card.attribute?.let {
-                attributeImage.setImageResource(
-                    FilterSelectionViewModel.getAttributeIcon(it)
-                )
-            } ?: run { attributeImage.visibility = View.GONE }
-            descriptionText.text = viewModel.card.desc
-
-            favouriteIcon.setOnClickListener {
-                if (viewModel.isCardFavorite()) viewModel.removeCardFromFavorite()
-                else viewModel.addToFavorite()
-            }
-        }
-
-        viewModel.favoriteCard.observe(this) {
-            it?.let {
-                binding.favouriteIcon.setImageResource(R.drawable.ic_favorite)
-            } ?: binding.favouriteIcon.setImageResource(R.drawable.ic_not_favorite)
         }
     }
 

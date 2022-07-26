@@ -14,6 +14,7 @@ import com.te6lim.ytcviewer.repository.CardRepository
 import com.te6lim.ytcviewer.resources.CardFilterCategory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class CardsViewModel(private val repository: CardRepository) : ViewModel() {
 
@@ -220,6 +221,12 @@ class CardsViewModel(private val repository: CardRepository) : ViewModel() {
 
     fun setSelectedCard(card: Card?) {
         _selectedCard.value = card
+    }
+
+    fun saveCardToDatabase(card: Card) {
+        viewModelScope.launch {
+            repository.addCard(card)
+        }
     }
 }
 

@@ -1,6 +1,5 @@
 package com.te6lim.ytcviewer.cardFilters
 
-import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import com.te6lim.ytcviewer.*
 import com.te6lim.ytcviewer.resources.CardFilterCategory
 import com.te6lim.ytcviewer.resources.attributeIconResources
 import com.te6lim.ytcviewer.resources.raceIconResources
-import kotlinx.parcelize.Parcelize
 
 class FilterSelectionViewModel(private val category: String) : ViewModel() {
 
@@ -105,9 +103,6 @@ class FilterSelectionViewModel(private val category: String) : ViewModel() {
     }
 
 }
-
-@Parcelize
-data class CardFilter(val name: String, val query: String = name) : Parcelable
 
 @Suppress("UNCHECKED_CAST")
 class FilterSelectionViewModelFactory(private val category: String) : ViewModelProvider.Factory {

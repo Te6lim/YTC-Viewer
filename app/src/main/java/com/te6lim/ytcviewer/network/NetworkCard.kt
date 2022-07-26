@@ -19,8 +19,7 @@ open class NetworkCard(
     @Json(name = "card_sets") val cardSets: List<CardSet?>?,
     @Json(name = "card_images") val cardImages: List<CardImage?>?,
     @Json(name = "card_prices") val cardPrices: List<CardPrice?>?
-) {
-}
+)
 
 @Parcelize
 class CardSet(

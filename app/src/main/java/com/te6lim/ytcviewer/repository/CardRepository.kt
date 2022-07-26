@@ -32,39 +32,6 @@ class CardRepository(private val remoteSource: YtcApiService, private val cardDa
 
     private var currentPagingSource: CardPagingSource? = null
 
-
-    @OptIn(ExperimentalPagingApi::class)
-    fun getCardStream(
-        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> = mapOf(),
-        responseType: CardsViewModel.CardType, searchKey: String = "",
-        sortType: SortType
-    ): Flow<PagingData<Card>> {
-        val pagingSource = CardPagingSource(sortType.isAsc, object : CardPagingSource.PagingSourceCallbacks {
-
-            override suspend fun getNetworkCardsAsync(offset: Int): Response {
-                return if (!selectedCardFilters.isNullOrEmpty())
-                    getCards(selectedCardFilters, responseType, sortType.query, offset)
-                else {
-                    getCardsBySearchKey(searchKey, sortType.query, offset)
-                }
-            }
-
-            override fun setIsDataEmpty(value: Boolean) {
-                if (_isEmpty.value != value) _isEmpty.value = value
-            }
-
-            override fun setNetworkStatus(status: NetworkStatus) {
-                _connectionStatus.value = status
-            }
-
-        })
-
-        currentPagingSource = pagingSource
-        return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE), pagingSourceFactory = { pagingSource }
-        ).flow
-    }
-
     private suspend fun getCards(
         selectedCardFilters: Map<CardFilterCategory, List<CardFilter>>,
         responseType: CardsViewModel.CardType, sortQuery: String, offset: Int
@@ -114,6 +81,40 @@ class CardRepository(private val remoteSource: YtcApiService, private val cardDa
         }
 
         return deferred.await()
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getCardStream(
+        selectedCardFilters: Map<CardFilterCategory, List<CardFilter>> = mapOf(),
+        responseType: CardsViewModel.CardType, searchKey: String = "", sortType: SortType
+    ): Flow<PagingData<Card>> {
+
+        val callback = object : CardPagingSource.PagingSourceCallbacks {
+
+            override suspend fun getNetworkCardsAsync(offset: Int): Response {
+
+                return if (!selectedCardFilters.isNullOrEmpty())
+                    getCards(selectedCardFilters, responseType, sortType.query, offset)
+                else getCardsBySearchKey(searchKey, sortType.query, offset)
+
+            }
+
+            override fun setIsDataEmpty(value: Boolean) {
+                _isEmpty.value = value
+            }
+
+            override fun setNetworkStatus(status: NetworkStatus) {
+                _connectionStatus.value = status
+            }
+
+        }
+
+        val pagingSource = CardPagingSource(sortType.isAsc, callback)
+
+        currentPagingSource = pagingSource
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE), pagingSourceFactory = { pagingSource }
+        ).flow
     }
 
     private fun getMapQueries(
